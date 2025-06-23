@@ -33,6 +33,10 @@
               <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
               About me
             </a>
+            <a href="#services" class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+              <svg class="w-5 h-5 text-cyan-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17a2.25 2.25 0 01-2.25-2.25V9.25A2.25 2.25 0 019.75 7h4.5A2.25 2.25 0 0116.5 9.25v5.5A2.25 2.25 0 0114.25 17h-4.5z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 7V5.75A2.25 2.25 0 0111.25 3.5h1.5A2.25 2.25 0 0115 5.75V7"/></svg>
+              Services
+            </a>
             <a href="#projects" class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
               <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a2 2 0 012-2h2a2 2 0 012 2v2m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2h-6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
               Projects
@@ -77,9 +81,9 @@
     <!-- Hero Section (Landing Page) -->
     <section id="hero" class="relative flex flex-col justify-center items-center h-screen text-center z-10 bg-gradient-to-b from-blue-50/60 dark:from-gray-900/80 to-transparent">
       <div class="flex flex-col items-center gap-6 mt-12">
-        <!-- Animated SVG Avatar -->
+        <!-- Profile Picture -->
         <div class="relative mb-4">
-          <img src="https://placehold.co/144x144?text=Your+Photo" alt="Your Photo" class="w-36 h-36 rounded-full shadow-lg border-4 border-blue-500 bg-white dark:bg-gray-900 object-cover" />
+          <img src="profile.jpg" alt="Your Photo" class="w-36 h-36 rounded-full shadow-lg border-4 border-blue-500 bg-white dark:bg-gray-900 object-cover" />
         </div>
         <h1 class="text-4xl md:text-6xl font-extrabold mb-2 tracking-tight">Hi, I’m <span class="text-blue-600">Dev.Chestly Ace</span></h1>
         <h2 class="text-2xl md:text-3xl font-semibold mb-2 text-gray-700 dark:text-gray-300">Software Engineer, Developer &amp; Graphic Designer</h2>
@@ -255,6 +259,38 @@
         <button onclick="closeGalleryModal()" class="absolute top-6 right-6 text-white text-3xl font-bold z-60">&times;</button>
         <img id="galleryModalImg" src="" alt="Full Design" class="max-h-[80vh] max-w-[90vw] rounded-lg shadow-2xl border-4 border-white" />
       </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="min-h-[60vh] flex flex-col justify-center items-center py-24 bg-white dark:bg-gray-900">
+      <h2 class="text-4xl font-bold mb-8">Services I Offer</h2>
+      <div class="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+        <!-- Service 1 -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center gap-4 hover:scale-105 transition-transform">
+          <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900 mb-2">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 18v-1a4 4 0 00-4-4H8a4 4 0 00-4 4v1"/><circle cx="12" cy="7" r="4"/></svg>
+          </span>
+          <h3 class="text-xl font-semibold">Web Development</h3>
+          <p class="text-gray-700 dark:text-gray-200">Custom websites, web apps, and landing pages using modern frameworks and best practices.</p>
+        </div>
+        <!-- Service 2 -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center gap-4 hover:scale-105 transition-transform">
+          <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900 mb-2">
+            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a2 2 0 012-2h2a2 2 0 012 2v2m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2h-6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+          </span>
+          <h3 class="text-xl font-semibold">UI/UX & Graphic Design</h3>
+          <p class="text-gray-700 dark:text-gray-200">Modern, user-friendly interfaces, branding, and graphics for web and mobile platforms.</p>
+        </div>
+        <!-- Service 3 -->
+        <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center gap-4 hover:scale-105 transition-transform">
+          <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900 mb-2">
+            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v4a1 1 0 001 1h3m10-5v4a1 1 0 01-1 1h-3m-4 4h4m-2 0v4m0 0h-2a2 2 0 01-2-2v-2a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2z"/></svg>
+          </span>
+          <h3 class="text-xl font-semibold">Consulting & Training</h3>
+          <p class="text-gray-700 dark:text-gray-200">Tech consulting, code reviews, and personalized training for individuals or teams.</p>
+        </div>
+      </div>
+    </section>
     </section>
 
      <!-- Professional Experience & Education Section -->
