@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
 <head>
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://placehold.co/40x40?text=Logo" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Responsive Portfolio Template</title>
+  <title>Developer Chestly_Ace</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
   <style>
@@ -23,27 +25,28 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
           <div class="flex items-center gap-4">
-            <span class="font-bold text-lg text-blue-600">Chestly</span>
-            <div class="hidden md:flex gap-2">
-              <a href="#hero" class="px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">Hero</a>
-              <a href="#story" class="px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">Story</a>
-              <a href="#playground" class="px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">Code Playground</a>
-              <a href="#features" class="px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">Features</a>
-              <a href="#contact" class="px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">Contact</a>
-            </div>
+            <img src="https://placehold.co/40x40?text=Logo" alt="Logo" class="w-10 h-10 rounded-full bg-white border-2 border-blue-600 shadow mr-2" />
+            <span class="font-bold text-lg text-blue-600">Dev.Ace</span>
           </div>
-          <div class="flex items-center gap-2">
-            <input id="searchBar" type="text" placeholder="Search..." class="hidden md:block px-3 py-2 rounded bg-gray-200 dark:bg-gray-700 focus:outline-none" />
-            <button id="themeToggle" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700" title="Toggle theme">
-              <svg id="themeIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m8.66-13.66l-.71.71M4.05 19.95l-.71.71M21 12h-1M4 12H3m16.66 5.66l-.71-.71M4.05 4.05l-.71-.71" /></svg>
-            </button>
-            <button id="motionToggle" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700" title="Toggle reduced motion">
-              <svg id="motionIcon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m4 4h-1v-4h-1m-4 4h-1v-4h-1" /></svg>
-            </button>
-            <button id="mobileMenuBtn" class="md:hidden p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700" aria-label="Open menu">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
-            </button>
+          <div class="hidden md:flex flex-1 justify-center gap-2">
+            <a href="#about" class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+              <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              About me
+            </a>
+            <a href="#projects" class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+              <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a2 2 0 012-2h2a2 2 0 012 2v2m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2h-6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+              Projects
+            </a>
+            <a href="#experience" class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+              <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 7v-6m0 0l-9-5m9 5l9-5"/></svg>
+              Experience
+            </a>
+            <a href="#contact" class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+              <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12l-4-4-4 4m8 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0V6a2 2 0 00-2-2H6a2 2 0 00-2 2v6"/></svg>
+              Contact
+            </a>
           </div>
+        
         </div>
       </div>
       <!-- Mobile Sidebar -->
@@ -98,17 +101,15 @@
           <div class="absolute inset-0 rounded-full pointer-events-none animate-pulse" style="box-shadow:0 0 32px 8px #60a5fa44;"></div>
         </div>
         <h1 class="text-4xl md:text-6xl font-extrabold mb-2 tracking-tight">Hi, I’m <span class="text-blue-600">Dev.Chestly Ace</span></h1>
-        <h2 class="text-2xl md:text-3xl font-semibold mb-2 text-gray-700 dark:text-gray-300">Software Engineer &amp; Developer</h2>
+        <h2 class="text-2xl md:text-3xl font-semibold mb-2 text-gray-700 dark:text-gray-300">Software Engineer, Developer &amp; Graphic Designer</h2>
         <p class="text-lg md:text-xl mb-6 max-w-xl mx-auto text-gray-600 dark:text-gray-200">Coding a legacy one line at a time...</p>
         <div class="flex flex-wrap gap-4 justify-center">
-          <a href="#features" class="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition font-semibold">View my work</a>
+          <a href="#projects" class="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition font-semibold">View my work</a>
          
           <a href="#contact" class="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition font-semibold">Get in Touch</a>
         </div>
       </div>
-      <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
-      </div>
+      
       
     </section>
 
