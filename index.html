@@ -9,16 +9,451 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
     html { scroll-behavior: smooth; }
     .sidebar-collapsed { width: 4rem; }
     .sidebar-expanded { width: 18rem; }
     .transition-width { transition: width 0.3s; }
     .webgl-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
     .reduced-motion * { transition: none !important; animation: none !important; }
+
+    :root {
+      --accent-blue: #2563eb;
+      --accent-cyan: #0ea5e9;
+      --accent-pink: #d946ef;
+      --surface-light: rgba(255, 255, 255, 0.85);
+      --surface-dark: rgba(15, 23, 42, 0.85);
+      --card-border: rgba(148, 163, 184, 0.25);
+    }
+
+    ::selection {
+      background-color: var(--accent-blue);
+      color: #fff;
+    }
+
+    body {
+      font-family: "Space Grotesk", "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #f8fafc;
+      background-image: radial-gradient(circle at 20% 20%, rgba(37, 99, 235, 0.08), transparent 45%),
+        radial-gradient(circle at 80% 0%, rgba(14, 165, 233, 0.08), transparent 40%);
+    }
+
+    .dark body {
+      background-color: #020617;
+      background-image: radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.18), transparent 35%),
+        radial-gradient(circle at 80% 0%, rgba(236, 72, 153, 0.12), transparent 35%);
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -10%;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 55%),
+        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.15) 0%, transparent 45%);
+      filter: blur(80px);
+      opacity: 0.6;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .dark body::before {
+      opacity: 0.85;
+    }
+
+    .glass-panel {
+      background: var(--surface-light);
+      border: 1px solid var(--card-border);
+      border-radius: 1.5rem;
+      box-shadow: 0 25px 60px -35px rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(18px);
+    }
+
+    .dark .glass-panel {
+      background: var(--surface-dark);
+      border-color: rgba(148, 163, 184, 0.18);
+      box-shadow: 0 35px 80px -45px rgba(2, 6, 23, 0.9);
+    }
+
+    .hero-panel {
+      padding: 2.5rem clamp(1.5rem, 3vw, 3.5rem);
+    }
+
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.4rem 0.95rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #0f172a;
+      background: rgba(191, 219, 254, 0.8);
+      border: 1px solid rgba(37, 99, 235, 0.2);
+      box-shadow: 0 10px 25px -18px rgba(37, 99, 235, 0.8);
+    }
+
+    .dark .hero-chip {
+      color: #e2e8f0;
+      background: rgba(37, 99, 235, 0.15);
+      border-color: rgba(59, 130, 246, 0.35);
+    }
+
+    .hero-avatar::after {
+      content: "";
+      position: absolute;
+      inset: -10px;
+      border-radius: 999px;
+      background: linear-gradient(120deg, rgba(37, 99, 235, 0.7), rgba(236, 72, 153, 0.6), rgba(14, 165, 233, 0.7));
+      z-index: -1;
+      opacity: 0.65;
+      filter: blur(12px);
+      animation: pulseGlow 8s ease-in-out infinite;
+    }
+
+    .floating-orb {
+      position: absolute;
+      width: clamp(200px, 28vw, 360px);
+      height: clamp(200px, 28vw, 360px);
+      border-radius: 50%;
+      opacity: 0.35;
+      filter: blur(40px);
+      mix-blend-mode: screen;
+      animation: drift 18s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .floating-orb.orb-blue {
+      top: 5%;
+      left: 10%;
+      background: radial-gradient(circle, rgba(37, 99, 235, 0.65), transparent 65%);
+    }
+
+    .floating-orb.orb-pink {
+      bottom: 15%;
+      right: 12%;
+      background: radial-gradient(circle, rgba(236, 72, 153, 0.6), transparent 60%);
+      animation-delay: 4s;
+    }
+
+    .glow-button {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 20px 45px -20px rgba(37, 99, 235, 0.65);
+    }
+
+    .glow-button::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(110deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+      transform: translateX(-100%);
+      transition: transform 0.6s ease;
+    }
+
+    .glow-button:hover {
+      transform: translateY(-2px) scale(1.01);
+    }
+
+    .glow-button:hover::after {
+      transform: translateX(100%);
+    }
+
+    .hero-stats-card,
+    .project-card,
+    .service-card,
+    .timeline-card,
+    .contact-card,
+    .badge-card {
+      position: relative;
+      border-radius: 1.25rem;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 25px 45px -35px rgba(15, 23, 42, 0.8);
+      transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+      backdrop-filter: blur(16px);
+    }
+
+    .dark .hero-stats-card,
+    .dark .project-card,
+    .dark .service-card,
+    .dark .timeline-card,
+    .dark .contact-card,
+    .dark .badge-card {
+      background: rgba(15, 23, 42, 0.78);
+      border-color: rgba(148, 163, 184, 0.18);
+      box-shadow: 0 30px 50px -35px rgba(2, 6, 23, 0.95);
+    }
+
+    .project-card::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: 1.15rem;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      pointer-events: none;
+    }
+
+    .project-card:hover,
+    .service-card:hover,
+    .timeline-card:hover,
+    .contact-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 35px 60px -45px rgba(15, 23, 42, 0.85);
+      border-color: rgba(59, 130, 246, 0.45);
+    }
+
+    .project-card:hover::before {
+      opacity: 1;
+    }
+
+    .timeline {
+      position: relative;
+      padding-left: 1.5rem;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 0.4rem;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(37, 99, 235, 0.5), rgba(14, 165, 233, 0.25));
+    }
+
+    .timeline-card {
+      background: rgba(255, 255, 255, 0.92);
+      padding: 1.5rem;
+    }
+
+    .dark .timeline-card {
+      background: rgba(15, 23, 42, 0.85);
+    }
+
+    .badge-card {
+      padding: 1.25rem 1rem;
+      text-align: center;
+    }
+
+    .badge-card img {
+      transition: transform 0.4s ease, filter 0.4s ease;
+      filter: drop-shadow(0 10px 20px rgba(15, 23, 42, 0.35));
+    }
+
+    .badge-card:hover img {
+      transform: translateY(-6px);
+      filter: drop-shadow(0 20px 35px rgba(37, 99, 235, 0.4));
+    }
+
+    .gallery-thumb {
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .gallery-thumb:hover {
+      transform: translateY(-6px) scale(1.02);
+      box-shadow: 0 25px 45px -35px rgba(15, 23, 42, 0.8);
+    }
+
+    .is-collapsed {
+      display: none !important;
+    }
+
+    .showcase-tabs {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem;
+      border-radius: 999px;
+      background: rgba(226, 232, 240, 0.65);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    }
+
+    .dark .showcase-tabs {
+      background: rgba(15, 23, 42, 0.65);
+      border-color: rgba(148, 163, 184, 0.25);
+    }
+
+    .showcase-tab-btn {
+      border: none;
+      background: transparent;
+      color: #0f172a;
+      font-weight: 600;
+      font-size: 0.95rem;
+      padding: 0.55rem 1.35rem;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .dark .showcase-tab-btn {
+      color: #cbd5f5;
+    }
+
+    .showcase-tab-btn.active {
+      background: linear-gradient(120deg, rgba(37, 99, 235, 0.95), rgba(14, 165, 233, 0.85));
+      color: #fff;
+      box-shadow: 0 12px 25px -15px rgba(37, 99, 235, 0.85);
+    }
+
+    .showcase-panel {
+      width: 100%;
+    }
+
+    .showcase-panel-active {
+      animation: fadeSlideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .is-hidden {
+      display: none !important;
+    }
+
+    .showcase-action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.75rem;
+      border-radius: 999px;
+      border: 1px solid rgba(37, 99, 235, 0.45);
+      background: rgba(37, 99, 235, 0.08);
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #1d4ed8;
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+      box-shadow: 0 15px 35px -25px rgba(37, 99, 235, 0.8);
+      cursor: pointer;
+    }
+
+    .dark .showcase-action-btn {
+      background: rgba(37, 99, 235, 0.16);
+      color: #bfdbfe;
+    }
+
+    .showcase-action-btn:hover {
+      transform: translateY(-2px);
+      background: rgba(37, 99, 235, 0.18);
+    }
+
+    .showcase-action-btn.hidden {
+      display: none !important;
+    }
+
+    [data-animate] {
+      opacity: 0;
+      transform: translateY(30px) scale(0.98);
+      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    [data-animate].in-view {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    [data-animate-child] {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+      transition-delay: calc(var(--delay, 0) * 1s);
+    }
+
+    [data-animate].in-view [data-animate-child] {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 0.8rem;
+      color: rgba(15, 23, 42, 0.65);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+    }
+
+    .scroll-indicator span {
+      display: block;
+      width: 2px;
+      height: 40px;
+      background: linear-gradient(180deg, rgba(37, 99, 235, 0.1), rgba(37, 99, 235, 0.7));
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+      margin-bottom: 0.5rem;
+    }
+
+    .scroll-indicator span::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 14px;
+      background: #2563eb;
+      border-radius: 999px;
+      animation: scrollHint 1.6s ease-in-out infinite;
+    }
+
+    .dark .scroll-indicator {
+      color: rgba(226, 232, 240, 0.65);
+    }
+
+    .contact-card input,
+    .contact-card textarea {
+      background-color: rgba(148, 163, 184, 0.15);
+    }
+
+    @keyframes drift {
+      0% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(35px, -25px, 0) scale(1.05); }
+      100% { transform: translate3d(0, 0, 0) scale(1); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.45; }
+      50% { opacity: 0.8; }
+    }
+
+    @keyframes scrollHint {
+      0% { transform: translateY(-10px); opacity: 0; }
+      40% { opacity: 1; }
+      100% { transform: translateY(28px); opacity: 0; }
+    }
+
+    @keyframes fadeSlideUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .floating-orb,
+      .hero-avatar::after,
+      .scroll-indicator span::after {
+        animation: none !important;
+      }
+      [data-animate],
+      [data-animate-child] {
+        transition: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+      }
+      .showcase-panel-active {
+        animation: none !important;
+      }
+    }
   </style>
 </head>
 
-<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex">
+<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col relative overflow-x-hidden">
   <!-- Responsive Navigation Bar -->
   <header>
     <nav class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 fixed w-full z-30">
@@ -28,6 +463,13 @@
             <img src="logo.jpg" alt="Logo" class="w-10 h-10 rounded-full bg-white border-2 border-blue-600 shadow mr-2" />
             <span class="font-bold text-lg text-blue-600">Dev.Ace</span>
           </div>
+          <!-- Mobile menu button -->
+          <button id="mobileMenuBtn" class="md:hidden p-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800" aria-label="Open menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+
           <div class="hidden md:flex flex-1 justify-center gap-2">
             <a href="#about" class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
               <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
@@ -63,11 +505,26 @@
         </div>
         <input id="mobileSearchBar" type="text" placeholder="Search..." class="m-4 px-3 py-2 rounded bg-gray-200 dark:bg-gray-700 focus:outline-none" />
         <nav class="flex-1 overflow-y-auto">
-          <a href="#hero" class="block px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">Hero</a>
-          <a href="#story" class="block px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">Story</a>
-          <a href="#playground" class="block px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">Code Playground</a>
-          <a href="#features" class="block px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">Features</a>
-          <a href="#contact" class="block px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">Contact</a>
+          <a href="#about" class="flex items-center gap-2 px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            About me
+          </a>
+          <a href="#services" class="flex items-center gap-2 px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+            <svg class="w-5 h-5 text-cyan-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17a2.25 2.25 0 01-2.25-2.25V9.25A2.25 2.25 0 019.75 7h4.5A2.25 2.25 0 0116.5 9.25v5.5A2.25 2.25 0 0114.25 17h-4.5z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 7V5.75A2.25 2.25 0 0111.25 3.5h1.5A2.25 2.25 0 0115 5.75V7"/></svg>
+            Services
+          </a>
+          <a href="#projects" class="flex items-center gap-2 px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a2 2 0 012-2h2a2 2 0 012 2v2m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2h-6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+            Projects
+          </a>
+          <a href="#experience" class="flex items-center gap-2 px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+            <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 7v-6m0 0l-9-5m9 5l9-5"/></svg>
+            Experience
+          </a>
+          <a href="#contact" class="flex items-center gap-2 px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12l-4-4-4 4m8 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0V6a2 2 0 00-2-2H6a2 2 0 00-2 2v6"/></svg>
+            Contact
+          </a>
         </nav>
       </div>
       <div id="mobileSidebarOverlay" class="fixed inset-0 bg-black bg-opacity-40 z-30 hidden md:hidden"></div>
@@ -79,185 +536,268 @@
     <!-- WebGL/Canvas Background -->
     <canvas id="webglBg" class="webgl-bg"></canvas>
     <!-- Hero Section (Landing Page) -->
-    <section id="hero" class="relative flex flex-col justify-center items-center h-screen text-center z-10 bg-gradient-to-b from-blue-50/60 dark:from-gray-900/80 to-transparent">
-      <div class="flex flex-col items-center gap-6 mt-12">
-        <!-- Profile Picture -->
-        <div class="relative mb-4">
-          <img src="profile.jpg" alt="Your Photo" class="w-36 h-36 rounded-full shadow-lg border-4 border-blue-500 bg-white dark:bg-gray-900 object-cover" />
-        </div>
-        <h1 class="text-4xl md:text-6xl font-extrabold mb-2 tracking-tight">Hi, I’m <span class="text-blue-600">Dev.Chestly Ace</span></h1>
-        <h2 class="text-2xl md:text-3xl font-semibold mb-2 text-gray-700 dark:text-gray-300">Software Engineer, Developer &amp; Graphic Designer</h2>
-        <p class="text-lg md:text-xl mb-6 max-w-xl mx-auto text-gray-600 dark:text-gray-200">Coding a legacy one line at a time...</p>
-        <div class="flex flex-wrap gap-4 justify-center">
-          <a href="#projects" class="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition font-semibold">View my work</a>
-         
-          <a href="#contact" class="px-6 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 transition font-semibold">Get in Touch</a>
+    <section id="hero" class="relative flex flex-col justify-center items-center min-h-screen text-center z-10 bg-gradient-to-b from-blue-50/60 dark:from-gray-900/80 to-transparent px-4" data-animate>
+      <span class="floating-orb orb-blue" aria-hidden="true"></span>
+      <span class="floating-orb orb-pink" aria-hidden="true"></span>
+      <div class="relative w-full max-w-5xl mx-auto">
+        <div class="flex flex-col items-center gap-4 sm:gap-6 mt-12 glass-panel hero-panel w-full">
+          <div class="flex flex-wrap justify-center gap-3 text-xs sm:text-sm uppercase tracking-[0.3em] text-blue-900/70 dark:text-blue-200/70" data-animate-child style="--delay: 0">
+            <span class="hero-chip">Open to remote roles</span>
+            <span class="hero-chip">Freelance friendly</span>
+          </div>
+          <!-- Profile Picture -->
+          <div class="relative mb-2 sm:mb-4 hero-avatar" data-animate-child style="--delay: 0.05">
+            <img src="profile.jpg" alt="Your Photo" class="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full shadow-xl border-4 border-blue-500/80 bg-white dark:bg-gray-900 object-cover" />
+          </div>
+          <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-1 tracking-tight leading-tight" data-animate-child style="--delay: 0.1">
+            Hi, I’m <span class="text-blue-600">Chestly Ace</span>
+          </h1>
+          <h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-1 text-gray-700 dark:text-gray-300 px-4" data-animate-child style="--delay: 0.15">
+            Software Developer | Graphic Designer | Photographer.
+          </h2>
+          <p class="text-base sm:text-lg md:text-xl mb-4 max-w-2xl mx-auto text-gray-600 dark:text-gray-200 px-4" data-animate-child style="--delay: 0.2">
+            I code 🧑‍💻 , design 🖌️, and shoot 📸. I use a full-stack developer's logic 🤓, a graphic designer's eye 🎨, and a photographer's perspective 🖼️ to build engaging and authentic digital products.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full max-w-md sm:max-w-none" data-animate-child style="--delay: 0.25">
+            <a href="#projects" class="glow-button px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold text-center">View my work</a>
+            <a href="#contact" class="glow-button px-6 py-3 bg-green-600 text-white rounded-xl font-semibold text-center shadow-lg shadow-green-600/30">Get in Touch</a>
+          </div>
+          </div>
         </div>
       </div>
-      
-      
     </section>
 
    
    
     <!-- About Me Section -->
-    <section id="about" class="min-h-screen flex flex-col justify-center items-center py-24 bg-white dark:bg-gray-900">
-      <h2 class="text-4xl font-bold mb-6">About Me</h2>
-      <div class="w-full max-w-4xl flex flex-col md:flex-row gap-12 items-center">
+    <section id="about" class="min-h-screen flex flex-col justify-center items-center py-16 sm:py-24 bg-white dark:bg-gray-900 px-4" data-animate>
+      <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center" data-animate-child style="--delay: 0">About Me</h2>
+      <div class="w-full max-w-6xl flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
         <!-- Bio and Personal Touch -->
-        <div class="flex-1 flex flex-col gap-6">
-          <p class="text-lg text-gray-700 dark:text-gray-200">
-            Hi! I'm <span class="font-semibold text-blue-600">Chestly</span>, a passionate Software Engineer &amp; Developer who loves building scalable apps and immersive digital experiences. I care deeply about clean code, creative problem-solving, and making technology accessible to everyone.
+        <div class="flex-1 flex flex-col gap-6 text-center lg:text-left glass-panel p-6 sm:p-8" data-animate-child style="--delay: 0.05">
+          <p class="text-base sm:text-lg text-gray-700 dark:text-gray-200 leading-relaxed">
+            Hi! I'm <span class="font-semibold text-blue-600">Chestly</span>, <br> You could call me a triple threat, but I prefer to think of myself as a unified creator. <br> My process always starts with a question: 'What story are we trying to tell?'
+            <br>Whether I'm writing a function in JavaScript, designing a layout in Figma, or framing a shot with my camera, the core principles are the same: <strong>composition, clarity, and emotion.</strong> <br> My coding makes it work, my design makes it intuitive, and my photography makes it feel real. <br> Take a look around my portfolio to see how I bring these skills together.
           </p>
-          <p class="text-base text-gray-600 dark:text-gray-400">
-            Outside of coding, you'll find me exploring new tech, playing chess, or hiking in nature. I believe in lifelong learning and enjoy collaborating with others who share a growth mindset.
-          </p>
-          <a href="resume.pdf" download class="inline-block mt-2 px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition font-semibold w-max">Download Résumé</a>
+          <div class="flex justify-center lg:justify-start">
+            <a href="resume.pdf" download class="inline-block mt-2 px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-300 font-semibold">Download Résumé</a>
+          </div>
         </div>
         <!-- Skills and Tools -->
-        <div class="flex-1 flex flex-col gap-4">
-          <h3 class="tex7666t-2xl font-semibold mb-2 text-gray-800 dark:text-gray-100">Skills / Tech Stack</h3>
-          <div class="mb-2">
-            <span class="font-semibold">Languages:</span>
-            <ul class="flex flex-wrap gap-3 mt-1 items-center">
-              <li title="HTML5"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5" class="w-8 h-8"></li>
-              <li title="CSS3"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" class="w-8 h-8"></li>
-              <li title="JavaScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" class="w-8 h-8"></li>
-              <li title="C"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg" alt="C" class="w-8 h-8"></li>
-              <li title="Cpp"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg" alt="Cpp" class="w-8 h-8"></li>
-               <li title="Java"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original-wordmark.svg" alt="Java" class="w-8 h-8"></li>
-               <li title="Dart"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg" alt="Dart" class="w-8 h-8"></li>
-               <li title="python"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="python" class="w-8 h-8"></li>
-               <li title="php"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg" alt="php" class="w-8 h-8"></li>
-               
-            </ul>
-          </div>
-          <div class="mb-2">
-            <span class="font-semibold">Frameworks:</span>
-            <ul class="flex flex-wrap gap-3 mt-1 items-center">
-              <li title="bootsrap"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg" alt="bootsrap" class="w-8 h-8"></li>
-              <li title="tailwindcss"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="tailwindcss" class="w-8 h-8 bg-white rounded"></li>
-              <li title="react"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="react" class="w-8 h-8"></li>
-              <li title="flutter"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" alt="flutter" class="w-8 h-8"></li>
-              <li title="nextjs"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg" alt="nextjs" class="w-8 h-8"></li>
-              
-            </ul>
-          </div>
-          <div class="mb-2">
-            <span class="font-semibold">Tools:</span>
-            <ul class="flex flex-wrap gap-3 mt-1 items-center">
+        <div class="flex-1 flex flex-col gap-6 w-full glass-panel p-6 sm:p-8" data-animate-child style="--delay: 0.15">
+          <h3 class="text-xl sm:text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100 text-center lg:text-left">Skills / Tech Stack</h3>
 
-              <li title="MySQL"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL" class="w-8 h-8"></li>
-              <li title="Git"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git" class="w-8 h-8"></li>
-              <li title="GitHub"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" class="w-8 h-8 bg-white rounded"></li>
-              <li title="Vercel"><img src="https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png" alt="Vercel" class="w-8 h-8"></li>
-              <li title="Netlify"><img src="https://www.netlify.com/v3/img/components/logomark.png" alt="Netlify" class="w-8 h-8"></li>
-              <li title="androidStudio"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/androidstudio/androidstudio-original.svg" alt="androidStudio" class="w-8 h-8"></li>
-              <li title="canva"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg" alt="canva" class="w-8 h-8"></li>
-              <li title="vscode"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" alt="vscode" class="w-8 h-8"></li>
-              <li title="photoshop"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg" alt="photoshop" class="w-8 h-8"></li>
-              <li title="linux"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg" alt="linux" class="w-8 h-8"></li>
-              <li title="googlecloud"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/googlecloud/googlecloud-original.svg" alt="googlecloud" class="w-8 h-8"></li>
+          <div class="mb-6">
+            <span class="font-semibold text-gray-800 dark:text-gray-200 block mb-3">Languages:</span>
+            <ul class="flex flex-wrap gap-3 justify-center lg:justify-start items-center">
+              <li title="HTML5"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="CSS3"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="JavaScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="C"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg" alt="C" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="C++"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg" alt="C++" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Java"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original-wordmark.svg" alt="Java" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Dart"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg" alt="Dart" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Python"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="Python" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="PHP"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg" alt="PHP" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
             </ul>
           </div>
-          
+
+          <div class="mb-6">
+            <span class="font-semibold text-gray-800 dark:text-gray-200 block mb-3">Frameworks:</span>
+            <ul class="flex flex-wrap gap-3 justify-center lg:justify-start items-center">
+              <li title="Bootstrap"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg" alt="Bootstrap" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="TailwindCSS"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="TailwindCSS" class="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded transition-transform hover:scale-110"></li>
+              <li title="React"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Flutter"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" alt="Flutter" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Next.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg" alt="Next.js" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+            </ul>
+          </div>
+
+          <div class="mb-6">
+            <span class="font-semibold text-gray-800 dark:text-gray-200 block mb-3">Tools:</span>
+            <ul class="flex flex-wrap gap-3 justify-center lg:justify-start items-center">
+              <li title="MySQL"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Git"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="GitHub"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" class="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded transition-transform hover:scale-110"></li>
+              <li title="Vercel"><img src="https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png" alt="Vercel" class="w-10 h-10 sm:w-12 sm:h-12 rounded transition-transform hover:scale-110"></li>
+              <li title="Netlify"><img src="https://www.netlify.com/v3/img/components/logomark.png" alt="Netlify" class="w-10 h-10 sm:w-12 sm:h-12 rounded transition-transform hover:scale-110"></li>
+              <li title="Android Studio"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/androidstudio/androidstudio-original.svg" alt="Android Studio" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Canva"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg" alt="Canva" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="VS Code"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" alt="VS Code" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Photoshop"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg" alt="Photoshop" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Linux"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg" alt="Linux" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Google Cloud"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/googlecloud/googlecloud-original.svg" alt="Google Cloud" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+            </ul>
+          </div>
+
           <div>
-            <span class="font-semibold">Soft Skills:</span>
-            <ul class="flex flex-wrap gap-2 mt-1">
-              <li class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 px-3 py-1 rounded font-medium">Teamwork</li>
-              <li class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 px-3 py-1 rounded font-medium">Problem-solving</li>
-              <li class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 px-3 py-1 rounded font-medium">Agile</li>
+            <span class="font-semibold text-gray-800 dark:text-gray-200 block mb-3">Soft Skills:</span>
+            <ul class="flex flex-wrap gap-2 justify-center lg:justify-start">
+              <li class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 px-4 py-2 rounded-full font-medium text-sm transition-transform hover:scale-105">Teamwork</li>
+              <li class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 px-4 py-2 rounded-full font-medium text-sm transition-transform hover:scale-105">Problem-solving</li>
+              <li class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 px-4 py-2 rounded-full font-medium text-sm transition-transform hover:scale-105">Agile</li>
             </ul>
           </div>
         </div>
       </div>
     </section>
 
-     <!-- Projects Section -->
-    <section id="projects" class="min-h-screen flex flex-col justify-center items-center py-24 bg-gray-50 dark:bg-gray-900">
-      <h2 class="text-4xl font-bold mb-8">Projects</h2>
-      <div class="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Project Card 1 -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col gap-4 hover:scale-105 transition-transform">
-          <div class="flex items-center gap-2">
-            <span class="inline-block w-3 h-3 rounded-full bg-blue-500"></span>
-            <h3 class="text-xl font-semibold">Landing Page</h3>
+     <!-- Projects, Gallery & Events Section -->
+    <section id="projects" class="min-h-screen flex flex-col justify-center items-center py-16 sm:py-24 bg-gray-50 dark:bg-gray-900 px-4" data-animate>
+      <div class="w-full max-w-4xl text-center" data-animate-child style="--delay: 0">
+        <span class="hero-chip mb-6">Work · Visuals · Stories</span>
+        <h2 class="text-3xl sm:text-4xl font-bold mb-4">Showcase Hub</h2>
+        <p class="text-base sm:text-lg text-gray-600 dark:text-gray-300">Toggle between shipped products, design experiments, and events I’ve covered.</p>
+        <div class="showcase-tabs mt-6" role="tablist" aria-label="Showcase filters">
+          <button type="button" class="showcase-tab-btn active" data-showcase-btn="projects" aria-pressed="true">Projects</button>
+          <button type="button" class="showcase-tab-btn" data-showcase-btn="gallery" aria-pressed="false">Design Gallery</button>
+          <button type="button" class="showcase-tab-btn" data-showcase-btn="events" aria-pressed="false">Events</button>
+        </div>
+      </div>
+
+      <div class="w-full max-w-7xl mt-12 space-y-10">
+        <div class="showcase-panel showcase-panel-active" data-showcase-panel="projects">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8" data-showcase-grid="projects" data-showcase-limit="3">
+            <!-- Project Card 1 -->
+            <div class="project-card showcase-item p-6 flex flex-col gap-4">
+              <div class="flex items-center gap-2">
+                <span class="inline-block w-3 h-3 rounded-full bg-blue-500"></span>
+                <h3 class="text-xl font-semibold">Landing Page</h3>
+              </div>
+              <p class="text-gray-700 dark:text-gray-200">A modern, responsive landing page for advertising and selling electronic devices and accessories, with animations, and dark mode support.</p>
+              <div class="flex flex-wrap gap-2 text-sm">
+                <span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">TailwindCSS</span>
+                <span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">JavaScript</span>
+                <span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">HTML</span>
+              </div>
+              <div class="flex gap-3 mt-2">
+                <a href="https://ace-electronics.netlify.app/" class="text-blue-600 hover:underline font-medium">Live Demo</a>
+                <a href="https://github.com/chestlyace/Electronics-Shop-Website.git" class="text-gray-500 hover:underline font-medium">GitHub</a>
+              </div>
+            </div>
+            <!-- Project Card 2 -->
+            <div class="project-card showcase-item p-6 flex flex-col gap-4">
+              <div class="flex items-center gap-2">
+                <span class="inline-block w-3 h-3 rounded-full bg-green-500"></span>
+                <h3 class="text-xl font-semibold">Courrier Management System</h3>
+              </div>
+              <p class="text-gray-700 dark:text-gray-200">CourierTrackingSystem is a simple courier/package tracking application written in C++ with a graphical user interface built using SFML. It allows users to manage couriers, add and assign packages, and view delivery information in an interactive way.</p>
+              <div class="flex flex-wrap gap-2 text-sm">
+                <span class="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 px-2 py-1 rounded">C++</span>
+                <span class="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 px-2 py-1 rounded">SFML</span>
+              </div>
+              <div class="flex gap-3 mt-2">
+                <a href="https://github.com/chestlyace/CourierTrackingSystem.git" class="text-blue-600 hover:underline font-medium">Live Demo</a>
+                <a href="https://github.com/chestlyace/CourierTrackingSystem.git" class="text-gray-500 hover:underline font-medium">GitHub</a>
+              </div>
+            </div>
+            <!-- Project Card 3 -->
+            <div class="project-card showcase-item p-6 flex flex-col gap-4">
+              <div class="flex items-center gap-2">
+                <span class="inline-block w-3 h-3 rounded-full bg-purple-500"></span>
+                <h3 class="text-xl font-semibold">Open Cart</h3>
+              </div>
+              <p class="text-gray-700 dark:text-gray-200">OpenCart is a free open source e-commerce platform for online merchants. OpenCart provides a professional and reliable foundation from which to build a successful online store.</p>
+              <div class="flex flex-wrap gap-2 text-sm">
+                <span class="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-200 px-2 py-1 rounded">PHP</span>
+              </div>
+              <div class="flex gap-3 mt-2">
+                <a href="https://github.com/chestlyace/opencart.git" class="text-blue-600 hover:underline font-medium">Live Demo</a>
+                <a href="https://github.com/chestlyace/opencart.git" class="text-gray-500 hover:underline font-medium">GitHub</a>
+              </div>
+            </div>
           </div>
-          <p class="text-gray-700 dark:text-gray-200">A modern, responsive landing page for advertising and selling electronic devices and accessories, with animations, and dark mode support.</p>
-          <div class="flex flex-wrap gap-2 text-sm">
-            <span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">TailwindCSS</span>
-            <span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">JavaScript</span>
-            <span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">HTML</span>
-          </div>
-          <div class="flex gap-3 mt-2">
-            <a href="https://ace-electronics.netlify.app/" class="text-blue-600 hover:underline font-medium">Live Demo</a>
-            <a href="https://github.com/chestlyace/Electronics-Shop-Website.git" class="text-gray-500 hover:underline font-medium">GitHub</a>
+          <div class="text-center mt-6">
+            <button type="button" class="showcase-action-btn hidden" data-showcase-more="projects">Show more</button>
           </div>
         </div>
-        <!-- Project Card 2 -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col gap-4 hover:scale-105 transition-transform">
-          <div class="flex items-center gap-2">
-            <span class="inline-block w-3 h-3 rounded-full bg-green-500"></span>
-            <h3 class="text-xl font-semibold">Courrier Management System</h3>
+
+        <div class="showcase-panel is-hidden" data-showcase-panel="gallery">
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 px-2 sm:px-4" data-showcase-grid="gallery" data-showcase-limit="6">
+            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(0)">
+              <img src="krislogo.png" alt="Design 1" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
+            </button>
+            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(1)">
+              <img src="JAN.2025.png" alt="Design 2" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
+            </button>
+            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(2)">
+              <img src="Join Us.png" alt="Design 3" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
+            </button>
+            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(3)">
+              <img src="sherry.jpg" alt="Design 4" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
+            </button>
+            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(4)">
+              <img src="dace.jpg" alt="Design 5" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
+            </button>
+            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(5)">
+              <img src="hnd.jpg" alt="Design 6" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
+            </button>
+            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(5)">
+              <img src="btc.png" alt="Design 6" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
+            </button>
+            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(5)">
+              <img src="sherry2.png" alt="Design 6" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
+            </button>
           </div>
-          <p class="text-gray-700 dark:text-gray-200">CourierTrackingSystem is a simple courier/package tracking application written in C++ with a graphical user interface built using SFML. It allows users to manage couriers, add and assign packages, and view delivery information in an interactive way.</p>
-          <div class="flex flex-wrap gap-2 text-sm">
-            <span class="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 px-2 py-1 rounded">C++</span>
-            <span class="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 px-2 py-1 rounded">SFML</span>
-  
-          </div>
-          <div class="flex gap-3 mt-2">
-            <a href="https://github.com/chestlyace/CourierTrackingSystem.git" class="text-blue-600 hover:underline font-medium">Live Demo</a>
-            <a href="https://github.com/chestlyace/CourierTrackingSystem.git" class="text-gray-500 hover:underline font-medium">GitHub</a>
+          <div class="text-center mt-6">
+            <button type="button" class="showcase-action-btn hidden" data-showcase-more="gallery">Show more</button>
           </div>
         </div>
-        <!-- Project Card 3 -->
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col gap-4 hover:scale-105 transition-transform">
-          <div class="flex items-center gap-2">
-            <span class="inline-block w-3 h-3 rounded-full bg-purple-500"></span>
-            <h3 class="text-xl font-semibold">Open Cart</h3>
+
+        <div class="showcase-panel is-hidden" data-showcase-panel="events">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8" data-showcase-grid="events" data-showcase-limit="3">
+            <article class="project-card showcase-item p-0 overflow-hidden flex flex-col">
+              <div class="relative h-48 w-full overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1200&q=80" alt="Google I/O Extended Yaoundé coverage" class="w-full h-full object-cover">
+                <span class="hero-chip absolute top-4 left-4">2025</span>
+              </div>
+              <div class="p-6 flex flex-col gap-3">
+                <h3 class="text-xl font-semibold">Google I/O Extended · Yaoundé</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300">Captured keynote energy, built recap microsite, and live-posted highlights for 400+ attendees.</p>
+                <div class="flex flex-wrap gap-2 text-xs">
+                  <span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">Photography</span>
+                  <span class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded">Branding</span>
+                  <span class="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 px-2 py-1 rounded">Web</span>
+                </div>
+              </div>
+            </article>
+            <article class="project-card showcase-item p-0 overflow-hidden flex flex-col">
+              <div class="relative h-48 w-full overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" alt="TechLens creative summit coverage" class="w-full h-full object-cover">
+                <span class="hero-chip absolute top-4 left-4">2024</span>
+              </div>
+              <div class="p-6 flex flex-col gap-3">
+                <h3 class="text-xl font-semibold">TechLens Creative Summit</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300">Shot portraits, designed promo kits, and retouched 120+ assets overnight for press drops.</p>
+                <div class="flex flex-wrap gap-2 text-xs">
+                  <span class="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-200 px-2 py-1 rounded">Portraits</span>
+                  <span class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded">Retouching</span>
+                  <span class="bg-rose-100 dark:bg-rose-900 text-rose-700 dark:text-rose-200 px-2 py-1 rounded">Social</span>
+                </div>
+              </div>
+            </article>
+            <article class="project-card showcase-item p-0 overflow-hidden flex flex-col">
+              <div class="relative h-48 w-full overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1515169067868-5387ec356754?auto=format&fit=crop&w=1200&q=80" alt="Community product launch coverage" class="w-full h-full object-cover">
+                <span class="hero-chip absolute top-4 left-4">2023</span>
+              </div>
+              <div class="p-6 flex flex-col gap-3">
+                <h3 class="text-xl font-semibold">Product Launch · Creative Collective</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-300">Directed behind-the-scenes visuals, built keynote slides, and compiled a mini-site recap.</p>
+                <div class="flex flex-wrap gap-2 text-xs">
+                  <span class="bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-200 px-2 py-1 rounded">Event Ops</span>
+                  <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-2 py-1 rounded">Slides</span>
+                  <span class="bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-200 px-2 py-1 rounded">BTS</span>
+                </div>
+              </div>
+            </article>
           </div>
-          <p class="text-gray-700 dark:text-gray-200">OpenCart is a free open source e-commerce platform for online merchants. OpenCart provides a professional and reliable foundation from which to build a successful online store.</p>
-          <div class="flex flex-wrap gap-2 text-sm">
-            <span class="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-200 px-2 py-1 rounded">PHP</span>
-          </div>
-          <div class="flex gap-3 mt-2">
-            <a href="https://github.com/chestlyace/opencart.git" class="text-blue-600 hover:underline font-medium">Live Demo</a>
-            <a href="https://github.com/chestlyace/opencart.git" class="text-gray-500 hover:underline font-medium">GitHub</a>
+          <div class="text-center mt-6">
+            <button type="button" class="showcase-action-btn hidden" data-showcase-more="events">Show more</button>
           </div>
         </div>
       </div>
 
-      <!-- Graphic Design Gallery -->
-      <div class="w-full max-w-6xl mt-16">
-        <h3 class="text-2xl font-semibold mb-6 text-center">Graphic Design Gallery</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <button class="focus:outline-none group" onclick="openGalleryModal(0)">
-            <img src="krislogo.png" alt="Design 1" class="rounded-lg shadow-lg w-full h-48 object-cover group-hover:scale-105 transition-transform" />
-          </button>
-          <button class="focus:outline-none group" onclick="openGalleryModal(1)">
-            <img src="JAN.2025.png" alt="Design 2" class="rounded-lg shadow-lg w-full h-48 object-cover group-hover:scale-105 transition-transform" />
-          </button>
-          <button class="focus:outline-none group" onclick="openGalleryModal(2)">
-            <img src="Join Us.png" alt="Design 3" class="rounded-lg shadow-lg w-full h-48 object-cover group-hover:scale-105 transition-transform" />
-          </button>
-          <button class="focus:outline-none group" onclick="openGalleryModal(3)">
-            <img src="sherry.jpg" alt="Design 4" class="rounded-lg shadow-lg w-full h-48 object-cover group-hover:scale-105 transition-transform" />
-          </button>
-          <button class="focus:outline-none group" onclick="openGalleryModal(4)">
-            <img src="dace.jpg" alt="Design 5" class="rounded-lg shadow-lg w-full h-48 object-cover group-hover:scale-105 transition-transform" />
-          </button>
-          <button class="focus:outline-none group" onclick="openGalleryModal(5)">
-            <img src="hnd.jpg" alt="Design 6" class="rounded-lg shadow-lg w-full h-48 object-cover group-hover:scale-105 transition-transform" />
-          </button>
-          <button class="focus:outline-none group" onclick="openGalleryModal(5)">
-            <img src="btc.png" alt="Design 6" class="rounded-lg shadow-lg w-full h-48 object-cover group-hover:scale-105 transition-transform" />
-          </button>
-          <button class="focus:outline-none group" onclick="openGalleryModal(5)">
-            <img src="sherry2.png" alt="Design 6" class="rounded-lg shadow-lg w-full h-48 object-cover group-hover:scale-105 transition-transform" />
-          </button>
-        </div>
-      </div>
       <!-- Gallery Modal -->
       <div id="galleryModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
         <button onclick="closeGalleryModal()" class="absolute top-6 right-6 text-white text-3xl font-bold z-60">&times;</button>
@@ -266,11 +806,11 @@
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="min-h-[60vh] flex flex-col justify-center items-center py-24 bg-white dark:bg-gray-900">
-      <h2 class="text-4xl font-bold mb-8">Services I Offer</h2>
-      <div class="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+    <section id="services" class="min-h-[60vh] flex flex-col justify-center items-center py-16 sm:py-24 bg-white dark:bg-gray-900 px-4" data-animate>
+      <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center" data-animate-child style="--delay: 0">Services I Offer</h2>
+      <div class="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
         <!-- Service 1 -->
-        <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center gap-4 hover:scale-105 transition-transform">
+        <div class="service-card p-8 flex flex-col items-center text-center gap-4" data-animate-child style="--delay: 0.1">
           <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900 mb-2">
             <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 18v-1a4 4 0 00-4-4H8a4 4 0 00-4 4v1"/><circle cx="12" cy="7" r="4"/></svg>
           </span>
@@ -278,7 +818,7 @@
           <p class="text-gray-700 dark:text-gray-200">Custom websites, web apps, and landing pages using modern frameworks and best practices.</p>
         </div>
         <!-- Service 2 -->
-        <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center gap-4 hover:scale-105 transition-transform">
+        <div class="service-card p-8 flex flex-col items-center text-center gap-4" data-animate-child style="--delay: 0.2">
           <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900 mb-2">
             <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a2 2 0 012-2h2a2 2 0 012 2v2m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2h-6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
           </span>
@@ -286,7 +826,7 @@
           <p class="text-gray-700 dark:text-gray-200">Modern, user-friendly interfaces, branding, and graphics for web and mobile platforms.</p>
         </div>
         <!-- Service 3 -->
-        <div class="bg-gray-50 dark:bg-gray-800 rounded-xl shadow-lg p-8 flex flex-col items-center text-center gap-4 hover:scale-105 transition-transform">
+        <div class="service-card p-8 flex flex-col items-center text-center gap-4" data-animate-child style="--delay: 0.3">
           <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900 mb-2">
             <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v4a1 1 0 001 1h3m10-5v4a1 1 0 01-1 1h-3m-4 4h4m-2 0v4m0 0h-2a2 2 0 01-2-2v-2a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2z"/></svg>
           </span>
@@ -295,166 +835,174 @@
         </div>
       </div>
     </section>
-    </section>
 
      <!-- Professional Experience & Education Section -->
-    <section id="experience" class="min-h-screen flex flex-col justify-center items-center py-24 bg-gray-50 dark:bg-gray-900">
-      <h2 class="text-4xl font-bold mb-8">Professional Experience &amp; Education</h2>
-      <div class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-12 mb-16">
+    <section id="experience" class="min-h-screen flex flex-col justify-center items-center py-16 sm:py-24 bg-gray-50 dark:bg-gray-900 px-4" data-animate>
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-8 sm:mb-12 text-center" data-animate-child style="--delay: 0">Professional Experience &amp; Education</h2>
+      <div class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12 sm:mb-16">
         <!-- Experience -->
-        <div>
-          <h3 class="text-2xl font-semibold mb-4 text-blue-700 dark:text-blue-300">Experience</h3>
-          <ul class="space-y-6">
-            <li>
-              <div class="flex items-start gap-4">
-                <img src="digimark.jpg" alt="Company Logo" class="w-12 h-12 rounded shadow">
-                <div>
-                  <span class="font-bold text-lg">Software Developer</span> <span class="text-gray-500">@ Digimark Consulting</span>
-                  <div class="text-sm text-gray-600 dark:text-gray-300">Jue 2025 – Present</div>
-                  <div class="text-base text-gray-700 dark:text-gray-200">Works on building tech solutions for clients with various problems.</div>
+        <div class="w-full">
+          <h3 class="text-xl sm:text-2xl font-semibold mb-6 text-blue-700 dark:text-blue-300 text-center lg:text-left">Experience</h3>
+          <ul class="space-y-6 sm:space-y-8 timeline">
+            <li class="timeline-card rounded-lg p-4 sm:p-6" data-animate-child style="--delay: 0.1">
+              <div class="flex flex-col sm:flex-row items-start gap-4">
+                <img src="digimark.jpg" alt="Company Logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow flex-shrink-0">
+                <div class="flex-1 min-w-0">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                    <span class="font-bold text-lg sm:text-xl">Software Developer</span>
+                    <span class="text-gray-500 text-sm sm:text-base">@ Digimark Consulting</span>
+                  </div>
+                  <div class="text-sm text-gray-600 dark:text-gray-300 mb-2">Jun 2025 – Present</div>
+                  <div class="text-sm sm:text-base text-gray-700 dark:text-gray-200">Works on building tech solutions for clients with various problems.</div>
                 </div>
               </div>
             </li>
-            <li>
-              <div class="flex items-start gap-4">
-                <img src="logoNGcodeX.png" alt="Company Logo" class="w-12 h-12 rounded shadow">
-                <div>
-                  <span class="font-bold text-lg">Frontend Developer</span> <span class="text-gray-500">@ NGCodex.</span>
-                  <div class="text-sm text-gray-600 dark:text-gray-300">Sep 2024 – Oct 2024</div>
-                  <div class="text-base text-gray-700 dark:text-gray-200">Developed a responsive and interactive UI for a hospital consultation website.</div>
+            <li class="timeline-card rounded-lg p-4 sm:p-6" data-animate-child style="--delay: 0.2">
+              <div class="flex flex-col sm:flex-row items-start gap-4">
+                <img src="logoNGcodeX.png" alt="Company Logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow flex-shrink-0">
+                <div class="flex-1 min-w-0">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                    <span class="font-bold text-lg sm:text-xl">Frontend Developer</span>
+                    <span class="text-gray-500 text-sm sm:text-base">@ NGCodex.</span>
+                  </div>
+                  <div class="text-sm text-gray-600 dark:text-gray-300 mb-2">Sep 2024 – Oct 2024</div>
+                  <div class="text-sm sm:text-base text-gray-700 dark:text-gray-200">Developed a responsive and interactive UI for a hospital consultation website.</div>
                 </div>
               </div>
             </li>
-            <li>
-              <div class="flex items-start gap-4">
-                <img src="camsoft.png" alt="Company Logo" class="w-12 h-12 rounded shadow" loading="lazy" width="48" height="48">
-                <div>
-                  <span class="font-bold text-lg">Software Developer(Intern)</span> <span class="text-gray-500">@ Camsoft Group sarl.</span>
-                  <div class="text-sm text-gray-600 dark:text-gray-300">Jul 2024 – Sept 2024</div>
-                  <div class="text-base text-gray-700 dark:text-gray-200">Worked on building responsive web apps using React, Tailwind, and modern JavaScript.</div>
+            <li class="timeline-card rounded-lg p-4 sm:p-6" data-animate-child style="--delay: 0.3">
+              <div class="flex flex-col sm:flex-row items-start gap-4">
+                <img src="camsoft.png" alt="Company Logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow flex-shrink-0" loading="lazy" width="48" height="48">
+                <div class="flex-1 min-w-0">
+                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                    <span class="font-bold text-lg sm:text-xl">Software Developer (Intern)</span>
+                    <span class="text-gray-500 text-sm sm:text-base">@ Camsoft Group sarl.</span>
+                  </div>
+                  <div class="text-sm text-gray-600 dark:text-gray-300 mb-2">Jul 2024 – Sept 2024</div>
+                  <div class="text-sm sm:text-base text-gray-700 dark:text-gray-200">Worked on building responsive web apps using React, Tailwind, and modern JavaScript.</div>
                 </div>
               </div>
             </li>
           </ul>
         </div>
         <!-- Education -->
-        <div>
-          <h3 class="text-2xl font-semibold mb-4 text-green-700 dark:text-green-300">Education</h3>
-          <ul class="space-y-6">
-            <li>
-              <div class="flex items-start gap-4">
-                <img src="iusty.jpg" alt="University Logo" class="w-12 h-12 rounded shadow" loading="lazy" width="48" height="48">
-                <div>
-                  <span class="font-bold text-lg">HND. in Software Engineering</span>
-                  <div class="text-sm text-gray-600 dark:text-gray-300">University Institute of Science and Technology of Yaounde, 2023 – 2025</div>
-                  <div class="text-base text-gray-700 dark:text-gray-200">Graduated with honors. Focused on software engineering and web development.</div>
+        <div class="w-full">
+          <h3 class="text-xl sm:text-2xl font-semibold mb-6 text-green-700 dark:text-green-300 text-center lg:text-left">Education</h3>
+          <ul class="space-y-6 sm:space-y-8 timeline">
+            <li class="timeline-card rounded-lg p-4 sm:p-6" data-animate-child style="--delay: 0.15">
+              <div class="flex flex-col sm:flex-row items-start gap-4">
+                <img src="iusty.jpg" alt="University Logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow flex-shrink-0" loading="lazy" width="48" height="48">
+                <div class="flex-1 min-w-0">
+                  <div class="mb-2">
+                    <span class="font-bold text-lg sm:text-xl block">HND. in Software Engineering</span>
+                  </div>
+                  <div class="text-sm text-gray-600 dark:text-gray-300 mb-2">University Institute of Science and Technology of Yaounde, 2023 – 2025</div>
+                  <div class="text-sm sm:text-base text-gray-700 dark:text-gray-200">Graduated with honors. Focused on software engineering and web development.</div>
                 </div>
               </div>
             </li>
-            
           </ul>
         </div>
       </div>
       <!-- Badges & Certifications Gallery -->
-      <div class="w-full max-w-5xl">
-        <h3 class="text-2xl font-semibold mb-6 text-center">Badges &amp; Certifications</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 justify-items-center">
-          <div class="flex flex-col items-center">
-            <img src="CERT/RESPAI.png" alt="RESPAI" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
+      <div class="w-full max-w-6xl px-4" data-animate-child style="--delay: 0.45">
+        <h3 class="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8 text-center">Badges &amp; Certifications</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 justify-items-center">
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/RESPAI.png" alt="RESPAI" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Responsible AI</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/LLM.png" alt="LLM" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/LLM.png" alt="LLM" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Large Language Models</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/GWSP.png" alt="GWSP" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/GWSP.png" alt="GWSP" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Google Workspace</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/GMAIL.png" alt="GMAIL" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/GMAIL.png" alt="GMAIL" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Gemini in Gmail</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/GENAI.png" alt="GENAI" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/GENAI.png" alt="GENAI" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Generative AI</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/GCE.png" alt="GCE" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/GCE.png" alt="GCE" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Google Cloud Essentials</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/DOCS.png" alt="DOCS" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/DOCS.png" alt="DOCS" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Gemini in Docs</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/badge.svg" alt="badge" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/badge.svg" alt="badge" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Firebase Studio Developer</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/badge (1).svg" alt="badge (1)" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
-            <span class="text-sm text-gray-700 dark:text-gray-200">Google Cloud Skillsboost
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/badge (1).svg" alt="badge (1)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <span class="text-sm text-gray-700 dark:text-gray-200">Google Cloud Skillsboost</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/badge (2).svg" alt="badge (2)" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/badge (2).svg" alt="badge (2)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Gemini Code Assists Agents</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/badge (3).svg" alt="badge (3)" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
-            <span class="text-sm text-gray-700 dark:text-gray-200">I/O 2025 Regstered</span>
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/badge (3).svg" alt="badge (3)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <span class="text-sm text-gray-700 dark:text-gray-200">I/O 2025 Registered</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/badge (4).svg" alt="badge (4)" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
-            <span class="text-sm text-gray-700 dark:text-gray-200">Google Developer Expert </span>
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/badge (4).svg" alt="badge (4)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <span class="text-sm text-gray-700 dark:text-gray-200">Google Developer Expert</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/badge (5).svg" alt="badge (5)" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
-            <span class="text-sm text-gray-700 dark:text-gray-200">Innovators get certified</span>
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/badge (5).svg" alt="badge (5)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <span class="text-sm text-gray-700 dark:text-gray-200">Innovators Get Certified</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/badge (6).svg" alt="badge (6)" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
-            <span class="text-sm text-gray-700 dark:text-gray-200">Anroid Studio user</span>
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/badge (6).svg" alt="badge (6)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <span class="text-sm text-gray-700 dark:text-gray-200">Android Studio User</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/badge (7).svg" alt="badge (7)" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/badge (7).svg" alt="badge (7)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Tech Equity Collective</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/badge (8).svg" alt="badge (8)" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
-            <span class="text-sm text-gray-700 dark:text-gray-200">Project IDX user</span>
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/badge (8).svg" alt="badge (8)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <span class="text-sm text-gray-700 dark:text-gray-200">Project IDX User</span>
           </div>
-          <div class="flex flex-col items-center">
-            <img src="CERT/badge (9).svg" alt="badge (9)" class="w-24 h-24 object-contain rounded shadow mb-2" loading="lazy" width="96" height="96">
+          <div class="badge-card flex flex-col items-center gap-2">
+            <img src="CERT/badge (9).svg" alt="badge (9)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Google Cloud Innovator</span>
           </div>
         </div>
-      
       </div>
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="min-h-screen flex flex-col justify-center items-center py-24 bg-gray-50 dark:bg-gray-900">
-      <h2 class="text-4xl font-bold mb-4">Contact</h2>
-      <div class="w-full max-w-4xl flex flex-col md:flex-row items-center gap-12 mb-8">
+    <section id="contact" class="min-h-screen flex flex-col justify-center items-center py-16 sm:py-24 bg-gray-50 dark:bg-gray-900 px-4" data-animate>
+      <h2 class="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-center" data-animate-child style="--delay: 0">Contact</h2>
+      <div class="w-full max-w-6xl flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-8">
         <!-- Large Photo & Greeting -->
-        <div class="flex-shrink-0 flex flex-col items-center w-full md:w-1/2">
-          <img src="https://placehold.co/220x220?text=Your+Photo" alt="Your Photo" class="w-56 h-56 rounded-full shadow-lg border-4 border-blue-500 bg-white dark:bg-gray-900 mb-4 object-cover">
-          <span class="text-lg font-semibold text-blue-600 mb-2">👋 Let's Connect!</span>
-          <span class="text-base text-gray-700 dark:text-gray-200 text-center mb-2">"Code is like humor. When you have to explain it, it’s bad."</span>
+        <div class="glass-panel flex-shrink-0 flex flex-col items-center w-full lg:w-1/2 text-center lg:text-left gap-4 p-6 sm:p-8" data-animate-child style="--delay: 0.1">
+          <img src="profile.jpg" alt="Your Photo" class="w-40 h-40 sm:w-48 sm:h-48 lg:w-56 lg:h-56 rounded-full shadow-lg border-4 border-blue-500 bg-white dark:bg-gray-900 mb-4 sm:mb-6 object-cover">
+          <span class="text-lg sm:text-xl font-semibold text-blue-600 mb-3">👋 Let's Connect!</span>
+          <span class="text-sm sm:text-base text-gray-700 dark:text-gray-200 leading-relaxed px-4 lg:px-0">"Code is like humor. When you have to explain it, it’s bad."</span>
         </div>
         <!-- Contact Form -->
-        <form class="flex-1 w-full max-w-lg bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 flex flex-col gap-4">
-          <input type="text" placeholder="Name" class="px-4 py-2 rounded bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100" required />
-          <input type="email" placeholder="Email" class="px-4 py-2 rounded bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100" required />
-          <textarea placeholder="Message" class="px-4 py-2 rounded bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-[100px]" required></textarea>
-          <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Send</button>
+        <form class="contact-card flex-1 w-full max-w-lg p-6 sm:p-8 flex flex-col gap-4" data-animate-child style="--delay: 0.2">
+          <input type="text" placeholder="Name" class="px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required />
+          <input type="email" placeholder="Email" class="px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required />
+          <textarea placeholder="Message" class="px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-base min-h-[120px] resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required></textarea>
+          <button type="submit" class="glow-button px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:shadow-lg transition-all duration-300 font-semibold text-base">Send Message</button>
         </form>
       </div>
   </section>
 
   <!-- Footer with Contact Features & Social Links -->
-  <footer class="w-full bg-gray-200 dark:bg-gray-800 py-8 mt-12">
-    <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8 px-4">
+  <footer class="w-full bg-gray-200 dark:bg-gray-800 py-8 sm:py-12 mt-12">
+    <div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8 px-4">
       <div class="mb-4 md:mb-0">
         <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Contact Features</h3>
         <ul class="list-disc list-inside text-gray-700 dark:text-gray-200 space-y-1 text-sm">
@@ -465,23 +1013,23 @@
           <li>Secure &amp; private communication</li>
         </ul>
       </div>
-      <div class="flex flex-col items-center">
-        <div class="flex gap-4 mb-2">
-          <a href="mailto:your.email@example.com" title="Email" class="text-blue-600 hover:text-blue-800" target="_blank" rel="noopener">
-            <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12l-4-4-4 4m8 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0V6a2 2 0 00-2-2H6a2 2 0 00-2 2v6"/></svg>
+      <div class="flex flex-col items-center text-center lg:text-left">
+        <div class="flex gap-4 sm:gap-6 mb-4">
+          <a href="mailto:your.email@example.com" title="Email" class="text-blue-600 hover:text-blue-800 transition-colors p-2 rounded-full hover:bg-blue-50 dark:hover:bg-gray-700" target="_blank" rel="noopener">
+            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12l-4-4-4 4m8 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0V6a2 2 0 00-2-2H6a2 2 0 00-2 2v6"/></svg>
           </a>
-          <a href="https://www.linkedin.com/in/yourprofile" title="LinkedIn" class="text-blue-700 hover:text-blue-900" target="_blank" rel="noopener">
-            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm15.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.39v4.58h-3v-9h2.89v1.23h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v4.72z"/></svg>
+          <a href="https://www.linkedin.com/in/yourprofile" title="LinkedIn" class="text-blue-700 hover:text-blue-900 transition-colors p-2 rounded-full hover:bg-blue-50 dark:hover:bg-gray-700" target="_blank" rel="noopener">
+            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm15.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.39v4.58h-3v-9h2.89v1.23h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v4.72z"/></svg>
           </a>
-          <a href="https://github.com/yourusername" title="GitHub" class="text-gray-800 dark:text-gray-100 hover:text-black" target="_blank" rel="noopener">
-            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.263.82-.582 0-.288-.012-1.243-.018-2.25-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.085 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.605-2.665-.304-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.236-3.22-.124-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23.96-.267 1.98-.399 3-.404 1.02.005 2.04.137 3 .404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.873.12 3.176.77.84 1.235 1.91 1.235 3.22 0 4.61-2.803 5.624-5.475 5.92.43.37.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .322.216.699.825.58C20.565 21.796 24 17.297 24 12c0-6.63-5.37-12-12-12z"/></svg>
+          <a href="https://github.com/yourusername" title="GitHub" class="text-gray-800 dark:text-gray-100 hover:text-black transition-colors p-2 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700" target="_blank" rel="noopener">
+            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.263.82-.582 0-.288-.012-1.243-.018-2.25-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.085 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.605-2.665-.304-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.236-3.22-.124-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23.96-.267 1.98-.399 3-.404 1.02.005 2.04.137 3 .404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.873.12 3.176.77.84 1.235 1.91 1.235 3.22 0 4.61-2.803 5.624-5.475 5.92.43.37.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .322.216.699.825.58C20.565 21.796 24 17.297 24 12c0-6.63-5.37-12-12-12z"/></svg>
           </a>
-          <a href="https://twitter.com/yourusername" title="Twitter/X" class="text-blue-400 hover:text-blue-600" target="_blank" rel="noopener">
-            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M23.954 4.569c-.885.389-1.83.654-2.825.775 1.014-.611 1.794-1.574 2.163-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-2.72 0-4.924 2.206-4.924 4.924 0 .39.045.765.127 1.124-4.09-.205-7.719-2.165-10.148-5.144-.424.729-.666 1.577-.666 2.476 0 1.708.87 3.216 2.188 4.099-.807-.026-1.566-.247-2.228-.616v.062c0 2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.317 0-.626-.03-.928-.086.627 1.956 2.444 3.377 4.6 3.417-1.68 1.318-3.809 2.105-6.102 2.105-.396 0-.787-.023-1.175-.069 2.179 1.397 4.768 2.213 7.557 2.213 9.054 0 14.002-7.496 14.002-13.986 0-.21 0-.423-.016-.634.962-.689 1.797-1.56 2.457-2.548z"/></svg>
+          <a href="https://twitter.com/yourusername" title="Twitter/X" class="text-blue-400 hover:text-blue-600 transition-colors p-2 rounded-full hover:bg-blue-50 dark:hover:bg-gray-700" target="_blank" rel="noopener">
+            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M23.954 4.569c-.885.389-1.83.654-2.825.775 1.014-.611 1.794-1.574 2.163-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-2.72 0-4.924 2.206-4.924 4.924 0 .39.045.765.127 1.124-4.09-.205-7.719-2.165-10.148-5.144-.424.729-.666 1.577-.666 2.476 0 1.708.87 3.216 2.188 4.099-.807-.026-1.566-.247-2.228-.616v.062c0 2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.317 0-.626-.03-.928-.086.627 1.956 2.444 3.377 4.6 3.417-1.68 1.318-3.809 2.105-6.102 2.105-.396 0-.787-.023-1.175-.069 2.179 1.397 4.768 2.213 7.557 2.213 9.054 0 14.002-7.496 14.002-13.986 0-.21 0-.423-.016-.634.962-.689 1.797-1.56 2.457-2.548z"/></svg>
           </a>
         </div>
-        <div class="text-xs text-gray-600 dark:text-gray-300 break-all">your.email@example.com</div>
-        <a href="https://calendly.com/yourusername/meeting" target="_blank" rel="noopener" class="mt-2 inline-block px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition text-xs font-semibold">Book a Meeting</a>
+        <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 break-all mb-3">your.email@example.com</div>
+        <a href="https://calendly.com/yourusername/meeting" target="_blank" rel="noopener" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 hover:shadow-lg transition-all duration-300 text-sm font-semibold">Book a Meeting</a>
       </div>
     </div>
   </footer>
@@ -509,19 +1057,43 @@
     // Theme toggle
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon = document.getElementById('themeIcon');
-    themeToggle.addEventListener('click', () => {
-      document.documentElement.classList.toggle('dark');
-      themeIcon.classList.toggle('rotate-180');
-    });
-    // Reduced motion toggle
+    if (themeToggle && themeIcon) {
+      themeToggle.addEventListener('click', () => {
+        document.documentElement.classList.toggle('dark');
+        themeIcon.classList.toggle('rotate-180');
+      });
+    }
+
+    // Reduced motion toggle + media preference
     const motionToggle = document.getElementById('motionToggle');
     const motionIcon = document.getElementById('motionIcon');
-    let reducedMotion = false;
-    motionToggle.addEventListener('click', () => {
-      reducedMotion = !reducedMotion;
-      document.body.classList.toggle('reduced-motion', reducedMotion);
+    let reducedMotion = document.body.classList.contains('reduced-motion');
+    const prefersReducedMotion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+    if (prefersReducedMotion && prefersReducedMotion.matches) {
+      reducedMotion = true;
+      document.body.classList.add('reduced-motion');
+    }
+    if (motionIcon) {
       motionIcon.classList.toggle('opacity-50', reducedMotion);
-    });
+    }
+
+    function updateReducedMotionState(state) {
+      const wasReduced = reducedMotion;
+      reducedMotion = state;
+      document.body.classList.toggle('reduced-motion', state);
+      if (motionIcon) {
+        motionIcon.classList.toggle('opacity-50', reducedMotion);
+      }
+      if (wasReduced && !state) {
+        animateStars();
+      }
+    }
+
+    if (motionToggle) {
+      motionToggle.addEventListener('click', () => {
+        updateReducedMotionState(!reducedMotion);
+      });
+    }
     // Search bar (demo, not Algolia)
     const searchBar = document.getElementById('searchBar');
     const mobileSearchBar = document.getElementById('mobileSearchBar');
@@ -546,19 +1118,22 @@
     const codeInput = document.getElementById('codeInput');
     const livePreview = document.getElementById('livePreview');
     const runCode = document.getElementById('runCode');
-    function updatePreview() {
-      livePreview.srcdoc = codeInput.value;
-    }
-    runCode.addEventListener('click', updatePreview);
-    codeInput.addEventListener('input', () => {
-      // Auto-save and syntax highlight (demo)
-      localStorage.setItem('codeInput', codeInput.value);
-      hljs.highlightAll();
-    });
-    // Load saved code
-    if(localStorage.getItem('codeInput')) {
-      codeInput.value = localStorage.getItem('codeInput');
-      updatePreview();
+    if (codeInput && livePreview && runCode) {
+      const updatePreview = () => {
+        livePreview.srcdoc = codeInput.value;
+      };
+      runCode.addEventListener('click', updatePreview);
+      codeInput.addEventListener('input', () => {
+        localStorage.setItem('codeInput', codeInput.value);
+        if (window.hljs) {
+          window.hljs.highlightAll();
+        }
+      });
+      const savedCode = localStorage.getItem('codeInput');
+      if (savedCode) {
+        codeInput.value = savedCode;
+        updatePreview();
+      }
     }
     // WebGL/Canvas background (parallax stars demo)
     const canvas = document.getElementById('webglBg');
@@ -600,6 +1175,65 @@
       }
     }
     animateStars();
+    const handleMotionPreferenceChange = (event) => {
+      updateReducedMotionState(event.matches);
+    };
+    if (prefersReducedMotion) {
+      if (typeof prefersReducedMotion.addEventListener === 'function') {
+        prefersReducedMotion.addEventListener('change', handleMotionPreferenceChange);
+      } else if (typeof prefersReducedMotion.addListener === 'function') {
+        prefersReducedMotion.addListener(handleMotionPreferenceChange);
+      }
+    }
+
+    // Showcase tabs (Projects · Gallery · Events)
+    const showcaseButtons = document.querySelectorAll('[data-showcase-btn]');
+    const showcasePanels = document.querySelectorAll('[data-showcase-panel]');
+    if (showcaseButtons.length && showcasePanels.length) {
+      showcaseButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          const target = button.dataset.showcaseBtn;
+          showcaseButtons.forEach(btn => {
+            const isActive = btn === button;
+            btn.classList.toggle('active', isActive);
+            btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+          });
+          showcasePanels.forEach(panel => {
+            const isMatch = panel.dataset.showcasePanel === target;
+            panel.classList.toggle('is-hidden', !isMatch);
+            panel.classList.toggle('showcase-panel-active', isMatch);
+          });
+        });
+      });
+    }
+
+    // Showcase grids show more/less controls
+    const showcaseGrids = document.querySelectorAll('[data-showcase-grid]');
+    showcaseGrids.forEach(grid => {
+      const gridId = grid.dataset.showcaseGrid;
+      const limit = parseInt(grid.dataset.showcaseLimit || '3', 10);
+      const items = Array.from(grid.querySelectorAll('.showcase-item'));
+      const toggleBtn = document.querySelector(`[data-showcase-more="${gridId}"]`);
+      if (!items.length || !toggleBtn) {
+        return;
+      }
+      if (items.length <= limit) {
+        toggleBtn.classList.add('hidden');
+        return;
+      }
+      items.slice(limit).forEach(item => item.classList.add('is-collapsed'));
+      toggleBtn.classList.remove('hidden');
+      toggleBtn.textContent = 'Show more';
+      toggleBtn.setAttribute('data-expanded', 'false');
+      toggleBtn.addEventListener('click', () => {
+        const expanded = toggleBtn.getAttribute('data-expanded') === 'true';
+        const nextExpanded = !expanded;
+        items.slice(limit).forEach(item => item.classList.toggle('is-collapsed', !nextExpanded));
+        toggleBtn.setAttribute('data-expanded', nextExpanded ? 'true' : 'false');
+        toggleBtn.textContent = nextExpanded ? 'Show less' : 'Show more';
+      });
+    });
+
     // Gallery modal logic
     const galleryImages = [
       "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
@@ -636,6 +1270,22 @@
     }
     window.addEventListener('scroll', animateOnScroll);
     animateOnScroll();
+
+    // Intersection Observer reveal animations
+    const animatedSections = document.querySelectorAll('[data-animate]');
+    if ('IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+      animatedSections.forEach(section => revealObserver.observe(section));
+    } else {
+      animatedSections.forEach(section => section.classList.add('in-view'));
+    }
   </script>
   <!-- Floating WhatsApp Button -->
   <a href="https://wa.me/237676940247?text=Hi%20Dev.Chestly%2C%20I%20found%20your%20portfolio%20and%20would%20like%20to%20connect!" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"
