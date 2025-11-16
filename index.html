@@ -902,14 +902,14 @@
     <!-- Services Section -->
     <section id="services" class="min-h-[60vh] flex flex-col justify-center items-center py-16 sm:py-24 bg-white dark:bg-gray-900 px-4" data-animate>
       <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center" data-animate-child style="--delay: 0">Services I Offer</h2>
-      <div class="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10">
+      <div class="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 sm:gap-8 lg:gap-10">
         <!-- Service 1 -->
         <div class="service-card p-8 flex flex-col items-center text-center gap-4" data-animate-child style="--delay: 0.1">
           <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900 mb-2">
-            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 18v-1a4 4 0 00-4-4H8a4 4 0 00-4 4v1"/><circle cx="12" cy="7" r="4"/></svg>
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M5 7l1.6 10.5A2 2 0 008.58 19h6.84a2 2 0 001.98-1.5L19 7M9 11h6m-5 4h4"/></svg>
           </span>
-          <h3 class="text-xl font-semibold">Web Development</h3>
-          <p class="text-gray-700 dark:text-gray-200">Custom websites, web apps, and landing pages using modern frameworks and best practices.</p>
+          <h3 class="text-xl font-semibold">Software Development</h3>
+          <p class="text-gray-700 dark:text-gray-200">API design, scalable architecture, and performant frontends built with modern stacks end-to-end.</p>
         </div>
         <!-- Service 2 -->
         <div class="service-card p-8 flex flex-col items-center text-center gap-4" data-animate-child style="--delay: 0.2">
@@ -926,6 +926,22 @@
           </span>
           <h3 class="text-xl font-semibold">Consulting & Training</h3>
           <p class="text-gray-700 dark:text-gray-200">Tech consulting, code reviews, and personalized training for individuals or teams.</p>
+        </div>
+        <!-- Service 4 -->
+        <div class="service-card p-8 flex flex-col items-center text-center gap-4" data-animate-child style="--delay: 0.4">
+          <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-900 mb-2">
+            <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h2l2 10h10l2-10h2"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V5a4 4 0 118 0v2"/><circle cx="12" cy="13" r="2"/></svg>
+          </span>
+          <h3 class="text-xl font-semibold">Photography & Coverage</h3>
+          <p class="text-gray-700 dark:text-gray-200">Story-driven event coverage, portraits, and product imagery with on-brand editing pipelines.</p>
+        </div>
+        <!-- Service 5 -->
+        <div class="service-card p-8 flex flex-col items-center text-center gap-4" data-animate-child style="--delay: 0.5">
+          <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-sky-100 dark:bg-sky-900 mb-2">
+            <svg class="w-8 h-8 text-sky-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M5 7l1.6 10.5A2 2 0 008.58 19h6.84a2 2 0 001.98-1.5L19 7"/></svg>
+          </span>
+          <h3 class="text-xl font-semibold">Product Launch Support</h3>
+          <p class="text-gray-700 dark:text-gray-200">Go-to-market assets, technical docs, and demo prep to keep launches polished and on schedule.</p>
         </div>
       </div>
     </section>
@@ -1001,75 +1017,78 @@
       <!-- Badges & Certifications Gallery -->
       <div class="w-full max-w-6xl px-4" data-animate-child style="--delay: 0.45">
         <h3 class="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8 text-center">Badges &amp; Certifications</h3>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 justify-items-center">
-          <div class="badge-card flex flex-col items-center gap-2">
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 justify-items-center" data-showcase-grid="badges" data-showcase-limit="4">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/RESPAI.png" alt="RESPAI" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Responsible AI</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/LLM.png" alt="LLM" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Large Language Models</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/GWSP.png" alt="GWSP" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Google Workspace</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/GMAIL.png" alt="GMAIL" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Gemini in Gmail</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/GENAI.png" alt="GENAI" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Generative AI</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/GCE.png" alt="GCE" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Google Cloud Essentials</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/DOCS.png" alt="DOCS" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Gemini in Docs</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/badge.svg" alt="badge" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Firebase Studio Developer</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/badge (1).svg" alt="badge (1)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Google Cloud Skillsboost</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/badge (2).svg" alt="badge (2)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Gemini Code Assists Agents</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/badge (3).svg" alt="badge (3)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">I/O 2025 Registered</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/badge (4).svg" alt="badge (4)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Google Developer Expert</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/badge (5).svg" alt="badge (5)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Innovators Get Certified</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/badge (6).svg" alt="badge (6)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Android Studio User</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/badge (7).svg" alt="badge (7)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Tech Equity Collective</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/badge (8).svg" alt="badge (8)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Project IDX User</span>
           </div>
-          <div class="badge-card flex flex-col items-center gap-2">
+          <div class="badge-card showcase-item flex flex-col items-center gap-2">
             <img src="CERT/badge (9).svg" alt="badge (9)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Google Cloud Innovator</span>
           </div>
+        </div>
+        <div class="text-center mt-6">
+          <button type="button" class="showcase-action-btn hidden" data-showcase-more="badges">Show more</button>
         </div>
       </div>
     </section>
