@@ -258,6 +258,91 @@
       box-shadow: 0 25px 45px -35px rgba(15, 23, 42, 0.8);
     }
 
+    .gallery-modal-content {
+      position: relative;
+      width: min(90vw, 900px);
+      padding: 2rem 0;
+    }
+
+    .gallery-modal-img {
+      width: 100%;
+      max-height: 80vh;
+      object-fit: contain;
+      border-radius: 1.25rem;
+      box-shadow: 0 35px 60px -40px rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: #0f172a;
+    }
+
+    .gallery-nav-btn,
+    .gallery-close-btn {
+      position: absolute;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      background: rgba(15, 23, 42, 0.55);
+      color: #fff;
+      width: 3rem;
+      height: 3rem;
+      font-size: 1.25rem;
+      transition: transform 0.3s ease, background 0.3s ease;
+      backdrop-filter: blur(6px);
+    }
+
+    .gallery-close-btn {
+      top: 0;
+      right: 0.5rem;
+      width: auto;
+      padding: 0.5rem 1.1rem;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .gallery-nav-btn:hover,
+    .gallery-close-btn:hover {
+      background: rgba(37, 99, 235, 0.65);
+      box-shadow: 0 15px 35px -20px rgba(37, 99, 235, 0.7);
+    }
+
+    .gallery-nav-prev {
+      left: -1.25rem;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .gallery-nav-next {
+      right: -1.25rem;
+      top: 50%;
+      transform: translate(50%, -50%);
+    }
+
+    .gallery-close-btn span {
+      margin-left: 0.35rem;
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 640px) {
+      .gallery-modal-content {
+        padding: 1.25rem 0.5rem;
+      }
+      .gallery-nav-btn {
+        top: auto;
+        bottom: 1rem;
+        transform: none;
+        width: 2.75rem;
+        height: 2.75rem;
+      }
+      .gallery-nav-prev {
+        left: 1rem;
+      }
+      .gallery-nav-next {
+        right: 1rem;
+      }
+    }
+
     .is-collapsed {
       display: none !important;
     }
@@ -714,36 +799,35 @@
 
         <div class="showcase-panel is-hidden" data-showcase-panel="gallery">
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 px-2 sm:px-4" data-showcase-grid="gallery" data-showcase-limit="6">
-            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(0)">
+            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
               <img src="krislogo.png" alt="Design 1" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
             </button>
-            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(1)">
+            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
               <img src="JAN.2025.png" alt="Design 2" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
             </button>
-            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(2)">
+            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
               <img src="Join Us.png" alt="Design 3" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
             </button>
-            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(3)">
+            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
               <img src="sherry.jpg" alt="Design 4" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
             </button>
-            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(4)">
+            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
               <img src="dace.jpg" alt="Design 5" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
             </button>
-            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(5)">
+            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
               <img src="hnd.jpg" alt="Design 6" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
             </button>
-            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(5)">
-              <img src="btc.png" alt="Design 6" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
+            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
+              <img src="btc.png" alt="Design 7" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
             </button>
-            <button class="showcase-item focus:outline-none group" onclick="openGalleryModal(5)">
-              <img src="sherry2.png" alt="Design 6" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
+            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
+              <img src="sherry2.png" alt="Design 8" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
             </button>
           </div>
           <div class="text-center mt-6">
             <button type="button" class="showcase-action-btn hidden" data-showcase-more="gallery">Show more</button>
           </div>
         </div>
-
         <div class="showcase-panel is-hidden" data-showcase-panel="events">
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8" data-showcase-grid="events" data-showcase-limit="3">
             <article class="project-card showcase-item p-0 overflow-hidden flex flex-col">
@@ -799,9 +883,19 @@
       </div>
 
       <!-- Gallery Modal -->
-      <div id="galleryModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
-        <button onclick="closeGalleryModal()" class="absolute top-6 right-6 text-white text-3xl font-bold z-60">&times;</button>
-        <img id="galleryModalImg" src="" alt="Full Design" class="max-h-[80vh] max-w-[90vw] rounded-lg shadow-2xl border-4 border-white" />
+      <div id="galleryModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden px-4">
+        <div class="gallery-modal-content" role="dialog" aria-modal="true" aria-label="Gallery image viewer">
+          <button type="button" class="gallery-close-btn" data-gallery-close>
+            Close <span>&times;</span>
+          </button>
+          <button type="button" class="gallery-nav-btn gallery-nav-prev" data-gallery-prev aria-label="Previous image">
+            &#10094;
+          </button>
+          <img id="galleryModalImg" src="" alt="Full Design" class="gallery-modal-img" />
+          <button type="button" class="gallery-nav-btn gallery-nav-next" data-gallery-next aria-label="Next image">
+            &#10095;
+          </button>
+        </div>
       </div>
     </section>
 
@@ -1234,26 +1328,80 @@
       });
     });
 
-    // Gallery modal logic
-    const galleryImages = [
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1465101178521-c1a9136a3b99?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80"
-    ];
-    function openGalleryModal(idx) {
-      const modal = document.getElementById('galleryModal');
-      const img = document.getElementById('galleryModalImg');
-      img.src = galleryImages[idx];
-      modal.classList.remove('hidden');
+    // Gallery modal logic with swipe navigation
+    const galleryModal = document.getElementById('galleryModal');
+    const galleryModalImg = document.getElementById('galleryModalImg');
+    const galleryCloseBtn = document.querySelector('[data-gallery-close]');
+    const galleryPrevBtn = document.querySelector('[data-gallery-prev]');
+    const galleryNextBtn = document.querySelector('[data-gallery-next]');
+    const galleryButtons = document.querySelectorAll('[data-gallery-item]');
+    const gallerySources = [];
+    galleryButtons.forEach(button => {
+      const img = button.querySelector('img');
+      const src = img?.getAttribute('data-full') || img?.getAttribute('src') || '';
+      if (!src) return;
+      const alt = img?.getAttribute('alt') || `Gallery item ${gallerySources.length + 1}`;
+      const currentIndex = gallerySources.length;
+      button.dataset.galleryIndex = String(currentIndex);
+      gallerySources.push({ src, alt });
+      button.addEventListener('click', () => openGalleryModal(currentIndex));
+    });
+    let activeGalleryIndex = 0;
+    let galleryTouchStartX = 0;
+
+    function showGalleryImage(idx) {
+      const current = gallerySources[idx];
+      if (!current || !galleryModalImg) return;
+      galleryModalImg.src = current.src;
+      galleryModalImg.alt = current.alt;
+    }
+
+    function openGalleryModal(idx = 0) {
+      if (!gallerySources.length || !galleryModal) return;
+      activeGalleryIndex = idx;
+      showGalleryImage(activeGalleryIndex);
+      galleryModal.classList.remove('hidden');
       document.body.style.overflow = 'hidden';
     }
+
     function closeGalleryModal() {
-      const modal = document.getElementById('galleryModal');
-      modal.classList.add('hidden');
+      if (!galleryModal) return;
+      galleryModal.classList.add('hidden');
       document.body.style.overflow = '';
+    }
+
+    function navigateGallery(delta) {
+      if (!gallerySources.length) return;
+      activeGalleryIndex = (activeGalleryIndex + delta + gallerySources.length) % gallerySources.length;
+      showGalleryImage(activeGalleryIndex);
+    }
+
+    if (galleryCloseBtn) galleryCloseBtn.addEventListener('click', closeGalleryModal);
+    if (galleryPrevBtn) galleryPrevBtn.addEventListener('click', () => navigateGallery(-1));
+    if (galleryNextBtn) galleryNextBtn.addEventListener('click', () => navigateGallery(1));
+    if (galleryModal) {
+      galleryModal.addEventListener('click', (event) => {
+        if (event.target === galleryModal) closeGalleryModal();
+      });
+    }
+
+    document.addEventListener('keydown', (event) => {
+      if (!galleryModal || galleryModal.classList.contains('hidden')) return;
+      if (event.key === 'Escape') closeGalleryModal();
+      if (event.key === 'ArrowRight') navigateGallery(1);
+      if (event.key === 'ArrowLeft') navigateGallery(-1);
+    });
+
+    if (galleryModalImg) {
+      galleryModalImg.addEventListener('touchstart', (event) => {
+        galleryTouchStartX = event.changedTouches[0].clientX;
+      });
+      galleryModalImg.addEventListener('touchend', (event) => {
+        const deltaX = event.changedTouches[0].clientX - galleryTouchStartX;
+        if (Math.abs(deltaX) > 40) {
+          navigateGallery(deltaX < 0 ? 1 : -1);
+        }
+      });
     }
 
     // Scrollytelling animations
