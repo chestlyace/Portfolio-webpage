@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio Admin Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: "Space Grotesk", system-ui, -apple-system, BlinkMacSystemFont, sans-serif; }
+    textarea { font-family: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+  <header class="border-b border-white/10 bg-slate-900/80 backdrop-blur sticky top-0 z-20">
+    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div>
+        <p class="text-sm uppercase tracking-[0.3em] text-blue-400">Dashboard</p>
+        <h1 class="text-2xl font-semibold">Portfolio Content Manager</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="/" class="px-4 py-2 rounded-full border border-white/20 hover:bg-white/10 transition">← Back to site</a>
+        <button id="saveAllBtn" class="px-4 py-2 rounded-full bg-blue-600 hover:bg-blue-500 transition shadow-lg shadow-blue-600/30">Save all</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8 space-y-8" id="sectionsContainer">
+    <div class="p-4 sm:p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur">
+      <h2 class="text-xl font-semibold mb-2">How it works</h2>
+      <ul class="list-disc list-inside text-sm text-slate-300 space-y-1">
+        <li>Content is stored in <code>data/content.json</code>. Each block below exposes a section of that file.</li>
+        <li>Edit the JSON inside a section and click <strong>Save section</strong>. Arrays accept add/remove operations.</li>
+        <li>Use the “Add sample” button to append a blank template for supported sections.</li>
+        <li>The “Save all” button commits all modified sections in one request.</li>
+      </ul>
+    </div>
+  </main>
+
+  <div id="toast" class="fixed bottom-6 right-6 px-4 py-3 rounded-xl bg-slate-900 border border-white/10 shadow-2xl pointer-events-none opacity-0 transition"></div>
+
+  <script src="admin.js" type="module"></script>
+</body>
+</html>
+

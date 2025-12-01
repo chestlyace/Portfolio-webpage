@@ -1,0 +1,396 @@
+{
+  "hero": {
+    "name": "Chestly Ace",
+    "chips": [
+      "Open to remote roles",
+      "Freelance friendly"
+    ],
+    "title": "Software Developer | Graphic Designer | Photographer.",
+    "tagline": "I code 🧑‍💻, design 🖌️, and shoot 📸. I use a full-stack developer's logic 🤓, a graphic designer's eye 🎨, and a photographer's perspective 🖼️ to build engaging and authentic digital products.",
+    "primaryCta": {
+      "label": "View my work",
+      "href": "#projects"
+    },
+    "secondaryCta": {
+      "label": "Get in Touch",
+      "href": "#contact"
+    },
+    "avatar": "profile.jpg"
+  },
+  "about": {
+    "paragraphs": [
+      "Hi! I'm Chestly, You could call me a triple threat, but I prefer to think of myself as a unified creator. My process always starts with a question: 'What story are we trying to tell?'",
+      "Whether I'm writing a function in JavaScript, designing a layout in Figma, or framing a shot with my camera, the core principles are the same: composition, clarity, and emotion. My coding makes it work, my design makes it intuitive, and my photography makes it feel real. Take a look around my portfolio to see how I bring these skills together."
+    ],
+    "resumeUrl": "resume.pdf"
+  },
+  "skills": {
+    "languages": [
+      {
+        "name": "HTML5",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg"
+      },
+      {
+        "name": "CSS3",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+      },
+      {
+        "name": "JavaScript",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+      },
+      {
+        "name": "C",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg"
+      },
+      {
+        "name": "C++",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg"
+      },
+      {
+        "name": "Java",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original-wordmark.svg"
+      },
+      {
+        "name": "Dart",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg"
+      },
+      {
+        "name": "Python",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg"
+      },
+      {
+        "name": "PHP",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg"
+      }
+    ],
+    "frameworks": [
+      {
+        "name": "Bootstrap",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg"
+      },
+      {
+        "name": "TailwindCSS",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg"
+      },
+      {
+        "name": "React",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg"
+      },
+      {
+        "name": "Flutter",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg"
+      },
+      {
+        "name": "Next.js",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg"
+      }
+    ],
+    "tools": [
+      {
+        "name": "MySQL",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
+      },
+      {
+        "name": "Git",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
+      },
+      {
+        "name": "GitHub",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+      },
+      {
+        "name": "Vercel",
+        "icon": "https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png"
+      },
+      {
+        "name": "Netlify",
+        "icon": "https://www.netlify.com/v3/img/components/logomark.png"
+      },
+      {
+        "name": "Android Studio",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/androidstudio/androidstudio-original.svg"
+      },
+      {
+        "name": "Canva",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg"
+      },
+      {
+        "name": "VS Code",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg"
+      },
+      {
+        "name": "Photoshop",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg"
+      },
+      {
+        "name": "Linux",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg"
+      },
+      {
+        "name": "Google Cloud",
+        "icon": "https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/googlecloud/googlecloud-original.svg"
+      }
+    ],
+    "softSkills": [
+      "Teamwork",
+      "Problem-solving",
+      "Agile"
+    ]
+  },
+  "projects": [
+    {
+      "title": "Landing Page",
+      "description": "A modern, responsive landing page for advertising and selling electronic devices and accessories, with animations and dark mode support.",
+      "tech": [
+        "TailwindCSS",
+        "JavaScript",
+        "HTML"
+      ],
+      "liveUrl": "https://ace-electronics.netlify.app/",
+      "sourceUrl": "https://github.com/chestlyace/Electronics-Shop-Website.git",
+      "statusDot": "bg-blue-500"
+    },
+    {
+      "title": "Courrier Management System",
+      "description": "CourierTrackingSystem is a courier/package tracking application written in C++ with an SFML-based GUI to manage couriers, assignments, and delivery details.",
+      "tech": [
+        "C++",
+        "SFML"
+      ],
+      "liveUrl": "https://github.com/chestlyace/CourierTrackingSystem.git",
+      "sourceUrl": "https://github.com/chestlyace/CourierTrackingSystem.git",
+      "statusDot": "bg-green-500"
+    },
+    {
+      "title": "Open Cart",
+      "description": "OpenCart is a free open-source e-commerce platform offering the foundation to build successful online stores.",
+      "tech": [
+        "PHP"
+      ],
+      "liveUrl": "https://github.com/chestlyace/opencart.git",
+      "sourceUrl": "https://github.com/chestlyace/opencart.git",
+      "statusDot": "bg-purple-500"
+    }
+  ],
+  "designGallery": [
+    {
+      "src": "krislogo.png",
+      "alt": "Design 1"
+    },
+    {
+      "src": "JAN.2025.png",
+      "alt": "Design 2"
+    },
+    {
+      "src": "Join Us.png",
+      "alt": "Design 3"
+    },
+    {
+      "src": "sherry.jpg",
+      "alt": "Design 4"
+    },
+    {
+      "src": "dace.jpg",
+      "alt": "Design 5"
+    },
+    {
+      "src": "hnd.jpg",
+      "alt": "Design 6"
+    },
+    {
+      "src": "btc.png",
+      "alt": "Design 7"
+    },
+    {
+      "src": "sherry2.png",
+      "alt": "Design 8"
+    }
+  ],
+  "events": [
+    {
+      "title": "Google I/O Extended · Yaoundé",
+      "year": "2025",
+      "description": "Captured keynote energy, built recap microsite, and live-posted highlights for 400+ attendees.",
+      "highlights": [
+        "Photography",
+        "Branding",
+        "Web"
+      ],
+      "image": "https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "title": "TechLens Creative Summit",
+      "year": "2024",
+      "description": "Shot portraits, designed promo kits, and retouched 120+ assets overnight for press drops.",
+      "highlights": [
+        "Portraits",
+        "Retouching",
+        "Social"
+      ],
+      "image": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80"
+    },
+    {
+      "title": "Product Launch · Creative Collective",
+      "year": "2023",
+      "description": "Directed behind-the-scenes visuals, built keynote slides, and compiled a mini-site recap.",
+      "highlights": [
+        "Event Ops",
+        "Slides",
+        "BTS"
+      ],
+      "image": "https://images.unsplash.com/photo-1515169067868-5387ec356754?auto=format&fit=crop&w=1200&q=80"
+    }
+  ],
+  "services": [
+    {
+      "title": "Software Development",
+      "description": "API design, scalable architecture, and performant frontends built with modern stacks end-to-end.",
+      "iconBg": "bg-blue-100 dark:bg-blue-900",
+      "icon": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M3 7h18M5 7l1.6 10.5A2 2 0 008.58 19h6.84a2 2 0 001.98-1.5L19 7M9 11h6m-5 4h4\"/>"
+    },
+    {
+      "title": "UI/UX & Graphic Design",
+      "description": "Modern, user-friendly interfaces, branding, and graphics for web and mobile platforms.",
+      "iconBg": "bg-green-100 dark:bg-green-900",
+      "icon": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 17v-2a2 2 0 012-2h2a2 2 0 012 2v2m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2h-6a2 2 0 00-2 2v6a2 2 0 002 2z\"/>"
+    },
+    {
+      "title": "Consulting & Training",
+      "description": "Tech consulting, code reviews, and personalized training for individuals or teams.",
+      "iconBg": "bg-purple-100 dark:bg-purple-900",
+      "icon": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M3 7v4a1 1 0 001 1h3m10-5v4a1 1 0 01-1 1h-3m-4 4h4m-2 0v4m0 0h-2a2 2 0 01-2-2v-2a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2z\"/>"
+    },
+    {
+      "title": "Photography & Coverage",
+      "description": "Story-driven event coverage, portraits, and product imagery with on-brand editing pipelines.",
+      "iconBg": "bg-orange-100 dark:bg-orange-900",
+      "icon": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M3 7h2l2 10h10l2-10h2\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M8 7V5a4 4 0 118 0v2\"/><circle cx=\"12\" cy=\"13\" r=\"2\"/>"
+    },
+    {
+      "title": "Product Launch Support",
+      "description": "Go-to-market assets, technical docs, and demo prep to keep launches polished and on schedule.",
+      "iconBg": "bg-sky-100 dark:bg-sky-900",
+      "icon": "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M9 12l2 2 4-4\"/><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M3 7h18M5 7l1.6 10.5A2 2 0 008.58 19h6.84a2 2 0 001.98-1.5L19 7\"/>"
+    }
+  ],
+  "experience": [
+    {
+      "role": "Software Developer",
+      "company": "Digimark Consulting",
+      "dates": "Jun 2025 – Present",
+      "description": "Works on building tech solutions for clients with various problems.",
+      "logo": "digimark.jpg"
+    },
+    {
+      "role": "Frontend Developer",
+      "company": "NGCodex.",
+      "dates": "Sep 2024 – Oct 2024",
+      "description": "Developed a responsive and interactive UI for a hospital consultation website.",
+      "logo": "logoNGcodeX.png"
+    },
+    {
+      "role": "Software Developer (Intern)",
+      "company": "Camsoft Group sarl.",
+      "dates": "Jul 2024 – Sept 2024",
+      "description": "Worked on building responsive web apps using React, Tailwind, and modern JavaScript.",
+      "logo": "camsoft.png"
+    }
+  ],
+  "education": [
+    {
+      "title": "HND. in Software Engineering",
+      "school": "University Institute of Science and Technology of Yaounde",
+      "dates": "2023 – 2025",
+      "description": "Graduated with honors. Focused on software engineering and web development.",
+      "logo": "iusty.jpg"
+    },
+    {
+      "title": "Bachelor's Degree",
+      "school": "Yaounde International Business School ",
+      "dates": "2025 – Present",
+      "description": "Focus or achievements.",
+      "logo": "school.png"
+    }
+  ],
+  "badges": [
+    {
+      "title": "Responsible AI",
+      "image": "CERT/RESPAI.png"
+    },
+    {
+      "title": "Large Language Models",
+      "image": "CERT/LLM.png"
+    },
+    {
+      "title": "Google Workspace",
+      "image": "CERT/GWSP.png"
+    },
+    {
+      "title": "Gemini in Gmail",
+      "image": "CERT/GMAIL.png"
+    },
+    {
+      "title": "Generative AI",
+      "image": "CERT/GENAI.png"
+    },
+    {
+      "title": "Google Cloud Essentials",
+      "image": "CERT/GCE.png"
+    },
+    {
+      "title": "Gemini in Docs",
+      "image": "CERT/DOCS.png"
+    },
+    {
+      "title": "Firebase Studio Developer",
+      "image": "CERT/badge.svg"
+    },
+    {
+      "title": "Google Cloud Skillsboost",
+      "image": "CERT/badge (1).svg"
+    },
+    {
+      "title": "Gemini Code Assists Agents",
+      "image": "CERT/badge (2).svg"
+    },
+    {
+      "title": "I/O 2025 Registered",
+      "image": "CERT/badge (3).svg"
+    },
+    {
+      "title": "Google Developer Expert",
+      "image": "CERT/badge (4).svg"
+    },
+    {
+      "title": "Innovators Get Certified",
+      "image": "CERT/badge (5).svg"
+    },
+    {
+      "title": "Android Studio User",
+      "image": "CERT/badge (6).svg"
+    },
+    {
+      "title": "Tech Equity Collective",
+      "image": "CERT/badge (7).svg"
+    },
+    {
+      "title": "Project IDX User",
+      "image": "CERT/badge (8).svg"
+    },
+    {
+      "title": "Google Cloud Innovator",
+      "image": "CERT/badge (9).svg"
+    }
+  ],
+  "contact": {
+    "quote": "\"Code is like humor. When you have to explain it, it’s bad.\"",
+    "email": "derryacceey@gmail.com",
+    "socials": {
+      "email": "mailto:your.derryacceey@gmail.com",
+      "linkedin": "https://www.linkedin.com/in/chestlyace",
+      "github": "https://github.com/chestlyace",
+      "twitter": "https://twitter.com/yourusername",
+      "calendly": "https://calendly.com/yourusername/meeting"
+    }
+  }
+}

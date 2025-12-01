@@ -1,0 +1,29 @@
+{
+  "name": "portfolio-webpage",
+  "version": "1.0.0",
+  "description": "proffessional portfolio web page with TailwindCSS, html and JS",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "NODE_ENV=development node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chestlyace/Portfolio-webpage.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chestlyace/Portfolio-webpage/issues"
+  },
+  "homepage": "https://github.com/chestlyace/Portfolio-webpage#readme",
+  "devDependencies": {
+    "netlify-cli": "^23.11.0"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}

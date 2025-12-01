@@ -1,22 +1,47 @@
 <!DOCTYPE html>
 <html lang="en" class="dark">
+
 <head>
   <!-- Favicon -->
   <link rel="icon" type="image/jpg" href="logo.jpg" />
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Developer Chestly_Ace</title>
+  <title>Developer Chestly Ace</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
-    html { scroll-behavior: smooth; }
-    .sidebar-collapsed { width: 4rem; }
-    .sidebar-expanded { width: 18rem; }
-    .transition-width { transition: width 0.3s; }
-    .webgl-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
-    .reduced-motion * { transition: none !important; animation: none !important; }
+    html {
+      scroll-behavior: smooth;
+    }
+
+    .sidebar-collapsed {
+      width: 4rem;
+    }
+
+    .sidebar-expanded {
+      width: 18rem;
+    }
+
+    .transition-width {
+      transition: width 0.3s;
+    }
+
+    .webgl-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .reduced-motion * {
+      transition: none !important;
+      animation: none !important;
+    }
 
     :root {
       --accent-blue: #2563eb;
@@ -328,6 +353,7 @@
       .gallery-modal-content {
         padding: 1.25rem 0.5rem;
       }
+
       .gallery-nav-btn {
         top: auto;
         bottom: 1rem;
@@ -335,9 +361,11 @@
         width: 2.75rem;
         height: 2.75rem;
       }
+
       .gallery-nav-prev {
         left: 1rem;
       }
+
       .gallery-nav-next {
         right: 1rem;
       }
@@ -498,39 +526,74 @@
     }
 
     @keyframes drift {
-      0% { transform: translate3d(0, 0, 0) scale(1); }
-      50% { transform: translate3d(35px, -25px, 0) scale(1.05); }
-      100% { transform: translate3d(0, 0, 0) scale(1); }
+      0% {
+        transform: translate3d(0, 0, 0) scale(1);
+      }
+
+      50% {
+        transform: translate3d(35px, -25px, 0) scale(1.05);
+      }
+
+      100% {
+        transform: translate3d(0, 0, 0) scale(1);
+      }
     }
 
     @keyframes pulseGlow {
-      0%, 100% { opacity: 0.45; }
-      50% { opacity: 0.8; }
+
+      0%,
+      100% {
+        opacity: 0.45;
+      }
+
+      50% {
+        opacity: 0.8;
+      }
     }
 
     @keyframes scrollHint {
-      0% { transform: translateY(-10px); opacity: 0; }
-      40% { opacity: 1; }
-      100% { transform: translateY(28px); opacity: 0; }
+      0% {
+        transform: translateY(-10px);
+        opacity: 0;
+      }
+
+      40% {
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(28px);
+        opacity: 0;
+      }
     }
 
     @keyframes fadeSlideUp {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
+
       .floating-orb,
       .hero-avatar::after,
       .scroll-indicator span::after {
         animation: none !important;
       }
+
       [data-animate],
       [data-animate-child] {
         transition: none !important;
         transform: none !important;
         opacity: 1 !important;
       }
+
       .showcase-panel-active {
         animation: none !important;
       }
@@ -538,76 +601,132 @@
   </style>
 </head>
 
-<body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col relative overflow-x-hidden">
+<body
+  class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col relative overflow-x-hidden">
   <!-- Responsive Navigation Bar -->
   <header>
-    <nav class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 fixed w-full z-30">
+    <nav
+      class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 fixed w-full z-30">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16 items-center">
           <div class="flex items-center gap-4">
-            <img src="logo.jpg" alt="Logo" class="w-10 h-10 rounded-full bg-white border-2 border-blue-600 shadow mr-2" />
+            <img src="logo.jpg" alt="Logo"
+              class="w-10 h-10 rounded-full bg-white border-2 border-blue-600 shadow mr-2" />
             <span class="font-bold text-lg text-blue-600">Dev.Ace</span>
           </div>
           <!-- Mobile menu button -->
-          <button id="mobileMenuBtn" class="md:hidden p-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800" aria-label="Open menu">
+          <button id="mobileMenuBtn" class="md:hidden p-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800"
+            aria-label="Open menu">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
           </button>
 
           <div class="hidden md:flex flex-1 justify-center gap-2">
-            <a href="#about" class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
-              <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <a href="#about"
+              class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+              <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
               About me
             </a>
-            <a href="#services" class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
-              <svg class="w-5 h-5 text-cyan-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17a2.25 2.25 0 01-2.25-2.25V9.25A2.25 2.25 0 019.75 7h4.5A2.25 2.25 0 0116.5 9.25v5.5A2.25 2.25 0 0114.25 17h-4.5z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 7V5.75A2.25 2.25 0 0111.25 3.5h1.5A2.25 2.25 0 0115 5.75V7"/></svg>
+            <a href="#services"
+              class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+              <svg class="w-5 h-5 text-cyan-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9.75 17a2.25 2.25 0 01-2.25-2.25V9.25A2.25 2.25 0 019.75 7h4.5A2.25 2.25 0 0116.5 9.25v5.5A2.25 2.25 0 0114.25 17h-4.5z" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 7V5.75A2.25 2.25 0 0111.25 3.5h1.5A2.25 2.25 0 0115 5.75V7" />
+              </svg>
               Services
             </a>
-            <a href="#projects" class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
-              <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a2 2 0 012-2h2a2 2 0 012 2v2m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2h-6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+            <a href="#projects"
+              class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+              <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M9 17v-2a2 2 0 012-2h2a2 2 0 012 2v2m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2h-6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+              </svg>
               Projects
             </a>
-            <a href="#experience" class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
-              <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 7v-6m0 0l-9-5m9 5l9-5"/></svg>
+            <a href="#experience"
+              class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+              <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" stroke-width="2"
+                viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M12 14l9-5-9-5-9 5 9 5zm0 7v-6m0 0l-9-5m9 5l9-5" />
+              </svg>
               Experience
             </a>
-            <a href="#contact" class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
-              <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12l-4-4-4 4m8 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0V6a2 2 0 00-2-2H6a2 2 0 00-2 2v6"/></svg>
+            <a href="#contact"
+              class="flex items-center gap-1 px-3 py-2 rounded hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+              <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M16 12l-4-4-4 4m8 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0V6a2 2 0 00-2-2H6a2 2 0 00-2 2v6" />
+              </svg>
               Contact
             </a>
           </div>
-        
+
         </div>
       </div>
       <!-- Mobile Sidebar -->
-      <div id="mobileSidebar" class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-900 shadow-lg z-40 transform -translate-x-full transition-transform duration-300 md:hidden flex flex-col">
+      <div id="mobileSidebar"
+        class="fixed top-0 left-0 h-full w-64 bg-white dark:bg-gray-900 shadow-lg z-40 transform -translate-x-full transition-transform duration-300 md:hidden flex flex-col">
         <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
           <span class="font-bold text-lg text-blue-600">Chestly</span>
-          <button id="closeMobileMenu" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700" aria-label="Close menu">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+          <button id="closeMobileMenu" class="p-2 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
+            aria-label="Close menu">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
-        <input id="mobileSearchBar" type="text" placeholder="Search..." class="m-4 px-3 py-2 rounded bg-gray-200 dark:bg-gray-700 focus:outline-none" />
+        <input id="mobileSearchBar" type="text" placeholder="Search..."
+          class="m-4 px-3 py-2 rounded bg-gray-200 dark:bg-gray-700 focus:outline-none" />
         <nav class="flex-1 overflow-y-auto">
-          <a href="#about" class="flex items-center gap-2 px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
-            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          <a href="#about"
+            class="flex items-center gap-2 px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+            <svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M5.121 17.804A13.937 13.937 0 0112 15c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
             About me
           </a>
-          <a href="#services" class="flex items-center gap-2 px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
-            <svg class="w-5 h-5 text-cyan-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17a2.25 2.25 0 01-2.25-2.25V9.25A2.25 2.25 0 019.75 7h4.5A2.25 2.25 0 0116.5 9.25v5.5A2.25 2.25 0 0114.25 17h-4.5z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 7V5.75A2.25 2.25 0 0111.25 3.5h1.5A2.25 2.25 0 0115 5.75V7"/></svg>
+          <a href="#services"
+            class="flex items-center gap-2 px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+            <svg class="w-5 h-5 text-cyan-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9.75 17a2.25 2.25 0 01-2.25-2.25V9.25A2.25 2.25 0 019.75 7h4.5A2.25 2.25 0 0116.5 9.25v5.5A2.25 2.25 0 0114.25 17h-4.5z" />
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 7V5.75A2.25 2.25 0 0111.25 3.5h1.5A2.25 2.25 0 0115 5.75V7" />
+            </svg>
             Services
           </a>
-          <a href="#projects" class="flex items-center gap-2 px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
-            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a2 2 0 012-2h2a2 2 0 012 2v2m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2h-6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
+          <a href="#projects"
+            class="flex items-center gap-2 px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+            <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M9 17v-2a2 2 0 012-2h2a2 2 0 012 2v2m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2h-6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+            </svg>
             Projects
           </a>
-          <a href="#experience" class="flex items-center gap-2 px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
-            <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 7v-6m0 0l-9-5m9 5l9-5"/></svg>
+          <a href="#experience"
+            class="flex items-center gap-2 px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+            <svg class="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M12 14l9-5-9-5-9 5 9 5zm0 7v-6m0 0l-9-5m9 5l9-5" />
+            </svg>
             Experience
           </a>
-          <a href="#contact" class="flex items-center gap-2 px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
-            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12l-4-4-4 4m8 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0V6a2 2 0 00-2-2H6a2 2 0 00-2 2v6"/></svg>
+          <a href="#contact"
+            class="flex items-center gap-2 px-6 py-3 hover:bg-blue-100 dark:hover:bg-gray-800 font-medium">
+            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M16 12l-4-4-4 4m8 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0V6a2 2 0 00-2-2H6a2 2 0 00-2 2v6" />
+            </svg>
             Contact
           </a>
         </nav>
@@ -621,261 +740,226 @@
     <!-- WebGL/Canvas Background -->
     <canvas id="webglBg" class="webgl-bg"></canvas>
     <!-- Hero Section (Landing Page) -->
-    <section id="hero" class="relative flex flex-col justify-center items-center min-h-screen text-center z-10 bg-gradient-to-b from-blue-50/60 dark:from-gray-900/80 to-transparent px-4" data-animate>
+    <section id="hero"
+      class="relative flex flex-col justify-center items-center min-h-screen text-center z-10 bg-gradient-to-b from-blue-50/60 dark:from-gray-900/80 to-transparent px-4"
+      data-animate>
       <span class="floating-orb orb-blue" aria-hidden="true"></span>
       <span class="floating-orb orb-pink" aria-hidden="true"></span>
       <div class="relative w-full max-w-5xl mx-auto">
         <div class="flex flex-col items-center gap-4 sm:gap-6 mt-12 glass-panel hero-panel w-full">
-          <div class="flex flex-wrap justify-center gap-3 text-xs sm:text-sm uppercase tracking-[0.3em] text-blue-900/70 dark:text-blue-200/70" data-animate-child style="--delay: 0">
+          <div id="heroChips"
+            class="flex flex-wrap justify-center gap-3 text-xs sm:text-sm uppercase tracking-[0.3em] text-blue-900/70 dark:text-blue-200/70"
+            data-animate-child style="--delay: 0">
             <span class="hero-chip">Open to remote roles</span>
             <span class="hero-chip">Freelance friendly</span>
           </div>
-          <!-- Profile Picture -->
           <div class="relative mb-2 sm:mb-4 hero-avatar" data-animate-child style="--delay: 0.05">
-            <img src="profile.jpg" alt="Your Photo" class="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full shadow-xl border-4 border-blue-500/80 bg-white dark:bg-gray-900 object-cover" />
+            <img id="heroAvatar" src="profile.jpg" alt="Profile photo"
+              class="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full shadow-xl border-4 border-blue-500/80 bg-white dark:bg-gray-900 object-cover" />
           </div>
-          <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-1 tracking-tight leading-tight" data-animate-child style="--delay: 0.1">
+          <h1 id="heroHeading"
+            class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-1 tracking-tight leading-tight"
+            data-animate-child style="--delay: 0.1">
             Hi, I’m <span class="text-blue-600">Chestly Ace</span>
           </h1>
-          <h2 class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-1 text-gray-700 dark:text-gray-300 px-4" data-animate-child style="--delay: 0.15">
+          <h2 id="heroTitle"
+            class="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-1 text-gray-700 dark:text-gray-300 px-4"
+            data-animate-child style="--delay: 0.15">
             Software Developer | Graphic Designer | Photographer.
           </h2>
-          <p class="text-base sm:text-lg md:text-xl mb-4 max-w-2xl mx-auto text-gray-600 dark:text-gray-200 px-4" data-animate-child style="--delay: 0.2">
-            I code 🧑‍💻 , design 🖌️, and shoot 📸. I use a full-stack developer's logic 🤓, a graphic designer's eye 🎨, and a photographer's perspective 🖼️ to build engaging and authentic digital products.
+          <p id="heroTagline"
+            class="text-base sm:text-lg md:text-xl mb-4 max-w-2xl mx-auto text-gray-600 dark:text-gray-200 px-4"
+            data-animate-child style="--delay: 0.2">
+            I code 🧑‍💻 , design 🖌️, and shoot 📸. I use a full-stack developer's logic 🤓, a graphic designer's eye
+            🎨, and a photographer's perspective 🖼️ to build engaging and authentic digital products.
           </p>
-          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full max-w-md sm:max-w-none" data-animate-child style="--delay: 0.25">
-            <a href="#projects" class="glow-button px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold text-center">View my work</a>
-            <a href="#contact" class="glow-button px-6 py-3 bg-green-600 text-white rounded-xl font-semibold text-center shadow-lg shadow-green-600/30">Get in Touch</a>
+          <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center w-full max-w-md sm:max-w-none"
+            data-animate-child style="--delay: 0.25">
+            <a id="heroPrimaryCta" href="#projects"
+              class="glow-button px-6 py-3 bg-blue-600 text-white rounded-xl font-semibold text-center">View my work</a>
+            <a id="heroSecondaryCta" href="#contact"
+              class="glow-button px-6 py-3 bg-green-600 text-white rounded-xl font-semibold text-center shadow-lg shadow-green-600/30">Get
+              in Touch</a>
           </div>
-          </div>
+          <div id="heroStats" class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full" data-animate-child
+            style="--delay: 0.35"></div>
         </div>
       </div>
     </section>
 
-   
-   
+
+
     <!-- About Me Section -->
-    <section id="about" class="min-h-screen flex flex-col justify-center items-center py-16 sm:py-24 bg-white dark:bg-gray-900 px-4" data-animate>
-      <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center" data-animate-child style="--delay: 0">About Me</h2>
+    <section id="about"
+      class="min-h-screen flex flex-col justify-center items-center py-16 sm:py-24 bg-white dark:bg-gray-900 px-4"
+      data-animate>
+      <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center" data-animate-child style="--delay: 0">About
+        Me</h2>
       <div class="w-full max-w-6xl flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
         <!-- Bio and Personal Touch -->
-        <div class="flex-1 flex flex-col gap-6 text-center lg:text-left glass-panel p-6 sm:p-8" data-animate-child style="--delay: 0.05">
-          <p class="text-base sm:text-lg text-gray-700 dark:text-gray-200 leading-relaxed">
-            Hi! I'm <span class="font-semibold text-blue-600">Chestly</span>, <br> You could call me a triple threat, but I prefer to think of myself as a unified creator. <br> My process always starts with a question: 'What story are we trying to tell?'
-            <br>Whether I'm writing a function in JavaScript, designing a layout in Figma, or framing a shot with my camera, the core principles are the same: <strong>composition, clarity, and emotion.</strong> <br> My coding makes it work, my design makes it intuitive, and my photography makes it feel real. <br> Take a look around my portfolio to see how I bring these skills together.
-          </p>
+        <div class="flex-1 flex flex-col gap-6 text-center lg:text-left glass-panel p-6 sm:p-8" data-animate-child
+          style="--delay: 0.05">
+          <div id="aboutCopy" class="text-base sm:text-lg text-gray-700 dark:text-gray-200 leading-relaxed space-y-4">
+            Hi! I'm <span class="font-semibold text-blue-600">Chestly</span>, <br> You could call me a triple threat,
+            but I prefer to think of myself as a unified creator. <br> My process always starts with a question: 'What
+            story are we trying to tell?'
+            <br>Whether I'm writing a function in JavaScript, designing a layout in Figma, or framing a shot with my
+            camera, the core principles are the same: <strong>composition, clarity, and emotion.</strong> <br> My coding
+            makes it work, my design makes it intuitive, and my photography makes it feel real. <br> Take a look around
+            my portfolio to see how I bring these skills together.
+          </div>
           <div class="flex justify-center lg:justify-start">
-            <a href="resume.pdf" download class="inline-block mt-2 px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-300 font-semibold">Download Résumé</a>
+            <a id="resumeLink" href="resume.pdf" download
+              class="inline-block mt-2 px-6 py-3 bg-blue-600 text-white rounded-lg shadow-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-300 font-semibold">Download
+              Résumé</a>
           </div>
         </div>
         <!-- Skills and Tools -->
         <div class="flex-1 flex flex-col gap-6 w-full glass-panel p-6 sm:p-8" data-animate-child style="--delay: 0.15">
-          <h3 class="text-xl sm:text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100 text-center lg:text-left">Skills / Tech Stack</h3>
+          <h3 class="text-xl sm:text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-100 text-center lg:text-left">
+            Skills / Tech Stack</h3>
 
           <div class="mb-6">
             <span class="font-semibold text-gray-800 dark:text-gray-200 block mb-3">Languages:</span>
-            <ul class="flex flex-wrap gap-3 justify-center lg:justify-start items-center">
-              <li title="HTML5"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg" alt="HTML5" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="CSS3"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg" alt="CSS3" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="JavaScript"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg" alt="JavaScript" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="C"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg" alt="C" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="C++"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg" alt="C++" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="Java"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original-wordmark.svg" alt="Java" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="Dart"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg" alt="Dart" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="Python"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg" alt="Python" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="PHP"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg" alt="PHP" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+            <ul id="languagesList" class="flex flex-wrap gap-3 justify-center lg:justify-start items-center">
+              <li title="HTML5"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg"
+                  alt="HTML5" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="CSS3"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg"
+                  alt="CSS3" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="JavaScript"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg"
+                  alt="JavaScript" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="C"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/c/c-original.svg"
+                  alt="C" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="C++"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/cplusplus/cplusplus-original.svg"
+                  alt="C++" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Java"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/java/java-original-wordmark.svg"
+                  alt="Java" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Dart"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/dart/dart-original.svg" alt="Dart"
+                  class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Python"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/python/python-original.svg"
+                  alt="Python" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="PHP"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/php/php-original.svg"
+                  alt="PHP" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
             </ul>
           </div>
 
           <div class="mb-6">
             <span class="font-semibold text-gray-800 dark:text-gray-200 block mb-3">Frameworks:</span>
-            <ul class="flex flex-wrap gap-3 justify-center lg:justify-start items-center">
-              <li title="Bootstrap"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg" alt="Bootstrap" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="TailwindCSS"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg" alt="TailwindCSS" class="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded transition-transform hover:scale-110"></li>
-              <li title="React"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="Flutter"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg" alt="Flutter" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="Next.js"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg" alt="Next.js" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+            <ul id="frameworksList" class="flex flex-wrap gap-3 justify-center lg:justify-start items-center">
+              <li title="Bootstrap"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/bootstrap/bootstrap-original.svg"
+                  alt="Bootstrap" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="TailwindCSS"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/tailwindcss/tailwindcss-original.svg"
+                  alt="TailwindCSS"
+                  class="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded transition-transform hover:scale-110"></li>
+              <li title="React"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/react/react-original.svg" alt="React"
+                  class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Flutter"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/flutter/flutter-original.svg"
+                  alt="Flutter" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Next.js"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/nextjs/nextjs-original.svg"
+                  alt="Next.js" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
             </ul>
           </div>
 
           <div class="mb-6">
             <span class="font-semibold text-gray-800 dark:text-gray-200 block mb-3">Tools:</span>
-            <ul class="flex flex-wrap gap-3 justify-center lg:justify-start items-center">
-              <li title="MySQL"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg" alt="MySQL" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="Git"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" alt="Git" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="GitHub"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub" class="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded transition-transform hover:scale-110"></li>
-              <li title="Vercel"><img src="https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png" alt="Vercel" class="w-10 h-10 sm:w-12 sm:h-12 rounded transition-transform hover:scale-110"></li>
-              <li title="Netlify"><img src="https://www.netlify.com/v3/img/components/logomark.png" alt="Netlify" class="w-10 h-10 sm:w-12 sm:h-12 rounded transition-transform hover:scale-110"></li>
-              <li title="Android Studio"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/androidstudio/androidstudio-original.svg" alt="Android Studio" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="Canva"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg" alt="Canva" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="VS Code"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg" alt="VS Code" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="Photoshop"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg" alt="Photoshop" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="Linux"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg" alt="Linux" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
-              <li title="Google Cloud"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/googlecloud/googlecloud-original.svg" alt="Google Cloud" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+            <ul id="toolsList" class="flex flex-wrap gap-3 justify-center lg:justify-start items-center">
+              <li title="MySQL"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mysql/mysql-original.svg"
+                  alt="MySQL" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Git"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg"
+                  alt="Git" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="GitHub"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg" alt="GitHub"
+                  class="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded transition-transform hover:scale-110"></li>
+              <li title="Vercel"><img src="https://assets.vercel.com/image/upload/front/favicon/vercel/180x180.png"
+                  alt="Vercel" class="w-10 h-10 sm:w-12 sm:h-12 rounded transition-transform hover:scale-110"></li>
+              <li title="Netlify"><img src="https://www.netlify.com/v3/img/components/logomark.png" alt="Netlify"
+                  class="w-10 h-10 sm:w-12 sm:h-12 rounded transition-transform hover:scale-110"></li>
+              <li title="Android Studio"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/androidstudio/androidstudio-original.svg"
+                  alt="Android Studio" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Canva"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/canva/canva-original.svg" alt="Canva"
+                  class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="VS Code"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/vscode/vscode-original.svg"
+                  alt="VS Code" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Photoshop"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/photoshop/photoshop-original.svg"
+                  alt="Photoshop" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Linux"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linux/linux-original.svg" alt="Linux"
+                  class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
+              <li title="Google Cloud"><img
+                  src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/googlecloud/googlecloud-original.svg"
+                  alt="Google Cloud" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110"></li>
             </ul>
           </div>
 
           <div>
             <span class="font-semibold text-gray-800 dark:text-gray-200 block mb-3">Soft Skills:</span>
-            <ul class="flex flex-wrap gap-2 justify-center lg:justify-start">
-              <li class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 px-4 py-2 rounded-full font-medium text-sm transition-transform hover:scale-105">Teamwork</li>
-              <li class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 px-4 py-2 rounded-full font-medium text-sm transition-transform hover:scale-105">Problem-solving</li>
-              <li class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 px-4 py-2 rounded-full font-medium text-sm transition-transform hover:scale-105">Agile</li>
+            <ul id="softSkillsList" class="flex flex-wrap gap-2 justify-center lg:justify-start">
+              <li
+                class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 px-4 py-2 rounded-full font-medium text-sm transition-transform hover:scale-105">
+                Teamwork</li>
+              <li
+                class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 px-4 py-2 rounded-full font-medium text-sm transition-transform hover:scale-105">
+                Problem-solving</li>
+              <li
+                class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 px-4 py-2 rounded-full font-medium text-sm transition-transform hover:scale-105">
+                Agile</li>
             </ul>
           </div>
         </div>
       </div>
     </section>
 
-     <!-- Projects, Gallery & Events Section -->
-    <section id="projects" class="min-h-screen flex flex-col justify-center items-center py-16 sm:py-24 bg-gray-50 dark:bg-gray-900 px-4" data-animate>
+    <!-- Projects, Gallery & Events Section -->
+    <section id="projects"
+      class="min-h-screen flex flex-col justify-center items-center py-16 sm:py-24 bg-gray-50 dark:bg-gray-900 px-4"
+      data-animate>
       <div class="w-full max-w-4xl text-center" data-animate-child style="--delay: 0">
         <span class="hero-chip mb-6">Work · Visuals · Stories</span>
         <h2 class="text-3xl sm:text-4xl font-bold mb-4">Showcase Hub</h2>
-        <p class="text-base sm:text-lg text-gray-600 dark:text-gray-300">Toggle between shipped products, design experiments, and events I’ve covered.</p>
+        <p class="text-base sm:text-lg text-gray-600 dark:text-gray-300">Toggle between shipped products, design
+          experiments, and events I’ve covered.</p>
         <div class="showcase-tabs mt-6" role="tablist" aria-label="Showcase filters">
-          <button type="button" class="showcase-tab-btn active" data-showcase-btn="projects" aria-pressed="true">Projects</button>
-          <button type="button" class="showcase-tab-btn" data-showcase-btn="gallery" aria-pressed="false">Design Gallery</button>
+          <button type="button" class="showcase-tab-btn active" data-showcase-btn="projects"
+            aria-pressed="true">Projects</button>
+          <button type="button" class="showcase-tab-btn" data-showcase-btn="gallery" aria-pressed="false">Design
+            Gallery</button>
           <button type="button" class="showcase-tab-btn" data-showcase-btn="events" aria-pressed="false">Events</button>
         </div>
       </div>
 
       <div class="w-full max-w-7xl mt-12 space-y-10">
         <div class="showcase-panel showcase-panel-active" data-showcase-panel="projects">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8" data-showcase-grid="projects" data-showcase-limit="3">
-            <!-- Project Card 1 -->
-            <div class="project-card showcase-item p-6 flex flex-col gap-4">
-              <div class="flex items-center gap-2">
-                <span class="inline-block w-3 h-3 rounded-full bg-blue-500"></span>
-                <h3 class="text-xl font-semibold">Landing Page</h3>
-              </div>
-              <p class="text-gray-700 dark:text-gray-200">A modern, responsive landing page for advertising and selling electronic devices and accessories, with animations, and dark mode support.</p>
-              <div class="flex flex-wrap gap-2 text-sm">
-                <span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">TailwindCSS</span>
-                <span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">JavaScript</span>
-                <span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">HTML</span>
-              </div>
-              <div class="flex gap-3 mt-2">
-                <a href="https://ace-electronics.netlify.app/" class="text-blue-600 hover:underline font-medium">Live Demo</a>
-                <a href="https://github.com/chestlyace/Electronics-Shop-Website.git" class="text-gray-500 hover:underline font-medium">GitHub</a>
-              </div>
-            </div>
-            <!-- Project Card 2 -->
-            <div class="project-card showcase-item p-6 flex flex-col gap-4">
-              <div class="flex items-center gap-2">
-                <span class="inline-block w-3 h-3 rounded-full bg-green-500"></span>
-                <h3 class="text-xl font-semibold">Courrier Management System</h3>
-              </div>
-              <p class="text-gray-700 dark:text-gray-200">CourierTrackingSystem is a simple courier/package tracking application written in C++ with a graphical user interface built using SFML. It allows users to manage couriers, add and assign packages, and view delivery information in an interactive way.</p>
-              <div class="flex flex-wrap gap-2 text-sm">
-                <span class="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 px-2 py-1 rounded">C++</span>
-                <span class="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 px-2 py-1 rounded">SFML</span>
-              </div>
-              <div class="flex gap-3 mt-2">
-                <a href="https://github.com/chestlyace/CourierTrackingSystem.git" class="text-blue-600 hover:underline font-medium">Live Demo</a>
-                <a href="https://github.com/chestlyace/CourierTrackingSystem.git" class="text-gray-500 hover:underline font-medium">GitHub</a>
-              </div>
-            </div>
-            <!-- Project Card 3 -->
-            <div class="project-card showcase-item p-6 flex flex-col gap-4">
-              <div class="flex items-center gap-2">
-                <span class="inline-block w-3 h-3 rounded-full bg-purple-500"></span>
-                <h3 class="text-xl font-semibold">Open Cart</h3>
-              </div>
-              <p class="text-gray-700 dark:text-gray-200">OpenCart is a free open source e-commerce platform for online merchants. OpenCart provides a professional and reliable foundation from which to build a successful online store.</p>
-              <div class="flex flex-wrap gap-2 text-sm">
-                <span class="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-200 px-2 py-1 rounded">PHP</span>
-              </div>
-              <div class="flex gap-3 mt-2">
-                <a href="https://github.com/chestlyace/opencart.git" class="text-blue-600 hover:underline font-medium">Live Demo</a>
-                <a href="https://github.com/chestlyace/opencart.git" class="text-gray-500 hover:underline font-medium">GitHub</a>
-              </div>
-            </div>
-          </div>
+          <div id="projectsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+            data-showcase-grid="projects" data-showcase-limit="3"></div>
           <div class="text-center mt-6">
             <button type="button" class="showcase-action-btn hidden" data-showcase-more="projects">Show more</button>
           </div>
         </div>
 
         <div class="showcase-panel is-hidden" data-showcase-panel="gallery">
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 px-2 sm:px-4" data-showcase-grid="gallery" data-showcase-limit="6">
-            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
-              <img src="krislogo.png" alt="Design 1" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
-            </button>
-            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
-              <img src="JAN.2025.png" alt="Design 2" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
-            </button>
-            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
-              <img src="Join Us.png" alt="Design 3" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
-            </button>
-            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
-              <img src="sherry.jpg" alt="Design 4" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
-            </button>
-            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
-              <img src="dace.jpg" alt="Design 5" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
-            </button>
-            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
-              <img src="hnd.jpg" alt="Design 6" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
-            </button>
-            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
-              <img src="btc.png" alt="Design 7" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
-            </button>
-            <button type="button" class="showcase-item focus:outline-none group" data-gallery-item>
-              <img src="sherry2.png" alt="Design 8" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
-            </button>
-          </div>
+          <div id="designGalleryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 px-2 sm:px-4"
+            data-showcase-grid="gallery" data-showcase-limit="6"></div>
           <div class="text-center mt-6">
             <button type="button" class="showcase-action-btn hidden" data-showcase-more="gallery">Show more</button>
           </div>
         </div>
         <div class="showcase-panel is-hidden" data-showcase-panel="events">
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8" data-showcase-grid="events" data-showcase-limit="3">
-            <article class="project-card showcase-item p-0 overflow-hidden flex flex-col">
-              <div class="relative h-48 w-full overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1489515217757-5fd1be406fef?auto=format&fit=crop&w=1200&q=80" alt="Google I/O Extended Yaoundé coverage" class="w-full h-full object-cover">
-                <span class="hero-chip absolute top-4 left-4">2025</span>
-              </div>
-              <div class="p-6 flex flex-col gap-3">
-                <h3 class="text-xl font-semibold">Google I/O Extended · Yaoundé</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-300">Captured keynote energy, built recap microsite, and live-posted highlights for 400+ attendees.</p>
-                <div class="flex flex-wrap gap-2 text-xs">
-                  <span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">Photography</span>
-                  <span class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded">Branding</span>
-                  <span class="bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 px-2 py-1 rounded">Web</span>
-                </div>
-              </div>
-            </article>
-            <article class="project-card showcase-item p-0 overflow-hidden flex flex-col">
-              <div class="relative h-48 w-full overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80" alt="TechLens creative summit coverage" class="w-full h-full object-cover">
-                <span class="hero-chip absolute top-4 left-4">2024</span>
-              </div>
-              <div class="p-6 flex flex-col gap-3">
-                <h3 class="text-xl font-semibold">TechLens Creative Summit</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-300">Shot portraits, designed promo kits, and retouched 120+ assets overnight for press drops.</p>
-                <div class="flex flex-wrap gap-2 text-xs">
-                  <span class="bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-200 px-2 py-1 rounded">Portraits</span>
-                  <span class="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded">Retouching</span>
-                  <span class="bg-rose-100 dark:bg-rose-900 text-rose-700 dark:text-rose-200 px-2 py-1 rounded">Social</span>
-                </div>
-              </div>
-            </article>
-            <article class="project-card showcase-item p-0 overflow-hidden flex flex-col">
-              <div class="relative h-48 w-full overflow-hidden">
-                <img src="https://images.unsplash.com/photo-1515169067868-5387ec356754?auto=format&fit=crop&w=1200&q=80" alt="Community product launch coverage" class="w-full h-full object-cover">
-                <span class="hero-chip absolute top-4 left-4">2023</span>
-              </div>
-              <div class="p-6 flex flex-col gap-3">
-                <h3 class="text-xl font-semibold">Product Launch · Creative Collective</h3>
-                <p class="text-sm text-gray-600 dark:text-gray-300">Directed behind-the-scenes visuals, built keynote slides, and compiled a mini-site recap.</p>
-                <div class="flex flex-wrap gap-2 text-xs">
-                  <span class="bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-200 px-2 py-1 rounded">Event Ops</span>
-                  <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-2 py-1 rounded">Slides</span>
-                  <span class="bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-200 px-2 py-1 rounded">BTS</span>
-                </div>
-              </div>
-            </article>
-          </div>
+          <div id="eventsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+            data-showcase-grid="events" data-showcase-limit="3"></div>
           <div class="text-center mt-6">
             <button type="button" class="showcase-action-btn hidden" data-showcase-more="events">Show more</button>
           </div>
@@ -883,7 +967,8 @@
       </div>
 
       <!-- Gallery Modal -->
-      <div id="galleryModal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden px-4">
+      <div id="galleryModal"
+        class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden px-4">
         <div class="gallery-modal-content" role="dialog" aria-modal="true" aria-label="Gallery image viewer">
           <button type="button" class="gallery-close-btn" data-gallery-close>
             Close <span>&times;</span>
@@ -900,190 +985,126 @@
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="min-h-[60vh] flex flex-col justify-center items-center py-16 sm:py-24 bg-white dark:bg-gray-900 px-4" data-animate>
-      <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center" data-animate-child style="--delay: 0">Services I Offer</h2>
-      <div class="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 sm:gap-8 lg:gap-10">
-        <!-- Service 1 -->
-        <div class="service-card p-8 flex flex-col items-center text-center gap-4" data-animate-child style="--delay: 0.1">
-          <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900 mb-2">
-            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M5 7l1.6 10.5A2 2 0 008.58 19h6.84a2 2 0 001.98-1.5L19 7M9 11h6m-5 4h4"/></svg>
-          </span>
-          <h3 class="text-xl font-semibold">Software Development</h3>
-          <p class="text-gray-700 dark:text-gray-200">API design, scalable architecture, and performant frontends built with modern stacks end-to-end.</p>
-        </div>
-        <!-- Service 2 -->
-        <div class="service-card p-8 flex flex-col items-center text-center gap-4" data-animate-child style="--delay: 0.2">
-          <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-100 dark:bg-green-900 mb-2">
-            <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17v-2a2 2 0 012-2h2a2 2 0 012 2v2m-6 4h6a2 2 0 002-2v-6a2 2 0 00-2-2h-6a2 2 0 00-2 2v6a2 2 0 002 2z"/></svg>
-          </span>
-          <h3 class="text-xl font-semibold">UI/UX & Graphic Design</h3>
-          <p class="text-gray-700 dark:text-gray-200">Modern, user-friendly interfaces, branding, and graphics for web and mobile platforms.</p>
-        </div>
-        <!-- Service 3 -->
-        <div class="service-card p-8 flex flex-col items-center text-center gap-4" data-animate-child style="--delay: 0.3">
-          <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-purple-100 dark:bg-purple-900 mb-2">
-            <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v4a1 1 0 001 1h3m10-5v4a1 1 0 01-1 1h-3m-4 4h4m-2 0v4m0 0h-2a2 2 0 01-2-2v-2a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2z"/></svg>
-          </span>
-          <h3 class="text-xl font-semibold">Consulting & Training</h3>
-          <p class="text-gray-700 dark:text-gray-200">Tech consulting, code reviews, and personalized training for individuals or teams.</p>
-        </div>
-        <!-- Service 4 -->
-        <div class="service-card p-8 flex flex-col items-center text-center gap-4" data-animate-child style="--delay: 0.4">
-          <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-orange-100 dark:bg-orange-900 mb-2">
-            <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h2l2 10h10l2-10h2"/><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V5a4 4 0 118 0v2"/><circle cx="12" cy="13" r="2"/></svg>
-          </span>
-          <h3 class="text-xl font-semibold">Photography & Coverage</h3>
-          <p class="text-gray-700 dark:text-gray-200">Story-driven event coverage, portraits, and product imagery with on-brand editing pipelines.</p>
-        </div>
-        <!-- Service 5 -->
-        <div class="service-card p-8 flex flex-col items-center text-center gap-4" data-animate-child style="--delay: 0.5">
-          <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-sky-100 dark:bg-sky-900 mb-2">
-            <svg class="w-8 h-8 text-sky-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/><path stroke-linecap="round" stroke-linejoin="round" d="M3 7h18M5 7l1.6 10.5A2 2 0 008.58 19h6.84a2 2 0 001.98-1.5L19 7"/></svg>
-          </span>
-          <h3 class="text-xl font-semibold">Product Launch Support</h3>
-          <p class="text-gray-700 dark:text-gray-200">Go-to-market assets, technical docs, and demo prep to keep launches polished and on schedule.</p>
-        </div>
+    <section id="services"
+      class="min-h-[60vh] flex flex-col justify-center items-center py-16 sm:py-24 bg-white dark:bg-gray-900 px-4"
+      data-animate>
+      <h2 class="text-3xl sm:text-4xl font-bold mb-8 sm:mb-12 text-center" data-animate-child style="--delay: 0">
+        Services I Offer</h2>
+      <div id="servicesGrid"
+        class="w-full max-w-7xl grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 sm:gap-8 lg:gap-10">
       </div>
     </section>
 
-     <!-- Professional Experience & Education Section -->
-    <section id="experience" class="min-h-screen flex flex-col justify-center items-center py-16 sm:py-24 bg-gray-50 dark:bg-gray-900 px-4" data-animate>
-      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-8 sm:mb-12 text-center" data-animate-child style="--delay: 0">Professional Experience &amp; Education</h2>
+    <!-- Professional Experience & Education Section -->
+    <section id="experience"
+      class="min-h-screen flex flex-col justify-center items-center py-16 sm:py-24 bg-gray-50 dark:bg-gray-900 px-4"
+      data-animate>
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-8 sm:mb-12 text-center" data-animate-child
+        style="--delay: 0">Professional Experience &amp; Education</h2>
       <div class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 mb-12 sm:mb-16">
         <!-- Experience -->
         <div class="w-full">
-          <h3 class="text-xl sm:text-2xl font-semibold mb-6 text-blue-700 dark:text-blue-300 text-center lg:text-left">Experience</h3>
-          <ul class="space-y-6 sm:space-y-8 timeline">
-            <li class="timeline-card rounded-lg p-4 sm:p-6" data-animate-child style="--delay: 0.1">
-              <div class="flex flex-col sm:flex-row items-start gap-4">
-                <img src="digimark.jpg" alt="Company Logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow flex-shrink-0">
-                <div class="flex-1 min-w-0">
-                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
-                    <span class="font-bold text-lg sm:text-xl">Software Developer</span>
-                    <span class="text-gray-500 text-sm sm:text-base">@ Digimark Consulting</span>
-                  </div>
-                  <div class="text-sm text-gray-600 dark:text-gray-300 mb-2">Jun 2025 – Present</div>
-                  <div class="text-sm sm:text-base text-gray-700 dark:text-gray-200">Works on building tech solutions for clients with various problems.</div>
-                </div>
-              </div>
-            </li>
-            <li class="timeline-card rounded-lg p-4 sm:p-6" data-animate-child style="--delay: 0.2">
-              <div class="flex flex-col sm:flex-row items-start gap-4">
-                <img src="logoNGcodeX.png" alt="Company Logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow flex-shrink-0">
-                <div class="flex-1 min-w-0">
-                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
-                    <span class="font-bold text-lg sm:text-xl">Frontend Developer</span>
-                    <span class="text-gray-500 text-sm sm:text-base">@ NGCodex.</span>
-                  </div>
-                  <div class="text-sm text-gray-600 dark:text-gray-300 mb-2">Sep 2024 – Oct 2024</div>
-                  <div class="text-sm sm:text-base text-gray-700 dark:text-gray-200">Developed a responsive and interactive UI for a hospital consultation website.</div>
-                </div>
-              </div>
-            </li>
-            <li class="timeline-card rounded-lg p-4 sm:p-6" data-animate-child style="--delay: 0.3">
-              <div class="flex flex-col sm:flex-row items-start gap-4">
-                <img src="camsoft.png" alt="Company Logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow flex-shrink-0" loading="lazy" width="48" height="48">
-                <div class="flex-1 min-w-0">
-                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
-                    <span class="font-bold text-lg sm:text-xl">Software Developer (Intern)</span>
-                    <span class="text-gray-500 text-sm sm:text-base">@ Camsoft Group sarl.</span>
-                  </div>
-                  <div class="text-sm text-gray-600 dark:text-gray-300 mb-2">Jul 2024 – Sept 2024</div>
-                  <div class="text-sm sm:text-base text-gray-700 dark:text-gray-200">Worked on building responsive web apps using React, Tailwind, and modern JavaScript.</div>
-                </div>
-              </div>
-            </li>
-          </ul>
+          <h3 class="text-xl sm:text-2xl font-semibold mb-6 text-blue-700 dark:text-blue-300 text-center lg:text-left">
+            Experience</h3>
+          <ul id="experienceList" class="space-y-6 sm:space-y-8 timeline"></ul>
         </div>
         <!-- Education -->
         <div class="w-full">
-          <h3 class="text-xl sm:text-2xl font-semibold mb-6 text-green-700 dark:text-green-300 text-center lg:text-left">Education</h3>
-          <ul class="space-y-6 sm:space-y-8 timeline">
-            <li class="timeline-card rounded-lg p-4 sm:p-6" data-animate-child style="--delay: 0.15">
-              <div class="flex flex-col sm:flex-row items-start gap-4">
-                <img src="iusty.jpg" alt="University Logo" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow flex-shrink-0" loading="lazy" width="48" height="48">
-                <div class="flex-1 min-w-0">
-                  <div class="mb-2">
-                    <span class="font-bold text-lg sm:text-xl block">HND. in Software Engineering</span>
-                  </div>
-                  <div class="text-sm text-gray-600 dark:text-gray-300 mb-2">University Institute of Science and Technology of Yaounde, 2023 – 2025</div>
-                  <div class="text-sm sm:text-base text-gray-700 dark:text-gray-200">Graduated with honors. Focused on software engineering and web development.</div>
-                </div>
-              </div>
-            </li>
-          </ul>
+          <h3
+            class="text-xl sm:text-2xl font-semibold mb-6 text-green-700 dark:text-green-300 text-center lg:text-left">
+            Education</h3>
+          <ul id="educationList" class="space-y-6 sm:space-y-8 timeline"></ul>
         </div>
       </div>
       <!-- Badges & Certifications Gallery -->
       <div class="w-full max-w-6xl px-4" data-animate-child style="--delay: 0.45">
         <h3 class="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8 text-center">Badges &amp; Certifications</h3>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 justify-items-center" data-showcase-grid="badges" data-showcase-limit="4">
+        <div
+          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 justify-items-center"
+          data-showcase-grid="badges" data-showcase-limit="4">
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/RESPAI.png" alt="RESPAI" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/RESPAI.png" alt="RESPAI" class="w-24 h-24 object-contain rounded" loading="lazy" width="96"
+              height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Responsible AI</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/LLM.png" alt="LLM" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/LLM.png" alt="LLM" class="w-24 h-24 object-contain rounded" loading="lazy" width="96"
+              height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Large Language Models</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/GWSP.png" alt="GWSP" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/GWSP.png" alt="GWSP" class="w-24 h-24 object-contain rounded" loading="lazy" width="96"
+              height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Google Workspace</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/GMAIL.png" alt="GMAIL" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/GMAIL.png" alt="GMAIL" class="w-24 h-24 object-contain rounded" loading="lazy" width="96"
+              height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Gemini in Gmail</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/GENAI.png" alt="GENAI" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/GENAI.png" alt="GENAI" class="w-24 h-24 object-contain rounded" loading="lazy" width="96"
+              height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Generative AI</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/GCE.png" alt="GCE" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/GCE.png" alt="GCE" class="w-24 h-24 object-contain rounded" loading="lazy" width="96"
+              height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Google Cloud Essentials</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/DOCS.png" alt="DOCS" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/DOCS.png" alt="DOCS" class="w-24 h-24 object-contain rounded" loading="lazy" width="96"
+              height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Gemini in Docs</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/badge.svg" alt="badge" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/badge.svg" alt="badge" class="w-24 h-24 object-contain rounded" loading="lazy" width="96"
+              height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Firebase Studio Developer</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/badge (1).svg" alt="badge (1)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/badge (1).svg" alt="badge (1)" class="w-24 h-24 object-contain rounded" loading="lazy"
+              width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Google Cloud Skillsboost</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/badge (2).svg" alt="badge (2)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/badge (2).svg" alt="badge (2)" class="w-24 h-24 object-contain rounded" loading="lazy"
+              width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Gemini Code Assists Agents</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/badge (3).svg" alt="badge (3)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/badge (3).svg" alt="badge (3)" class="w-24 h-24 object-contain rounded" loading="lazy"
+              width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">I/O 2025 Registered</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/badge (4).svg" alt="badge (4)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/badge (4).svg" alt="badge (4)" class="w-24 h-24 object-contain rounded" loading="lazy"
+              width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Google Developer Expert</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/badge (5).svg" alt="badge (5)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/badge (5).svg" alt="badge (5)" class="w-24 h-24 object-contain rounded" loading="lazy"
+              width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Innovators Get Certified</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/badge (6).svg" alt="badge (6)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/badge (6).svg" alt="badge (6)" class="w-24 h-24 object-contain rounded" loading="lazy"
+              width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Android Studio User</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/badge (7).svg" alt="badge (7)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/badge (7).svg" alt="badge (7)" class="w-24 h-24 object-contain rounded" loading="lazy"
+              width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Tech Equity Collective</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/badge (8).svg" alt="badge (8)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/badge (8).svg" alt="badge (8)" class="w-24 h-24 object-contain rounded" loading="lazy"
+              width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Project IDX User</span>
           </div>
           <div class="badge-card showcase-item flex flex-col items-center gap-2">
-            <img src="CERT/badge (9).svg" alt="badge (9)" class="w-24 h-24 object-contain rounded" loading="lazy" width="96" height="96">
+            <img src="CERT/badge (9).svg" alt="badge (9)" class="w-24 h-24 object-contain rounded" loading="lazy"
+              width="96" height="96">
             <span class="text-sm text-gray-700 dark:text-gray-200">Google Cloud Innovator</span>
           </div>
         </div>
@@ -1094,153 +1115,260 @@
     </section>
 
     <!-- Contact Section -->
-    <section id="contact" class="min-h-screen flex flex-col justify-center items-center py-16 sm:py-24 bg-gray-50 dark:bg-gray-900 px-4" data-animate>
-      <h2 class="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-center" data-animate-child style="--delay: 0">Contact</h2>
+    <section id="contact"
+      class="min-h-screen flex flex-col justify-center items-center py-16 sm:py-24 bg-gray-50 dark:bg-gray-900 px-4"
+      data-animate>
+      <h2 class="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-center" data-animate-child style="--delay: 0">Contact
+      </h2>
       <div class="w-full max-w-6xl flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-8">
         <!-- Large Photo & Greeting -->
-        <div class="glass-panel flex-shrink-0 flex flex-col items-center w-full lg:w-1/2 text-center lg:text-left gap-4 p-6 sm:p-8" data-animate-child style="--delay: 0.1">
-          <img src="profile.jpg" alt="Your Photo" class="w-40 h-40 sm:w-48 sm:h-48 lg:w-56 lg:h-56 rounded-full shadow-lg border-4 border-blue-500 bg-white dark:bg-gray-900 mb-4 sm:mb-6 object-cover">
+        <div
+          class="glass-panel flex-shrink-0 flex flex-col items-center w-full lg:w-1/2 text-center lg:text-left gap-4 p-6 sm:p-8"
+          data-animate-child style="--delay: 0.1">
+          <img id="contactAvatar" src="profile.jpg" alt="Your Photo"
+            class="w-40 h-40 sm:w-48 sm:h-48 lg:w-56 lg:h-56 rounded-full shadow-lg border-4 border-blue-500 bg-white dark:bg-gray-900 mb-4 sm:mb-6 object-cover">
           <span class="text-lg sm:text-xl font-semibold text-blue-600 mb-3">👋 Let's Connect!</span>
-          <span class="text-sm sm:text-base text-gray-700 dark:text-gray-200 leading-relaxed px-4 lg:px-0">"Code is like humor. When you have to explain it, it’s bad."</span>
+          <span id="contactQuote"
+            class="text-sm sm:text-base text-gray-700 dark:text-gray-200 leading-relaxed px-4 lg:px-0">"Code is like
+            humor. When you have to explain it, it’s bad."</span>
         </div>
         <!-- Contact Form -->
-        <form class="contact-card flex-1 w-full max-w-lg p-6 sm:p-8 flex flex-col gap-4" data-animate-child style="--delay: 0.2">
-          <input type="text" placeholder="Name" class="px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required />
-          <input type="email" placeholder="Email" class="px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required />
-          <textarea placeholder="Message" class="px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-base min-h-[120px] resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all" required></textarea>
-          <button type="submit" class="glow-button px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:shadow-lg transition-all duration-300 font-semibold text-base">Send Message</button>
+        <form class="contact-card flex-1 w-full max-w-lg p-6 sm:p-8 flex flex-col gap-4" data-animate-child
+          style="--delay: 0.2">
+          <input type="text" placeholder="Name"
+            class="px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            required />
+          <input type="email" placeholder="Email"
+            class="px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-base focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            required />
+          <textarea placeholder="Message"
+            class="px-4 py-3 rounded-lg bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 text-base min-h-[120px] resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            required></textarea>
+          <button type="submit"
+            class="glow-button px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:shadow-lg transition-all duration-300 font-semibold text-base">Send
+            Message</button>
         </form>
       </div>
-  </section>
+    </section>
 
-  <!-- Footer with Contact Features & Social Links -->
-  <footer class="w-full bg-gray-200 dark:bg-gray-800 py-8 sm:py-12 mt-12">
-    <div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8 px-4">
-      <div class="mb-4 md:mb-0">
-        <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Contact Features</h3>
-        <ul class="list-disc list-inside text-gray-700 dark:text-gray-200 space-y-1 text-sm">
-          <li>Direct email form submission</li>
-          <li>Quick response time</li>
-          <li>Available for freelance &amp; collaboration</li>
-          <li>Open to project inquiries and networking</li>
-          <li>Secure &amp; private communication</li>
-        </ul>
-      </div>
-      <div class="flex flex-col items-center text-center lg:text-left">
-        <div class="flex gap-4 sm:gap-6 mb-4">
-          <a href="mailto:your.email@example.com" title="Email" class="text-blue-600 hover:text-blue-800 transition-colors p-2 rounded-full hover:bg-blue-50 dark:hover:bg-gray-700" target="_blank" rel="noopener">
-            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 12l-4-4-4 4m8 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0V6a2 2 0 00-2-2H6a2 2 0 00-2 2v6"/></svg>
-          </a>
-          <a href="https://www.linkedin.com/in/yourprofile" title="LinkedIn" class="text-blue-700 hover:text-blue-900 transition-colors p-2 rounded-full hover:bg-blue-50 dark:hover:bg-gray-700" target="_blank" rel="noopener">
-            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm15.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.39v4.58h-3v-9h2.89v1.23h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v4.72z"/></svg>
-          </a>
-          <a href="https://github.com/yourusername" title="GitHub" class="text-gray-800 dark:text-gray-100 hover:text-black transition-colors p-2 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700" target="_blank" rel="noopener">
-            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.263.82-.582 0-.288-.012-1.243-.018-2.25-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.085 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.605-2.665-.304-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.236-3.22-.124-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23.96-.267 1.98-.399 3-.404 1.02.005 2.04.137 3 .404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.873.12 3.176.77.84 1.235 1.91 1.235 3.22 0 4.61-2.803 5.624-5.475 5.92.43.37.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .322.216.699.825.58C20.565 21.796 24 17.297 24 12c0-6.63-5.37-12-12-12z"/></svg>
-          </a>
-          <a href="https://twitter.com/yourusername" title="Twitter/X" class="text-blue-400 hover:text-blue-600 transition-colors p-2 rounded-full hover:bg-blue-50 dark:hover:bg-gray-700" target="_blank" rel="noopener">
-            <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24"><path d="M23.954 4.569c-.885.389-1.83.654-2.825.775 1.014-.611 1.794-1.574 2.163-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-2.72 0-4.924 2.206-4.924 4.924 0 .39.045.765.127 1.124-4.09-.205-7.719-2.165-10.148-5.144-.424.729-.666 1.577-.666 2.476 0 1.708.87 3.216 2.188 4.099-.807-.026-1.566-.247-2.228-.616v.062c0 2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.317 0-.626-.03-.928-.086.627 1.956 2.444 3.377 4.6 3.417-1.68 1.318-3.809 2.105-6.102 2.105-.396 0-.787-.023-1.175-.069 2.179 1.397 4.768 2.213 7.557 2.213 9.054 0 14.002-7.496 14.002-13.986 0-.21 0-.423-.016-.634.962-.689 1.797-1.56 2.457-2.548z"/></svg>
-          </a>
+    <!-- Footer with Contact Features & Social Links -->
+    <footer class="w-full bg-gray-200 dark:bg-gray-800 py-8 sm:py-12 mt-12">
+      <div class="max-w-6xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8 px-4">
+        <div class="mb-4 md:mb-0">
+          <h3 class="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">Contact Features</h3>
+          <ul class="list-disc list-inside text-gray-700 dark:text-gray-200 space-y-1 text-sm">
+            <li>Direct email form submission</li>
+            <li>Quick response time</li>
+            <li>Available for freelance &amp; collaboration</li>
+            <li>Open to project inquiries and networking</li>
+            <li>Secure &amp; private communication</li>
+          </ul>
         </div>
-        <div class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 break-all mb-3">your.email@example.com</div>
-        <a href="https://calendly.com/yourusername/meeting" target="_blank" rel="noopener" class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 hover:shadow-lg transition-all duration-300 text-sm font-semibold">Book a Meeting</a>
+        <div class="flex flex-col items-center text-center lg:text-left">
+          <div class="flex gap-4 sm:gap-6 mb-4">
+            <a id="socialEmail" href="mailto:your.email@example.com" title="Email"
+              class="text-blue-600 hover:text-blue-800 transition-colors p-2 rounded-full hover:bg-blue-50 dark:hover:bg-gray-700"
+              target="_blank" rel="noopener">
+              <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M16 12l-4-4-4 4m8 0v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6m16 0V6a2 2 0 00-2-2H6a2 2 0 00-2 2v6" />
+              </svg>
+            </a>
+            <a id="socialLinkedin" href="https://www.linkedin.com/in/yourprofile" title="LinkedIn"
+              class="text-blue-700 hover:text-blue-900 transition-colors p-2 rounded-full hover:bg-blue-50 dark:hover:bg-gray-700"
+              target="_blank" rel="noopener">
+              <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.76 2.24 5 5 5h14c2.76 0 5-2.24 5-5v-14c0-2.76-2.24-5-5-5zm-11 19h-3v-9h3v9zm-1.5-10.28c-.97 0-1.75-.79-1.75-1.75s.78-1.75 1.75-1.75 1.75.79 1.75 1.75-.78 1.75-1.75 1.75zm15.5 10.28h-3v-4.5c0-1.08-.02-2.47-1.5-2.47-1.5 0-1.73 1.17-1.73 2.39v4.58h-3v-9h2.89v1.23h.04c.4-.75 1.38-1.54 2.84-1.54 3.04 0 3.6 2 3.6 4.59v4.72z" />
+              </svg>
+            </a>
+            <a id="socialGithub" href="https://github.com/yourusername" title="GitHub"
+              class="text-gray-800 dark:text-gray-100 hover:text-black transition-colors p-2 rounded-full hover:bg-gray-50 dark:hover:bg-gray-700"
+              target="_blank" rel="noopener">
+              <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.263.82-.582 0-.288-.012-1.243-.018-2.25-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.085 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.605-2.665-.304-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.236-3.22-.124-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23.96-.267 1.98-.399 3-.404 1.02.005 2.04.137 3 .404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.873.12 3.176.77.84 1.235 1.91 1.235 3.22 0 4.61-2.803 5.624-5.475 5.92.43.37.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .322.216.699.825.58C20.565 21.796 24 17.297 24 12c0-6.63-5.37-12-12-12z" />
+              </svg>
+            </a>
+            <a id="socialTwitter" href="https://twitter.com/yourusername" title="Twitter/X"
+              class="text-blue-400 hover:text-blue-600 transition-colors p-2 rounded-full hover:bg-blue-50 dark:hover:bg-gray-700"
+              target="_blank" rel="noopener">
+              <svg class="w-6 h-6 sm:w-7 sm:h-7" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M23.954 4.569c-.885.389-1.83.654-2.825.775 1.014-.611 1.794-1.574 2.163-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-2.72 0-4.924 2.206-4.924 4.924 0 .39.045.765.127 1.124-4.09-.205-7.719-2.165-10.148-5.144-.424.729-.666 1.577-.666 2.476 0 1.708.87 3.216 2.188 4.099-.807-.026-1.566-.247-2.228-.616v.062c0 2.385 1.693 4.374 3.946 4.827-.413.111-.849.171-1.296.171-.317 0-.626-.03-.928-.086.627 1.956 2.444 3.377 4.6 3.417-1.68 1.318-3.809 2.105-6.102 2.105-.396 0-.787-.023-1.175-.069 2.179 1.397 4.768 2.213 7.557 2.213 9.054 0 14.002-7.496 14.002-13.986 0-.21 0-.423-.016-.634.962-.689 1.797-1.56 2.457-2.548z" />
+              </svg>
+            </a>
+          </div>
+          <div id="contactEmail" class="text-xs sm:text-sm text-gray-600 dark:text-gray-300 break-all mb-3">
+            your.email@example.com</div>
+          <a id="socialCalendly" href="https://calendly.com/yourusername/meeting" target="_blank" rel="noopener"
+            class="inline-block px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 hover:shadow-lg transition-all duration-300 text-sm font-semibold">Book
+            a Meeting</a>
+        </div>
       </div>
-    </div>
-  </footer>
+    </footer>
     </section>
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script>
-    // Responsive Navbar & Mobile Sidebar
+    const state = { content: null };
+    const selectors = {
+      heroChips: document.getElementById('heroChips'),
+      heroAvatar: document.getElementById('heroAvatar'),
+      heroHeading: document.getElementById('heroHeading'),
+      heroTitle: document.getElementById('heroTitle'),
+      heroTagline: document.getElementById('heroTagline'),
+      heroPrimaryCta: document.getElementById('heroPrimaryCta'),
+      heroSecondaryCta: document.getElementById('heroSecondaryCta'),
+      heroStats: document.getElementById('heroStats'),
+      aboutCopy: document.getElementById('aboutCopy'),
+      resumeLink: document.getElementById('resumeLink'),
+      languagesList: document.getElementById('languagesList'),
+      frameworksList: document.getElementById('frameworksList'),
+      toolsList: document.getElementById('toolsList'),
+      softSkillsList: document.getElementById('softSkillsList'),
+      projectsGrid: document.getElementById('projectsGrid'),
+      galleryGrid: document.getElementById('designGalleryGrid'),
+      eventsGrid: document.getElementById('eventsGrid'),
+      servicesGrid: document.getElementById('servicesGrid'),
+      experienceList: document.getElementById('experienceList'),
+      educationList: document.getElementById('educationList'),
+      badgesGrid: document.querySelector('[data-showcase-grid="badges"]'),
+      contactQuote: document.getElementById('contactQuote'),
+      contactEmail: document.getElementById('contactEmail'),
+      contactAvatar: document.getElementById('contactAvatar'),
+      socialEmail: document.getElementById('socialEmail'),
+      socialLinkedin: document.getElementById('socialLinkedin'),
+      socialGithub: document.getElementById('socialGithub'),
+      socialTwitter: document.getElementById('socialTwitter'),
+      socialCalendly: document.getElementById('socialCalendly')
+    };
+
+    let gallerySources = [];
+    let galleryButtons = [];
+    let activeGalleryIndex = 0;
+    let galleryTouchStartX = 0;
+
+    const galleryModal = document.getElementById('galleryModal');
+    const galleryModalImg = document.getElementById('galleryModalImg');
+    const galleryCloseBtn = document.querySelector('[data-gallery-close]');
+    const galleryPrevBtn = document.querySelector('[data-gallery-prev]');
+    const galleryNextBtn = document.querySelector('[data-gallery-next]');
+
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileSidebar = document.getElementById('mobileSidebar');
     const mobileSidebarOverlay = document.getElementById('mobileSidebarOverlay');
     const closeMobileMenu = document.getElementById('closeMobileMenu');
-    function openMobileSidebar() {
-      mobileSidebar.classList.remove('-translate-x-full');
-      mobileSidebarOverlay.classList.remove('hidden');
-    }
-    function closeMobileSidebar() {
-      mobileSidebar.classList.add('-translate-x-full');
-      mobileSidebarOverlay.classList.add('hidden');
-    }
-    if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', openMobileSidebar);
-    if (closeMobileMenu) closeMobileMenu.addEventListener('click', closeMobileSidebar);
-    if (mobileSidebarOverlay) mobileSidebarOverlay.addEventListener('click', closeMobileSidebar);
-
-    // Theme toggle
     const themeToggle = document.getElementById('themeToggle');
     const themeIcon = document.getElementById('themeIcon');
-    if (themeToggle && themeIcon) {
+    const motionToggle = document.getElementById('motionToggle');
+    const motionIcon = document.getElementById('motionIcon');
+    const searchBar = document.getElementById('searchBar');
+    const mobileSearchBar = document.getElementById('mobileSearchBar');
+    const codeInput = document.getElementById('codeInput');
+    const livePreview = document.getElementById('livePreview');
+    const runCode = document.getElementById('runCode');
+    const showcaseButtons = document.querySelectorAll('[data-showcase-btn]');
+    const showcasePanels = document.querySelectorAll('[data-showcase-panel]');
+    const canvas = document.getElementById('webglBg');
+    const ctx = canvas?.getContext('2d');
+    let stars = [];
+
+    let reducedMotion = document.body.classList.contains('reduced-motion');
+    const prefersReducedMotion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+
+    initApp();
+
+    async function initApp() {
+      initNavigation();
+      initThemeToggle();
+      initMotionPreferences();
+      initSearch();
+      initCodePlayground();
+      initShowcaseTabs();
+      initGalleryModalControls();
+      initScrollAnimations();
+      initIntersectionObserver();
+      initCanvas();
+      await loadContent();
+    }
+
+    function initNavigation() {
+      const openSidebar = () => {
+        mobileSidebar?.classList.remove('-translate-x-full');
+        mobileSidebarOverlay?.classList.remove('hidden');
+      };
+      const closeSidebar = () => {
+        mobileSidebar?.classList.add('-translate-x-full');
+        mobileSidebarOverlay?.classList.add('hidden');
+      };
+      mobileMenuBtn?.addEventListener('click', openSidebar);
+      closeMobileMenu?.addEventListener('click', closeSidebar);
+      mobileSidebarOverlay?.addEventListener('click', closeSidebar);
+    }
+
+    function initThemeToggle() {
+      if (!themeToggle || !themeIcon) return;
       themeToggle.addEventListener('click', () => {
         document.documentElement.classList.toggle('dark');
         themeIcon.classList.toggle('rotate-180');
       });
     }
 
-    // Reduced motion toggle + media preference
-    const motionToggle = document.getElementById('motionToggle');
-    const motionIcon = document.getElementById('motionIcon');
-    let reducedMotion = document.body.classList.contains('reduced-motion');
-    const prefersReducedMotion = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
-    if (prefersReducedMotion && prefersReducedMotion.matches) {
-      reducedMotion = true;
-      document.body.classList.add('reduced-motion');
-    }
-    if (motionIcon) {
-      motionIcon.classList.toggle('opacity-50', reducedMotion);
+    function initMotionPreferences() {
+      if (prefersReducedMotion && prefersReducedMotion.matches) {
+        reducedMotion = true;
+        document.body.classList.add('reduced-motion');
+      }
+      motionIcon?.classList.toggle('opacity-50', reducedMotion);
+      motionToggle?.addEventListener('click', () => updateReducedMotionState(!reducedMotion));
+
+      const handlePreferenceChange = (event) => {
+        updateReducedMotionState(event.matches);
+      };
+      if (prefersReducedMotion) {
+        if (typeof prefersReducedMotion.addEventListener === 'function') {
+          prefersReducedMotion.addEventListener('change', handlePreferenceChange);
+        } else if (typeof prefersReducedMotion.addListener === 'function') {
+          prefersReducedMotion.addListener(handlePreferenceChange);
+        }
+      }
     }
 
     function updateReducedMotionState(state) {
       const wasReduced = reducedMotion;
       reducedMotion = state;
       document.body.classList.toggle('reduced-motion', state);
-      if (motionIcon) {
-        motionIcon.classList.toggle('opacity-50', reducedMotion);
-      }
+      motionIcon?.classList.toggle('opacity-50', reducedMotion);
       if (wasReduced && !state) {
         animateStars();
       }
     }
 
-    if (motionToggle) {
-      motionToggle.addEventListener('click', () => {
-        updateReducedMotionState(!reducedMotion);
+    function initSearch() {
+      const filterLinks = (query, container) => {
+        if (!container) return;
+        Array.from(container.querySelectorAll('a')).forEach(link => {
+          link.style.display = link.textContent.toLowerCase().includes(query) ? '' : 'none';
+        });
+      };
+      searchBar?.addEventListener('input', (e) => {
+        filterLinks(e.target.value.toLowerCase(), document.querySelector('nav .md\\:flex'));
+      });
+      mobileSearchBar?.addEventListener('input', (e) => {
+        filterLinks(e.target.value.toLowerCase(), mobileSidebar);
       });
     }
-    // Search bar (demo, not Algolia)
-    const searchBar = document.getElementById('searchBar');
-    const mobileSearchBar = document.getElementById('mobileSearchBar');
-    function filterLinks(query, container) {
-      Array.from(container.querySelectorAll('a')).forEach(link => {
-        link.style.display = link.textContent.toLowerCase().includes(query) ? '' : 'none';
-      });
-    }
-    if (searchBar) {
-      searchBar.addEventListener('input', (e) => {
-        const q = e.target.value.toLowerCase();
-        filterLinks(q, document.querySelector('nav .md\\:flex'));
-      });
-    }
-    if (mobileSearchBar) {
-      mobileSearchBar.addEventListener('input', (e) => {
-        const q = e.target.value.toLowerCase();
-        filterLinks(q, mobileSidebar);
-      });
-    }
-    // Code Playground
-    const codeInput = document.getElementById('codeInput');
-    const livePreview = document.getElementById('livePreview');
-    const runCode = document.getElementById('runCode');
-    if (codeInput && livePreview && runCode) {
+
+    function initCodePlayground() {
+      if (!codeInput || !livePreview || !runCode) return;
       const updatePreview = () => {
         livePreview.srcdoc = codeInput.value;
       };
       runCode.addEventListener('click', updatePreview);
       codeInput.addEventListener('input', () => {
         localStorage.setItem('codeInput', codeInput.value);
-        if (window.hljs) {
-          window.hljs.highlightAll();
-        }
+        if (window.hljs) window.hljs.highlightAll();
       });
       const savedCode = localStorage.getItem('codeInput');
       if (savedCode) {
@@ -1248,61 +1376,9 @@
         updatePreview();
       }
     }
-    // WebGL/Canvas background (parallax stars demo)
-    const canvas = document.getElementById('webglBg');
-    const ctx = canvas.getContext('2d');
-    let stars = Array.from({length: 120}, () => ({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      r: Math.random() * 1.5 + 0.5,
-      d: Math.random() * 0.5 + 0.2
-    }));
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-    function drawStars() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (let s of stars) {
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, 2 * Math.PI);
-        ctx.fillStyle = '#60a5fa';
-        ctx.globalAlpha = 0.7;
-        ctx.fill();
-        ctx.globalAlpha = 1;
-      }
-    }
-    function animateStars() {
-      for (let s of stars) {
-        s.y += s.d;
-        if (s.y > canvas.height) {
-          s.y = 0;
-          s.x = Math.random() * canvas.width;
-        }
-      }
-      drawStars();
-      if (!document.body.classList.contains('reduced-motion')) {
-        requestAnimationFrame(animateStars);
-      }
-    }
-    animateStars();
-    const handleMotionPreferenceChange = (event) => {
-      updateReducedMotionState(event.matches);
-    };
-    if (prefersReducedMotion) {
-      if (typeof prefersReducedMotion.addEventListener === 'function') {
-        prefersReducedMotion.addEventListener('change', handleMotionPreferenceChange);
-      } else if (typeof prefersReducedMotion.addListener === 'function') {
-        prefersReducedMotion.addListener(handleMotionPreferenceChange);
-      }
-    }
 
-    // Showcase tabs (Projects · Gallery · Events)
-    const showcaseButtons = document.querySelectorAll('[data-showcase-btn]');
-    const showcasePanels = document.querySelectorAll('[data-showcase-panel]');
-    if (showcaseButtons.length && showcasePanels.length) {
+    function initShowcaseTabs() {
+      if (!showcaseButtons.length || !showcasePanels.length) return;
       showcaseButtons.forEach(button => {
         button.addEventListener('click', () => {
           const target = button.dataset.showcaseBtn;
@@ -1320,53 +1396,336 @@
       });
     }
 
-    // Showcase grids show more/less controls
-    const showcaseGrids = document.querySelectorAll('[data-showcase-grid]');
-    showcaseGrids.forEach(grid => {
-      const gridId = grid.dataset.showcaseGrid;
-      const limit = parseInt(grid.dataset.showcaseLimit || '3', 10);
-      const items = Array.from(grid.querySelectorAll('.showcase-item'));
-      const toggleBtn = document.querySelector(`[data-showcase-more="${gridId}"]`);
-      if (!items.length || !toggleBtn) {
-        return;
-      }
-      if (items.length <= limit) {
-        toggleBtn.classList.add('hidden');
-        return;
-      }
-      items.slice(limit).forEach(item => item.classList.add('is-collapsed'));
-      toggleBtn.classList.remove('hidden');
-      toggleBtn.textContent = 'Show more';
-      toggleBtn.setAttribute('data-expanded', 'false');
-      toggleBtn.addEventListener('click', () => {
-        const expanded = toggleBtn.getAttribute('data-expanded') === 'true';
-        const nextExpanded = !expanded;
-        items.slice(limit).forEach(item => item.classList.toggle('is-collapsed', !nextExpanded));
-        toggleBtn.setAttribute('data-expanded', nextExpanded ? 'true' : 'false');
-        toggleBtn.textContent = nextExpanded ? 'Show less' : 'Show more';
+    function initGalleryModalControls() {
+      galleryCloseBtn?.addEventListener('click', closeGalleryModal);
+      galleryPrevBtn?.addEventListener('click', () => navigateGallery(-1));
+      galleryNextBtn?.addEventListener('click', () => navigateGallery(1));
+      galleryModal?.addEventListener('click', (event) => {
+        if (event.target === galleryModal) closeGalleryModal();
       });
-    });
+      document.addEventListener('keydown', (event) => {
+        if (!galleryModal || galleryModal.classList.contains('hidden')) return;
+        if (event.key === 'Escape') closeGalleryModal();
+        if (event.key === 'ArrowRight') navigateGallery(1);
+        if (event.key === 'ArrowLeft') navigateGallery(-1);
+      });
+      galleryModalImg?.addEventListener('touchstart', (event) => {
+        galleryTouchStartX = event.changedTouches[0].clientX;
+      });
+      galleryModalImg?.addEventListener('touchend', (event) => {
+        const deltaX = event.changedTouches[0].clientX - galleryTouchStartX;
+        if (Math.abs(deltaX) > 40) navigateGallery(deltaX < 0 ? 1 : -1);
+      });
+    }
 
-    // Gallery modal logic with swipe navigation
-    const galleryModal = document.getElementById('galleryModal');
-    const galleryModalImg = document.getElementById('galleryModalImg');
-    const galleryCloseBtn = document.querySelector('[data-gallery-close]');
-    const galleryPrevBtn = document.querySelector('[data-gallery-prev]');
-    const galleryNextBtn = document.querySelector('[data-gallery-next]');
-    const galleryButtons = document.querySelectorAll('[data-gallery-item]');
-    const gallerySources = [];
-    galleryButtons.forEach(button => {
-      const img = button.querySelector('img');
-      const src = img?.getAttribute('data-full') || img?.getAttribute('src') || '';
-      if (!src) return;
-      const alt = img?.getAttribute('alt') || `Gallery item ${gallerySources.length + 1}`;
-      const currentIndex = gallerySources.length;
-      button.dataset.galleryIndex = String(currentIndex);
-      gallerySources.push({ src, alt });
-      button.addEventListener('click', () => openGalleryModal(currentIndex));
-    });
-    let activeGalleryIndex = 0;
-    let galleryTouchStartX = 0;
+    function initScrollAnimations() {
+      const featureCards = document.querySelectorAll('.feature-card');
+      const animateOnScroll = () => {
+        featureCards.forEach(card => {
+          const rect = card.getBoundingClientRect();
+          if (rect.top < window.innerHeight - 100) {
+            card.classList.add('scale-105', 'shadow-2xl');
+          } else {
+            card.classList.remove('scale-105', 'shadow-2xl');
+          }
+        });
+      };
+      window.addEventListener('scroll', animateOnScroll);
+      animateOnScroll();
+    }
+
+    function initIntersectionObserver() {
+      const animatedSections = document.querySelectorAll('[data-animate]');
+      if (!('IntersectionObserver' in window)) {
+        animatedSections.forEach(section => section.classList.add('in-view'));
+        return;
+      }
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+      animatedSections.forEach(section => revealObserver.observe(section));
+    }
+
+    function initCanvas() {
+      if (!canvas || !ctx) return;
+      const createStars = () => Array.from({ length: 120 }, () => ({
+        x: Math.random() * window.innerWidth,
+        y: Math.random() * window.innerHeight,
+        r: Math.random() * 1.5 + 0.5,
+        d: Math.random() * 0.5 + 0.2
+      }));
+      stars = createStars();
+      const resizeCanvas = () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      };
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        stars = createStars();
+      });
+      resizeCanvas();
+      animateStars();
+    }
+
+    function drawStars() {
+      if (!ctx || !canvas) return;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const star of stars) {
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+        ctx.fillStyle = '#60a5fa';
+        ctx.globalAlpha = 0.7;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    function animateStars() {
+      if (!ctx || !canvas) return;
+      for (const star of stars) {
+        star.y += star.d;
+        if (star.y > canvas.height) {
+          star.y = 0;
+          star.x = Math.random() * canvas.width;
+        }
+      }
+      drawStars();
+      if (!reducedMotion) requestAnimationFrame(animateStars);
+    }
+
+    async function loadContent() {
+      try {
+        const response = await fetch('/api/content');
+        if (!response.ok) throw new Error('Failed to load content');
+        const data = await response.json();
+        state.content = data;
+        renderContent(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    function renderContent(data) {
+      renderHero(data.hero);
+      renderAbout(data.about);
+      renderSkills(data.skills);
+      renderProjects(data.projects || []);
+      renderGallery(data.designGallery || []);
+      renderEvents(data.events || []);
+      renderServices(data.services || []);
+      renderExperience(data.experience || []);
+      renderEducation(data.education || []);
+      renderBadges(data.badges || []);
+      renderContact(data.contact || {});
+      initShowcaseGrids();
+      rebuildGallerySources();
+    }
+
+    function renderHero(hero = {}) {
+      selectors.heroChips.innerHTML = (hero.chips || []).map(chip => `<span class="hero-chip">${chip}</span>`).join('');
+      selectors.heroAvatar.src = hero.avatar || 'profile.jpg';
+      selectors.heroHeading.innerHTML = `Hi, I’m <span class="text-blue-600">${hero.name || 'Chestly Ace'}</span>`;
+      selectors.heroTitle.textContent = hero.title || '';
+      selectors.heroTagline.textContent = hero.tagline || '';
+      if (hero.primaryCta) {
+        selectors.heroPrimaryCta.textContent = hero.primaryCta.label;
+        selectors.heroPrimaryCta.href = hero.primaryCta.href;
+      }
+      if (hero.secondaryCta) {
+        selectors.heroSecondaryCta.textContent = hero.secondaryCta.label;
+        selectors.heroSecondaryCta.href = hero.secondaryCta.href;
+      }
+      selectors.heroStats.innerHTML = (hero.stats || []).map(stat => `
+        <div class="hero-stats-card text-left">
+          <p class="text-xs uppercase tracking-[0.25em] text-gray-500 dark:text-gray-400 mb-1">${stat.label}</p>
+          <p class="text-3xl font-extrabold text-blue-600 dark:text-blue-300">${stat.value}</p>
+          <p class="text-sm text-gray-600 dark:text-gray-300">${stat.detail}</p>
+        </div>
+      `).join('');
+    }
+
+    function renderAbout(about = {}) {
+      selectors.aboutCopy.innerHTML = (about.paragraphs || []).map(paragraph => `<p>${paragraph}</p>`).join('');
+      selectors.resumeLink.href = about.resumeUrl || '#';
+    }
+
+    function renderSkills(skills = {}) {
+      const createSkillList = (items = []) => items.map(item => `
+        <li title="${item.name || ''}">
+          <img src="${item.icon || ''}" alt="${item.name || ''}" class="w-10 h-10 sm:w-12 sm:h-12 transition-transform hover:scale-110">
+        </li>
+      `).join('');
+      selectors.languagesList.innerHTML = createSkillList(skills.languages);
+      selectors.frameworksList.innerHTML = createSkillList(skills.frameworks);
+      selectors.toolsList.innerHTML = createSkillList(skills.tools);
+      selectors.softSkillsList.innerHTML = (skills.softSkills || []).map(skill => `
+        <li class="bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-200 px-4 py-2 rounded-full font-medium text-sm transition-transform hover:scale-105">${skill}</li>
+      `).join('');
+    }
+
+    function renderProjects(projects) {
+      selectors.projectsGrid.innerHTML = projects.map(project => `
+        <div class="project-card showcase-item p-6 flex flex-col gap-4">
+          <div class="flex items-center gap-2">
+            <span class="inline-block w-3 h-3 rounded-full ${project.statusDot || 'bg-blue-500'}"></span>
+            <h3 class="text-xl font-semibold">${project.title}</h3>
+          </div>
+          <p class="text-gray-700 dark:text-gray-200">${project.description}</p>
+          <div class="flex flex-wrap gap-2 text-sm">
+            ${(project.tech || []).map(tag => `<span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">${tag}</span>`).join('')}
+          </div>
+          <div class="flex gap-3 mt-2">
+            ${project.liveUrl ? `<a href="${project.liveUrl}" class="text-blue-600 hover:underline font-medium" target="_blank" rel="noopener">Live Demo</a>` : ''}
+            ${project.sourceUrl ? `<a href="${project.sourceUrl}" class="text-gray-500 hover:underline font-medium" target="_blank" rel="noopener">GitHub</a>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderGallery(items) {
+      selectors.galleryGrid.innerHTML = items.map((item, idx) => `
+        <button type="button" class="showcase-item focus:outline-none group" data-gallery-item data-gallery-index="${idx}">
+          <img src="${item.src}" data-full="${item.full || item.src}" alt="${item.alt || 'Design asset'}" class="gallery-thumb rounded-lg w-full h-48 object-cover" />
+        </button>
+      `).join('');
+    }
+
+    function renderEvents(events) {
+      selectors.eventsGrid.innerHTML = events.map(event => `
+        <article class="project-card showcase-item p-0 overflow-hidden flex flex-col">
+          <div class="relative h-48 w-full overflow-hidden">
+            <img src="${event.image}" alt="${event.title}" class="w-full h-full object-cover">
+            <span class="hero-chip absolute top-4 left-4">${event.year}</span>
+          </div>
+          <div class="p-6 flex flex-col gap-3">
+            <h3 class="text-xl font-semibold">${event.title}</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-300">${event.description}</p>
+            <div class="flex flex-wrap gap-2 text-xs">
+              ${(event.highlights || []).map(tag => `<span class="bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded">${tag}</span>`).join('')}
+            </div>
+          </div>
+        </article>
+      `).join('');
+    }
+
+    function renderServices(services) {
+      selectors.servicesGrid.innerHTML = services.map((service, index) => `
+        <div class="service-card p-8 flex flex-col items-center text-center gap-4" data-animate-child style="--delay: ${(index * 0.1).toFixed(1)}">
+          <span class="inline-flex items-center justify-center w-16 h-16 rounded-full ${service.iconBg || 'bg-blue-100 dark:bg-blue-900'} mb-2">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">${service.icon || ''}</svg>
+          </span>
+          <h3 class="text-xl font-semibold">${service.title}</h3>
+          <p class="text-gray-700 dark:text-gray-200">${service.description}</p>
+        </div>
+      `).join('');
+    }
+
+    function renderExperience(experience) {
+      selectors.experienceList.innerHTML = experience.map((item, index) => `
+        <li class="timeline-card rounded-lg p-4 sm:p-6" data-animate-child style="--delay: ${(0.1 + index * 0.1).toFixed(1)}">
+          <div class="flex flex-col sm:flex-row items-start gap-4">
+            <img src="${item.logo}" alt="${item.company}" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow flex-shrink-0">
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
+                <span class="font-bold text-lg sm:text-xl">${item.role}</span>
+                <span class="text-gray-500 text-sm sm:text-base">@ ${item.company}</span>
+              </div>
+              <div class="text-sm text-gray-600 dark:text-gray-300 mb-2">${item.dates}</div>
+              <div class="text-sm sm:text-base text-gray-700 dark:text-gray-200">${item.description}</div>
+            </div>
+          </div>
+        </li>
+      `).join('');
+    }
+
+    function renderEducation(education) {
+      selectors.educationList.innerHTML = education.map((item, index) => `
+        <li class="timeline-card rounded-lg p-4 sm:p-6" data-animate-child style="--delay: ${(0.15 + index * 0.1).toFixed(2)}">
+          <div class="flex flex-col sm:flex-row items-start gap-4">
+            <img src="${item.logo}" alt="${item.school}" class="w-12 h-12 sm:w-14 sm:h-14 rounded-lg shadow flex-shrink-0">
+            <div class="flex-1 min-w-0">
+              <div class="mb-2">
+                <span class="font-bold text-lg sm:text-xl block">${item.title}</span>
+              </div>
+              <div class="text-sm text-gray-600 dark:text-gray-300 mb-2">${item.school}, ${item.dates}</div>
+              <div class="text-sm sm:text-base text-gray-700 dark:text-gray-200">${item.description}</div>
+            </div>
+          </div>
+        </li>
+      `).join('');
+    }
+
+    function renderBadges(badges) {
+      if (!selectors.badgesGrid) return;
+      selectors.badgesGrid.innerHTML = badges.map(badge => `
+        <div class="badge-card showcase-item flex flex-col items-center gap-2">
+          <img src="${badge.image}" alt="${badge.title}" class="w-24 h-24 object-contain rounded">
+          <span class="text-sm text-gray-700 dark:text-gray-200">${badge.title}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderContact(contact) {
+      selectors.contactQuote.textContent = contact.quote || '';
+      selectors.contactEmail.textContent = contact.email || '';
+      selectors.contactAvatar.src = contact.avatar || 'profile.jpg';
+      const socials = contact.socials || {};
+      if (socials.email) selectors.socialEmail.href = socials.email;
+      if (socials.linkedin) selectors.socialLinkedin.href = socials.linkedin;
+      if (socials.github) selectors.socialGithub.href = socials.github;
+      if (socials.twitter) selectors.socialTwitter.href = socials.twitter;
+      if (socials.calendly) selectors.socialCalendly.href = socials.calendly;
+    }
+
+    function initShowcaseGrids() {
+      document.querySelectorAll('[data-showcase-more]').forEach(btn => {
+        btn.classList.add('hidden');
+        btn.removeAttribute('data-expanded');
+      });
+      document.querySelectorAll('[data-showcase-grid]').forEach(grid => {
+        const gridId = grid.dataset.showcaseGrid;
+        const limit = parseInt(grid.dataset.showcaseLimit || '3', 10);
+        const items = Array.from(grid.children);
+        const toggleBtn = document.querySelector(`[data-showcase-more="${gridId}"]`);
+        items.forEach(item => item.classList.remove('is-collapsed'));
+        if (!toggleBtn) return;
+        if (items.length <= limit) {
+          toggleBtn.classList.add('hidden');
+          return;
+        }
+        items.slice(limit).forEach(item => item.classList.add('is-collapsed'));
+        toggleBtn.classList.remove('hidden');
+        toggleBtn.textContent = 'Show more';
+        toggleBtn.dataset.expanded = 'false';
+        toggleBtn.onclick = () => {
+          const expanded = toggleBtn.dataset.expanded === 'true';
+          const nextExpanded = !expanded;
+          items.slice(limit).forEach(item => item.classList.toggle('is-collapsed', !nextExpanded));
+          toggleBtn.dataset.expanded = nextExpanded ? 'true' : 'false';
+          toggleBtn.textContent = nextExpanded ? 'Show less' : 'Show more';
+        };
+      });
+    }
+
+    function rebuildGallerySources() {
+      galleryButtons = document.querySelectorAll('[data-gallery-item]');
+      gallerySources = [];
+      galleryButtons.forEach(button => {
+        const img = button.querySelector('img');
+        const src = img?.getAttribute('data-full') || img?.getAttribute('src') || '';
+        if (!src) return;
+        const alt = img?.getAttribute('alt') || `Design ${gallerySources.length + 1}`;
+        const index = gallerySources.length;
+        button.dataset.galleryIndex = String(index);
+        gallerySources.push({ src, alt });
+        button.onclick = () => openGalleryModal(index);
+      });
+    }
 
     function showGalleryImage(idx) {
       const current = gallerySources[idx];
@@ -1394,72 +1753,16 @@
       activeGalleryIndex = (activeGalleryIndex + delta + gallerySources.length) % gallerySources.length;
       showGalleryImage(activeGalleryIndex);
     }
-
-    if (galleryCloseBtn) galleryCloseBtn.addEventListener('click', closeGalleryModal);
-    if (galleryPrevBtn) galleryPrevBtn.addEventListener('click', () => navigateGallery(-1));
-    if (galleryNextBtn) galleryNextBtn.addEventListener('click', () => navigateGallery(1));
-    if (galleryModal) {
-      galleryModal.addEventListener('click', (event) => {
-        if (event.target === galleryModal) closeGalleryModal();
-      });
-    }
-
-    document.addEventListener('keydown', (event) => {
-      if (!galleryModal || galleryModal.classList.contains('hidden')) return;
-      if (event.key === 'Escape') closeGalleryModal();
-      if (event.key === 'ArrowRight') navigateGallery(1);
-      if (event.key === 'ArrowLeft') navigateGallery(-1);
-    });
-
-    if (galleryModalImg) {
-      galleryModalImg.addEventListener('touchstart', (event) => {
-        galleryTouchStartX = event.changedTouches[0].clientX;
-      });
-      galleryModalImg.addEventListener('touchend', (event) => {
-        const deltaX = event.changedTouches[0].clientX - galleryTouchStartX;
-        if (Math.abs(deltaX) > 40) {
-          navigateGallery(deltaX < 0 ? 1 : -1);
-        }
-      });
-    }
-
-    // Scrollytelling animations
-    const featureCards = document.querySelectorAll('.feature-card');
-    function animateOnScroll() {
-      featureCards.forEach(card => {
-        const rect = card.getBoundingClientRect();
-        if (rect.top < window.innerHeight - 100) {
-          card.classList.add('scale-105', 'shadow-2xl');
-        } else {
-          card.classList.remove('scale-105', 'shadow-2xl');
-        }
-      });
-    }
-    window.addEventListener('scroll', animateOnScroll);
-    animateOnScroll();
-
-    // Intersection Observer reveal animations
-    const animatedSections = document.querySelectorAll('[data-animate]');
-    if ('IntersectionObserver' in window) {
-      const revealObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('in-view');
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.15 });
-      animatedSections.forEach(section => revealObserver.observe(section));
-    } else {
-      animatedSections.forEach(section => section.classList.add('in-view'));
-    }
   </script>
   <!-- Floating WhatsApp Button -->
-  <a href="https://wa.me/237676940247?text=Hi%20Dev.Chestly%2C%20I%20found%20your%20portfolio%20and%20would%20like%20to%20connect!" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"
+  <a href="https://wa.me/237676940247?text=Hi%20Dev.Chestly%2C%20I%20found%20your%20portfolio%20and%20would%20like%20to%20connect!"
+    target="_blank" rel="noopener" aria-label="Chat on WhatsApp"
     class="fixed bottom-6 right-6 z-50 bg-green-500 hover:bg-green-600 rounded-full shadow-lg p-4 flex items-center justify-center transition-all duration-300 group">
     <svg class="w-8 h-8 text-white group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
-      <path d="M20.52 3.48A11.77 11.77 0 0012 0C5.37 0 0 5.37 0 12a11.93 11.93 0 001.64 6.06L0 24l6.24-1.63A11.93 11.93 0 0012 24c6.63 0 12-5.37 12-12a11.77 11.77 0 00-3.48-8.52zM12 22a9.93 9.93 0 01-5.09-1.39l-.36-.21-3.7.97.99-3.6-.23-.37A9.93 9.93 0 012 12c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10zm5.2-7.6c-.28-.14-1.65-.81-1.9-.9-.25-.09-.43-.14-.61.14-.18.28-.7.9-.86 1.08-.16.18-.32.2-.6.07-.28-.14-1.18-.44-2.25-1.4-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.34.42-.51.14-.17.18-.29.28-.48.09-.19.05-.36-.02-.5-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.62-.47-.16-.01-.36-.01-.56-.01s-.5.07-.76.36c-.26.29-1 1-.97 2.44.03 1.44 1.02 2.84 1.16 3.04.14.2 2.01 3.08 4.88 4.2.68.29 1.21.46 1.62.59.68.22 1.3.19 1.79.12.55-.08 1.65-.67 1.89-1.32.23-.65.23-1.2.16-1.32-.07-.12-.25-.19-.53-.33z"/>
+      <path
+        d="M20.52 3.48A11.77 11.77 0 0012 0C5.37 0 0 5.37 0 12a11.93 11.93 0 001.64 6.06L0 24l6.24-1.63A11.93 11.93 0 0012 24c6.63 0 12-5.37 12-12a11.77 11.77 0 00-3.48-8.52zM12 22a9.93 9.93 0 01-5.09-1.39l-.36-.21-3.7.97.99-3.6-.23-.37A9.93 9.93 0 012 12c0-5.52 4.48-10 10-10s10 4.48 10 10-4.48 10-10 10zm5.2-7.6c-.28-.14-1.65-.81-1.9-.9-.25-.09-.43-.14-.61.14-.18.28-.7.9-.86 1.08-.16.18-.32.2-.6.07-.28-.14-1.18-.44-2.25-1.4-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.13-.13.28-.34.42-.51.14-.17.18-.29.28-.48.09-.19.05-.36-.02-.5-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.62-.47-.16-.01-.36-.01-.56-.01s-.5.07-.76.36c-.26.29-1 1-.97 2.44.03 1.44 1.02 2.84 1.16 3.04.14.2 2.01 3.08 4.88 4.2.68.29 1.21.46 1.62.59.68.22 1.3.19 1.79.12.55-.08 1.65-.67 1.89-1.32.23-.65.23-1.2.16-1.32-.07-.12-.25-.19-.53-.33z" />
     </svg>
   </a>
 </body>
+
 </html>
