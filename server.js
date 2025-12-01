@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs/promises');
@@ -6,6 +7,8 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 const DATA_PATH = path.join(__dirname, 'data', 'content.json');
+const USE_MONGODB = process.env.MONGODB_URI && process.env.USE_MONGODB !== 'false';
+
 const ARRAY_SECTIONS = new Set([
   'projects',
   'designGallery',
@@ -16,19 +19,72 @@ const ARRAY_SECTIONS = new Set([
   'badges'
 ]);
 
+// Middleware
 app.use(cors());
 app.use(express.json({ limit: '2mb' }));
 app.use(express.static(path.join(__dirname)));
 
-async function readContent() {
+// MongoDB setup (optional)
+let Content, connectDB;
+if (USE_MONGODB) {
+  const mongoose = require('mongoose');
+  connectDB = require('./config/db');
+  Content = require('./models/Content');
+
+  connectDB().catch(err => {
+    console.error('MongoDB connection failed:', err.message);
+    console.log('Falling back to JSON file storage');
+  });
+}
+
+// Helper functions for JSON file storage
+async function readContentFromFile() {
   const raw = await fs.readFile(DATA_PATH, 'utf-8');
   return JSON.parse(raw);
 }
 
-async function writeContent(content) {
+async function writeContentToFile(content) {
   await fs.writeFile(DATA_PATH, JSON.stringify(content, null, 2));
 }
 
+// Helper functions for MongoDB storage
+async function readContentFromDB() {
+  let content = await Content.findOne();
+  if (!content) {
+    // Seed from JSON file if DB is empty
+    const defaultContent = await readContentFromFile();
+    content = await Content.create(defaultContent);
+    console.log('Database seeded with content from JSON file');
+  }
+  return content.toObject();
+}
+
+async function writeContentToDB(data) {
+  const content = await Content.findOneAndUpdate({}, data, {
+    new: true,
+    upsert: true,
+    runValidators: false
+  });
+  return content.toObject();
+}
+
+// Unified read/write functions
+async function readContent() {
+  if (USE_MONGODB) {
+    return await readContentFromDB();
+  }
+  return await readContentFromFile();
+}
+
+async function writeContent(content) {
+  if (USE_MONGODB) {
+    return await writeContentToDB(content);
+  }
+  await writeContentToFile(content);
+  return content;
+}
+
+// Routes
 app.get('/api/content', async (req, res) => {
   try {
     const content = await readContent();
@@ -40,8 +96,8 @@ app.get('/api/content', async (req, res) => {
 
 app.put('/api/content', async (req, res) => {
   try {
-    await writeContent(req.body);
-    res.json({ status: 'ok' });
+    const content = await writeContent(req.body);
+    res.json({ status: 'ok', content });
   } catch (error) {
     res.status(500).json({ error: 'Failed to save content file', details: error.message });
   }
@@ -136,5 +192,5 @@ app.delete('/api/sections/:section/:index', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Portfolio backend running on http://localhost:${PORT}`);
+  console.log(`Storage mode: ${USE_MONGODB ? 'MongoDB' : 'JSON file'}`);
 });
-
