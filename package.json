@@ -4,9 +4,8 @@
   "description": "proffessional portfolio web page with TailwindCSS, html and JS",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "NODE_ENV=development node server.js",
-    "seed": "node scripts/seed-db.js",
+    "dev": "serve .",
+    "start": "serve .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -21,13 +20,7 @@
   },
   "homepage": "https://github.com/chestlyace/Portfolio-webpage#readme",
   "devDependencies": {
-    "netlify-cli": "^23.11.0"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.3",
-    "express": "^5.1.0",
-    "mongoose": "^9.0.0",
-    "serverless-http": "^4.0.0"
+    "netlify-cli": "^23.11.0",
+    "serve": "^14.2.5"
   }
 }
