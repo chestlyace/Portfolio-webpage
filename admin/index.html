@@ -233,13 +233,13 @@
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                       <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Type</label>
-                      <select name="type" class="admin-input">
+                      <select name="type" id="work-type-select" class="admin-input" onchange="toggleWorkFields()">
                           <option value="project">Project</option>
                           <option value="design">Design</option>
                           <option value="event">Event</option>
                       </select>
                   </div>
-                  <div>
+                  <div class="field-project field-event">
                       <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Category Label</label>
                       <input type="text" name="category_label" placeholder="e.g. Mobile App" class="admin-input">
                   </div>
@@ -248,27 +248,31 @@
                   <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Title</label>
                   <input type="text" name="title" class="admin-input" required>
               </div>
-              <div>
+              <div class="field-project field-event">
                   <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Description</label>
                   <textarea name="description" rows="3" class="admin-input"></textarea>
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="field-project field-event grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                      <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Live URL</label>
+                      <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Live Link / Watch Recap</label>
                       <input type="text" name="live_url" class="admin-input">
                   </div>
                   <div>
-                      <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Source URL</label>
+                      <label class="block text-xs font-bold text-gray-400 uppercase mb-1">GitHub / Photo Album</label>
                       <input type="text" name="source_url" class="admin-input">
                   </div>
               </div>
               <div>
-                  <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Image</label>
+                  <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Image / Preview</label>
                   <input type="file" name="image" class="admin-input bg-transparent border-dashed">
               </div>
-              <div>
-                  <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Tech Stack / Highlights (Comma separated)</label>
+              <div class="field-project">
+                  <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Tech Stack (Comma separated)</label>
                   <input type="text" name="tech_stack_input" placeholder="React, Tailwind, Node.js" class="admin-input">
+              </div>
+              <div class="field-event">
+                  <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Event Highlights (Comma separated)</label>
+                  <input type="text" name="highlights_input" placeholder="Photography, Branding, Web" class="admin-input">
               </div>
               <div class="flex gap-3 pt-4">
                   <button type="submit" class="save-btn">Save Work</button>

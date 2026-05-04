@@ -167,9 +167,24 @@ function openWorkModal(work = null) {
             if (form.elements[key]) form.elements[key].value = work[key] || '';
         });
         if (work.type === 'project' && work.tech_stack) form.elements.tech_stack_input.value = Array.isArray(work.tech_stack) ? work.tech_stack.join(', ') : work.tech_stack;
-        if (work.type === 'event' && work.highlights) form.elements.tech_stack_input.value = Array.isArray(work.highlights) ? work.highlights.join(', ') : work.highlights;
+        if (work.type === 'event' && work.highlights) form.elements.highlights_input.value = Array.isArray(work.highlights) ? work.highlights.join(', ') : work.highlights;
     }
+    toggleWorkFields();
     document.getElementById('work-modal').classList.remove('hidden');
+}
+
+function toggleWorkFields() {
+    const type = document.getElementById('work-type-select').value;
+
+    // Hide all conditional fields
+    document.querySelectorAll('.field-project, .field-event').forEach(el => el.classList.add('hidden'));
+
+    // Show selected ones
+    if (type === 'project') {
+        document.querySelectorAll('.field-project').forEach(el => el.classList.remove('hidden'));
+    } else if (type === 'event') {
+        document.querySelectorAll('.field-event').forEach(el => el.classList.remove('hidden'));
+    }
 }
 
 function editWork(id) {
@@ -183,13 +198,17 @@ document.getElementById('work-form').addEventListener('submit', async (e) => {
     const id = formData.get('id');
 
     // Handle tech stack / highlights
-    const itemsInput = formData.get('tech_stack_input');
-    const items = itemsInput ? itemsInput.split(',').map(s => s.trim()).filter(s => s !== '') : [];
-
-    if (formData.get('type') === 'project') formData.set('tech_stack', JSON.stringify(items));
-    if (formData.get('type') === 'event') formData.set('highlights', JSON.stringify(items));
+    const type = formData.get('type');
+    if (type === 'project') {
+        const items = formData.get('tech_stack_input').split(',').map(s => s.trim()).filter(s => s !== '');
+        formData.set('tech_stack', JSON.stringify(items));
+    } else if (type === 'event') {
+        const items = formData.get('highlights_input').split(',').map(s => s.trim()).filter(s => s !== '');
+        formData.set('highlights', JSON.stringify(items));
+    }
 
     formData.delete('tech_stack_input');
+    formData.delete('highlights_input');
 
     const url = id ? `${API_URL}/works/${id}` : `${API_URL}/works`;
     const method = id ? 'PUT' : 'POST';
