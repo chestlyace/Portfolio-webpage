@@ -1,5 +1,4 @@
-const API_URL = 'http://localhost:5000/api'; // Update this to your production URL later
-
+const API_URL = 'https://portfolio-webpage-gla4.onrender.com/api';
 async function fetchPortfolioData() {
     try {
         const response = await fetch(`${API_URL}/portfolio`);

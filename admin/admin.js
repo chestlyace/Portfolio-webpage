@@ -1,8 +1,5 @@
 // Configuration
-const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-    ? 'http://localhost:5000/api'
-    : '/api'; // Assumes production backend is served from same domain or proxy
-
+const API_URL = 'https://portfolio-webpage-gla4.onrender.com/api';
 let token = localStorage.getItem('adminToken');
 let allWorks = [];
 let allJourney = [];

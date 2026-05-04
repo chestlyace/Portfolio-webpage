@@ -156,6 +156,9 @@ app.delete('/api/skills/:id', authenticateToken, async (req, res) => {
     res.json(data);
 });
 
+app.get('/', (req, res) => res.send('Portfolio API running'));
+app.get('/health', (req, res) => res.json({ ok: true }));
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
