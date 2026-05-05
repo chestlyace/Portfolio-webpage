@@ -252,22 +252,40 @@
                   <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Description</label>
                   <textarea name="description" rows="3" class="admin-input"></textarea>
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                      <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Live URL</label>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="url-fields">
+                  <div id="live-url-group">
+                      <label class="block text-xs font-bold text-gray-400 uppercase mb-1" id="live-url-label">Live URL</label>
                       <input type="text" name="live_url" class="admin-input">
+                      <label class="inline-flex items-center mt-2 text-xs text-gray-400 font-bold uppercase cursor-pointer" id="live-private-group">
+                          <input type="checkbox" name="is_live_url_private" class="rounded border-white/10 bg-white/5 text-primary focus:ring-primary mr-2">
+                          Mark as Private
+                      </label>
+                  </div>
+                  <div id="source-url-group">
+                      <label class="block text-xs font-bold text-gray-400 uppercase mb-1" id="source-url-label">Source URL</label>
+                      <input type="text" name="source_url" class="admin-input">
+                      <label class="inline-flex items-center mt-2 text-xs text-gray-400 font-bold uppercase cursor-pointer" id="source-private-group">
+                          <input type="checkbox" name="is_source_url_private" class="rounded border-white/10 bg-white/5 text-primary focus:ring-primary mr-2">
+                          Mark as Private
+                      </label>
+                  </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden" id="design-fields">
+                  <div>
+                      <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Design Tool</label>
+                      <input type="text" name="design_tool" placeholder="e.g. Figma, Photoshop" class="admin-input">
                   </div>
                   <div>
-                      <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Source URL</label>
-                      <input type="text" name="source_url" class="admin-input">
+                      <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Client Name</label>
+                      <input type="text" name="client_name" class="admin-input">
                   </div>
               </div>
               <div>
                   <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Image</label>
                   <input type="file" name="image" class="admin-input bg-transparent border-dashed">
               </div>
-              <div>
-                  <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Tech Stack / Highlights (Comma separated)</label>
+              <div id="tech-stack-group">
+                  <label class="block text-xs font-bold text-gray-400 uppercase mb-1" id="tech-stack-label">Tech Stack (Comma separated)</label>
                   <input type="text" name="tech_stack_input" placeholder="React, Tailwind, Node.js" class="admin-input">
               </div>
               <div class="flex gap-3 pt-4">
