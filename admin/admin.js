@@ -161,13 +161,59 @@ function openWorkModal(work = null) {
     document.getElementById('modal-title').textContent = work ? 'Edit Work' : 'Add New Work';
     if (work) {
         Object.keys(work).forEach(key => {
-            if (form.elements[key]) form.elements[key].value = work[key] || '';
+            if (form.elements[key]) {
+                if (form.elements[key].type === 'checkbox') {
+                    form.elements[key].checked = !!work[key];
+                } else {
+                    form.elements[key].value = work[key] || '';
+                }
+            }
         });
         if (work.type === 'project' && work.tech_stack) form.elements.tech_stack_input.value = Array.isArray(work.tech_stack) ? work.tech_stack.join(', ') : work.tech_stack;
         if (work.type === 'event' && work.highlights) form.elements.tech_stack_input.value = Array.isArray(work.highlights) ? work.highlights.join(', ') : work.highlights;
     }
+
+    updateWorkFormVisibility();
     document.getElementById('work-modal').classList.remove('hidden');
 }
+
+function updateWorkFormVisibility() {
+    const form = document.getElementById('work-form');
+    const type = form.elements.type.value;
+
+    const designFields = document.getElementById('design-fields');
+    const techStackGroup = document.getElementById('tech-stack-group');
+    const techStackLabel = document.getElementById('tech-stack-label');
+    const liveUrlGroup = document.getElementById('live-url-group');
+    const sourceUrlLabel = document.getElementById('source-url-label');
+    const livePrivateGroup = document.getElementById('live-private-group');
+    const sourcePrivateGroup = document.getElementById('source-private-group');
+
+    // Default visibility
+    designFields.classList.add('hidden');
+    techStackGroup.classList.remove('hidden');
+    liveUrlGroup.classList.remove('hidden');
+    livePrivateGroup.classList.remove('hidden');
+    sourcePrivateGroup.classList.remove('hidden');
+    sourceUrlLabel.textContent = 'Source URL';
+
+    if (type === 'project') {
+        techStackLabel.textContent = 'Tech Stack (Comma separated)';
+    } else if (type === 'design') {
+        designFields.classList.remove('hidden');
+        techStackGroup.classList.add('hidden');
+        liveUrlGroup.classList.add('hidden');
+        sourceUrlLabel.textContent = 'Design URL (Optional)';
+        sourcePrivateGroup.classList.add('hidden');
+    } else if (type === 'event') {
+        techStackLabel.textContent = 'Highlights (Comma separated)';
+        liveUrlGroup.classList.add('hidden');
+        sourceUrlLabel.textContent = 'Album Link';
+        sourcePrivateGroup.classList.add('hidden');
+    }
+}
+
+document.querySelector('select[name="type"]').addEventListener('change', updateWorkFormVisibility);
 
 function editWork(id) {
     const work = allWorks.find(w => w.id === id);
@@ -179,12 +225,26 @@ document.getElementById('work-form').addEventListener('submit', async (e) => {
     const formData = new FormData(e.target);
     const id = formData.get('id');
 
+    // Handle checkboxes (they are not included in FormData if not checked)
+    const isLivePrivate = e.target.elements.is_live_url_private.checked;
+    const isSourcePrivate = e.target.elements.is_source_url_private.checked;
+    formData.set('is_live_url_private', isLivePrivate);
+    formData.set('is_source_url_private', isSourcePrivate);
+
     // Handle tech stack / highlights
     const itemsInput = formData.get('tech_stack_input');
     const items = itemsInput ? itemsInput.split(',').map(s => s.trim()).filter(s => s !== '') : [];
 
-    if (formData.get('type') === 'project') formData.set('tech_stack', JSON.stringify(items));
-    if (formData.get('type') === 'event') formData.set('highlights', JSON.stringify(items));
+    if (formData.get('type') === 'project') {
+        formData.set('tech_stack', JSON.stringify(items));
+        formData.set('highlights', JSON.stringify([]));
+    } else if (formData.get('type') === 'event') {
+        formData.set('highlights', JSON.stringify(items));
+        formData.set('tech_stack', JSON.stringify([]));
+    } else {
+        formData.set('tech_stack', JSON.stringify([]));
+        formData.set('highlights', JSON.stringify([]));
+    }
 
     formData.delete('tech_stack_input');
 

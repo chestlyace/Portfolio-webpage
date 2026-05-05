@@ -100,6 +100,14 @@ function renderWorks(works) {
                 <span class="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 rounded-full">${tech}</span>
             `).join('');
 
+            const liveBtn = work.is_live_url_private
+                ? `<button disabled class="flex items-center justify-center gap-2 px-4 py-3 bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-gray-500 rounded-xl font-semibold text-sm cursor-not-allowed">Private <span class="material-icons text-sm">lock</span></button>`
+                : `<a class="flex items-center justify-center gap-2 px-4 py-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity" href="${work.live_url}">Live Link <span class="material-icons text-sm">arrow_outward</span></a>`;
+
+            const sourceBtn = work.is_source_url_private
+                ? `<button disabled class="flex items-center justify-center gap-2 px-4 py-3 bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-gray-500 rounded-xl font-semibold text-sm cursor-not-allowed">Private <span class="material-icons text-sm">lock</span></button>`
+                : `<a class="flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl font-semibold text-sm hover:bg-gray-200 dark:hover:bg-white/10 transition-colors" href="${work.source_url}">GitHub <span class="material-icons text-sm">code</span></a>`;
+
             projectsContainer.innerHTML += `
                 <article class="card-hover group relative bg-white dark:bg-card-dark border border-gray-200 dark:border-glass-border rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-gray-300/20 dark:hover:shadow-white/5 transition-all duration-300 flex flex-col h-full">
                     <div class="relative h-64 w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
@@ -115,18 +123,26 @@ function renderWorks(works) {
                         </div>
                         <div class="flex flex-wrap gap-2 mb-8 mt-auto pt-4">${techHtml}</div>
                         <div class="grid grid-cols-2 gap-4">
-                            <a class="flex items-center justify-center gap-2 px-4 py-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity" href="${work.live_url}">Live Link <span class="material-icons text-sm">arrow_outward</span></a>
-                            <a class="flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl font-semibold text-sm hover:bg-gray-200 dark:hover:bg-white/10 transition-colors" href="${work.source_url}">GitHub <span class="material-icons text-sm">code</span></a>
+                            ${liveBtn}
+                            ${sourceBtn}
                         </div>
                     </div>
                 </article>
             `;
         } else if (work.type === 'design') {
+            const designMeta = (work.design_tool || work.client_name) ? `
+                <div class="mt-2 flex flex-wrap gap-2 justify-center">
+                    ${work.design_tool ? `<span class="text-[10px] uppercase font-bold text-white/60 bg-white/10 px-2 py-0.5 rounded-full">${work.design_tool}</span>` : ''}
+                    ${work.client_name ? `<span class="text-[10px] uppercase font-bold text-white/60 bg-white/10 px-2 py-0.5 rounded-full">${work.client_name}</span>` : ''}
+                </div>
+            ` : '';
+
             designContainer.innerHTML += `
                 <div class="group relative overflow-hidden rounded-2xl cursor-pointer">
                     <img src="${work.image_url}" alt="${work.title}" class="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110" />
-                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 text-center">
                         <span class="text-white font-display text-xl tracking-wider border-b-2 border-white pb-1">${work.title}</span>
+                        ${designMeta}
                     </div>
                 </div>
             `;
@@ -149,8 +165,7 @@ function renderWorks(works) {
                             </div>
                         </div>
                         <div class="flex flex-wrap gap-2 mb-8 mt-auto pt-4">${highlightsHtml}</div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <a class="flex items-center justify-center gap-2 px-4 py-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity" href="${work.live_url || '#'}">Watch Recap <span class="material-icons text-sm">play_circle_filled</span></a>
+                        <div class="w-full">
                             <a class="flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl font-semibold text-sm hover:bg-gray-200 dark:hover:bg-white/10 transition-colors" href="${work.source_url || '#'}">Photo Album <span class="material-icons text-sm">collections</span></a>
                         </div>
                     </div>
