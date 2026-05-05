@@ -69,11 +69,26 @@ Or use the slash command: `/deploy-netlify`
 
 ## 🔧 Environment Variables
 
+### Backend (`backend/.env`)
+
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `MONGODB_URI` | MongoDB connection string | Yes (for production) |
-| `USE_MONGODB` | Enable MongoDB in local dev | No (defaults to false) |
-| `PORT` | Server port | No (defaults to 3000) |
+| `SUPABASE_URL` | Your Supabase Project URL | Yes |
+| `SUPABASE_ANON_KEY` | Your Supabase Anonymous Key | Yes |
+| `SUPABASE_SERVICE_ROLE_KEY` | Your Supabase Service Role Key (to bypass RLS) | Recommended |
+| `JWT_SECRET` | Secret for signing admin tokens | Yes |
+| `ADMIN_PASSWORD` | Password for admin dashboard access | Yes |
+| `CLOUDINARY_CLOUD_NAME`| Cloudinary cloud name | Yes |
+| `CLOUDINARY_API_KEY` | Cloudinary API key | Yes |
+| `CLOUDINARY_API_SECRET`| Cloudinary API secret | Yes |
+| `PORT` | Server port | No (defaults to 5000) |
+
+## 🔐 Database Security (RLS)
+
+If your CRUD operations are failing with "Row-Level Security (RLS) policy violation", you have two options:
+
+1. **Service Role Key (Easiest)**: Add your `SUPABASE_SERVICE_ROLE_KEY` to your backend environment variables on Render. This allows the backend to bypass RLS.
+2. **SQL Policies**: Run the commands in `supabase_policies.sql` in your Supabase SQL Editor to allow proper access to the tables.
 
 ## 📝 Available Scripts
 

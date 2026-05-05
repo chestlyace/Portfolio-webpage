@@ -16,7 +16,9 @@ app.use(cors());
 app.use(express.json());
 
 // Supabase Setup
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+// Use SERVICE_ROLE_KEY if available to bypass RLS, otherwise fallback to ANON_KEY
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
+const supabase = createClient(process.env.SUPABASE_URL, supabaseKey);
 
 // Cloudinary Setup
 cloudinary.config({
