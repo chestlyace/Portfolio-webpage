@@ -59,18 +59,20 @@ function showTab(tabName, event) {
 async function fetchData() {
     try {
         const res = await fetch(`${API_URL}/portfolio`);
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
         populateProfile(data.profile);
 
-        allWorks = data.works;
+        allWorks = data.works || [];
         renderWorksList(allWorks);
 
-        allJourney = data.journey;
+        allJourney = data.journey || [];
         renderJourneyList(allJourney);
 
-        renderSkillsList(data.skills);
+        renderSkillsList(data.skills || []);
     } catch (err) {
-        console.error(err);
+        console.error('Fetch Data Error:', err);
+        alert('Failed to load dashboard data. Please check if the backend is running.');
     }
 }
 
@@ -101,9 +103,15 @@ async function saveProfile(data) {
             },
             body: JSON.stringify(data)
         });
-        if (res.ok) alert('Profile updated!');
+        if (res.ok) {
+            alert('Profile updated!');
+        } else {
+            const errData = await res.json();
+            alert(`Failed to update profile: ${errData.message || res.statusText}`);
+        }
     } catch (err) {
-        console.error(err);
+        console.error('Profile Save Error:', err);
+        alert('An error occurred while saving the profile.');
     }
 }
 
@@ -119,13 +127,20 @@ async function uploadFile(input, fieldName) {
             headers: { 'Authorization': `Bearer ${token}` },
             body: formData
         });
-        const data = await res.json();
-        if (data.url) {
-            await saveProfile({ [fieldName]: data.url });
-            alert(`${fieldName} updated!`);
+
+        if (res.ok) {
+            const data = await res.json();
+            if (data.url) {
+                await saveProfile({ [fieldName]: data.url });
+                alert(`${fieldName} updated!`);
+            }
+        } else {
+            const errData = await res.json();
+            alert(`Upload failed: ${errData.message || res.statusText}`);
         }
     } catch (err) {
-        console.error(err);
+        console.error('Upload Error:', err);
+        alert('An error occurred during file upload.');
     }
 }
 
@@ -260,21 +275,37 @@ document.getElementById('work-form').addEventListener('submit', async (e) => {
             body: formData
         });
         if (res.ok) {
+            alert('Work saved successfully!');
             closeModal('work-modal');
             fetchData();
+        } else {
+            const errData = await res.json();
+            alert(`Failed to save work: ${errData.message || errData.error || res.statusText}`);
         }
     } catch (err) {
-        console.error(err);
+        console.error('Work Save Error:', err);
+        alert('An error occurred while saving the work.');
     }
 });
 
 async function deleteWork(id) {
     if (!confirm('Are you sure?')) return;
-    await fetch(`${API_URL}/works/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    fetchData();
+    try {
+        const res = await fetch(`${API_URL}/works/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            alert('Work deleted!');
+            fetchData();
+        } else {
+            const errData = await res.json();
+            alert(`Failed to delete work: ${errData.message || errData.error || res.statusText}`);
+        }
+    } catch (err) {
+        console.error('Delete Work Error:', err);
+        alert('An error occurred while deleting the work.');
+    }
 }
 
 // Journey Management
@@ -343,21 +374,37 @@ document.getElementById('journey-form').addEventListener('submit', async (e) => 
             body: JSON.stringify(data)
         });
         if (res.ok) {
+            alert('Journey item saved!');
             closeModal('journey-modal');
             fetchData();
+        } else {
+            const errData = await res.json();
+            alert(`Failed to save journey: ${errData.message || errData.error || res.statusText}`);
         }
     } catch (err) {
-        console.error(err);
+        console.error('Journey Save Error:', err);
+        alert('An error occurred while saving the journey item.');
     }
 });
 
 async function deleteJourney(id) {
     if (!confirm('Are you sure?')) return;
-    await fetch(`${API_URL}/journey/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    fetchData();
+    try {
+        const res = await fetch(`${API_URL}/journey/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            alert('Journey item deleted!');
+            fetchData();
+        } else {
+            const errData = await res.json();
+            alert(`Failed to delete journey: ${errData.message || errData.error || res.statusText}`);
+        }
+    } catch (err) {
+        console.error('Delete Journey Error:', err);
+        alert('An error occurred while deleting the journey item.');
+    }
 }
 
 // Skills Management
@@ -385,24 +432,45 @@ document.getElementById('skill-form').addEventListener('submit', async (e) => {
     const icon = document.getElementById('skill-icon').value;
     const category = document.getElementById('skill-category').value;
 
-    await fetch(`${API_URL}/skills`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ name, icon, category })
-    });
-    e.target.reset();
-    fetchData();
+    try {
+        const res = await fetch(`${API_URL}/skills`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ name, icon, category })
+        });
+        if (res.ok) {
+            e.target.reset();
+            fetchData();
+        } else {
+            const errData = await res.json();
+            alert(`Failed to add skill: ${errData.message || errData.error || res.statusText}`);
+        }
+    } catch (err) {
+        console.error('Skill Add Error:', err);
+        alert('An error occurred while adding the skill.');
+    }
 });
 
 async function deleteSkill(id) {
-    await fetch(`${API_URL}/skills/${id}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` }
-    });
-    fetchData();
+    if (!confirm('Are you sure?')) return;
+    try {
+        const res = await fetch(`${API_URL}/skills/${id}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+            fetchData();
+        } else {
+            const errData = await res.json();
+            alert(`Failed to delete skill: ${errData.message || errData.error || res.statusText}`);
+        }
+    } catch (err) {
+        console.error('Delete Skill Error:', err);
+        alert('An error occurred while deleting the skill.');
+    }
 }
 
 function closeModal(id) {
