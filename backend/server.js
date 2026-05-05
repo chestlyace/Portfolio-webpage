@@ -93,6 +93,11 @@ app.post('/api/works', authenticateToken, upload.single('image'), async (req, re
     // Parse JSON fields if they come as strings
     if (typeof workData.tech_stack === 'string') workData.tech_stack = JSON.parse(workData.tech_stack);
     if (typeof workData.highlights === 'string') workData.highlights = JSON.parse(workData.highlights);
+    if (workData.is_live_url_private === 'true') workData.is_live_url_private = true;
+    if (workData.is_live_url_private === 'false') workData.is_live_url_private = false;
+    if (workData.is_source_url_private === 'true') workData.is_source_url_private = true;
+    if (workData.is_source_url_private === 'false') workData.is_source_url_private = false;
+    delete workData.id;
 
     const { data, error } = await supabase.from('works').insert([workData]);
     if (error) return res.status(500).json(error);
@@ -106,6 +111,11 @@ app.put('/api/works/:id', authenticateToken, upload.single('image'), async (req,
     }
     if (typeof workData.tech_stack === 'string') workData.tech_stack = JSON.parse(workData.tech_stack);
     if (typeof workData.highlights === 'string') workData.highlights = JSON.parse(workData.highlights);
+    if (workData.is_live_url_private === 'true') workData.is_live_url_private = true;
+    if (workData.is_live_url_private === 'false') workData.is_live_url_private = false;
+    if (workData.is_source_url_private === 'true') workData.is_source_url_private = true;
+    if (workData.is_source_url_private === 'false') workData.is_source_url_private = false;
+    delete workData.id;
 
     const { data, error } = await supabase.from('works').update(workData).eq('id', req.params.id);
     if (error) return res.status(500).json(error);

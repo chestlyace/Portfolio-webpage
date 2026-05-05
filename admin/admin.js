@@ -1,5 +1,6 @@
-// Configuration
-const API_URL = 'https://portfolio-webpage-gla4.onrender.com/api';
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:5000/api' 
+    : 'https://portfolio-webpage-gla4.onrender.com/api';
 let token = localStorage.getItem('adminToken');
 let allWorks = [];
 let allJourney = [];
@@ -247,6 +248,7 @@ document.getElementById('work-form').addEventListener('submit', async (e) => {
     }
 
     formData.delete('tech_stack_input');
+    formData.delete('id');
 
     const url = id ? `${API_URL}/works/${id}` : `${API_URL}/works`;
     const method = id ? 'PUT' : 'POST';
