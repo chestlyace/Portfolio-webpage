@@ -33,15 +33,63 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+function isImageUpload(file) {
+    return Boolean(file?.mimetype?.startsWith('image/'));
+}
+
+function getUploadFolder(file) {
+    if (file.fieldname === 'logo') return 'portfolio/journey';
+    if (file.fieldname === 'image') return 'portfolio/works';
+    return 'portfolio/profile';
+}
+
+function getImageTransformation(file) {
+    if (file.fieldname === 'logo') {
+        return [
+            {
+                width: 600,
+                height: 600,
+                crop: 'limit',
+                quality: 'auto:good',
+                fetch_format: 'auto',
+            },
+        ];
+    }
+
+    return [
+        {
+            width: 1600,
+            height: 1600,
+            crop: 'limit',
+            quality: 'auto:good',
+            fetch_format: 'auto',
+        },
+    ];
+}
+
 const storage = new CloudinaryStorage({
     cloudinary: cloudinary,
-    params: {
-        folder: 'portfolio',
-        resource_type: 'auto',
+    params: async (req, file) => {
+        const imageUpload = isImageUpload(file);
+        return {
+            folder: getUploadFolder(file),
+            resource_type: imageUpload ? 'image' : 'raw',
+            allowed_formats: imageUpload ? ['jpg', 'jpeg', 'png', 'webp', 'gif', 'avif'] : ['pdf'],
+            format: imageUpload ? 'webp' : undefined,
+            transformation: imageUpload ? getImageTransformation(file) : undefined,
+            use_filename: true,
+            unique_filename: true,
+            overwrite: false,
+        };
     },
 });
 
-const upload = multer({ storage: storage });
+const upload = multer({
+    storage,
+    limits: {
+        fileSize: 10 * 1024 * 1024,
+    },
+});
 
 // Auth Middleware
 const authenticateToken = (req, res, next) => {
@@ -286,6 +334,21 @@ app.get('/health', (req, res) => res.json({ ok: true }));
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.error('Unhandled Error:', err);
+
+    if (err instanceof multer.MulterError) {
+        return res.status(400).json({
+            message: err.code === 'LIMIT_FILE_SIZE'
+                ? 'Upload failed: file is too large. Maximum size is 10 MB.'
+                : `Upload failed: ${err.message}`,
+        });
+    }
+
+    if (err?.http_code === 400 || err?.name === 'Error') {
+        return res.status(400).json({
+            message: err.message || 'Upload failed. Please check the file type and try again.',
+        });
+    }
+
     res.status(500).json({
         message: 'Internal server error',
         error: process.env.NODE_ENV === 'development' ? err.message : undefined
