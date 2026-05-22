@@ -202,7 +202,7 @@
     }
 
     .masonry-gallery {
-      column-count: 1;
+      column-count: 2;
       column-gap: 1.5rem;
     }
 
@@ -213,15 +213,21 @@
       margin-bottom: 1.5rem;
     }
 
-    @media (min-width: 640px) {
+    @media (min-width: 768px) {
       .masonry-gallery {
-        column-count: 2;
+        column-count: 3;
       }
     }
 
     @media (min-width: 1024px) {
       .masonry-gallery {
-        column-count: 3;
+        column-count: 4;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .masonry-gallery {
+        column-count: 5;
       }
     }
 
