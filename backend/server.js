@@ -214,9 +214,15 @@ app.post('/api/upload', authenticateToken, upload.single('file'), (req, res) => 
 });
 
 // CRUD for Journey
-app.post('/api/journey', authenticateToken, async (req, res) => {
+app.post('/api/journey', authenticateToken, upload.single('logo'), async (req, res) => {
     try {
-        const query = buildInsertQuery('journey', req.body);
+        const journeyData = { ...req.body };
+        if (req.file) {
+            journeyData.logo_url = req.file.path;
+        }
+        delete journeyData.id;
+
+        const query = buildInsertQuery('journey', journeyData);
         const { rows } = await pool.query(query);
         res.json(rows);
     } catch (error) {
@@ -225,9 +231,15 @@ app.post('/api/journey', authenticateToken, async (req, res) => {
     }
 });
 
-app.put('/api/journey/:id', authenticateToken, async (req, res) => {
+app.put('/api/journey/:id', authenticateToken, upload.single('logo'), async (req, res) => {
     try {
-        const query = buildUpdateQuery('journey', req.body, 'id', req.params.id);
+        const journeyData = { ...req.body };
+        if (req.file) {
+            journeyData.logo_url = req.file.path;
+        }
+        delete journeyData.id;
+
+        const query = buildUpdateQuery('journey', journeyData, 'id', req.params.id);
         const { rows } = await pool.query(query);
         res.json(rows);
     } catch (error) {
