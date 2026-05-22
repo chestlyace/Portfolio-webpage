@@ -330,6 +330,14 @@
                   <textarea name="description" rows="3" class="admin-input"></textarea>
               </div>
               <div>
+                  <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Company Logo</label>
+                  <div id="journey-logo-preview" class="mb-2 hidden">
+                      <img id="journey-logo-img" src="" alt="Current logo" class="w-16 h-16 object-cover rounded-xl border border-white/10">
+                      <span class="text-xs text-gray-500 mt-1 block">Current logo</span>
+                  </div>
+                  <input type="file" name="logo" accept="image/*" class="admin-input bg-transparent border-dashed">
+              </div>
+              <div>
                   <label class="block text-xs font-bold text-gray-400 uppercase mb-1">Order Index</label>
                   <input type="number" name="order_index" class="admin-input" value="0">
               </div>

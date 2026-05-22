@@ -341,9 +341,21 @@ function openJourneyModal(item = null) {
     form.reset();
     form.elements.id.value = '';
     document.getElementById('journey-modal-title').textContent = item ? 'Edit Journey' : 'Add New Journey';
+
+    // Handle logo preview
+    const logoPreview = document.getElementById('journey-logo-preview');
+    const logoImg = document.getElementById('journey-logo-img');
+    if (item && item.logo_url) {
+        logoImg.src = item.logo_url;
+        logoPreview.classList.remove('hidden');
+    } else {
+        logoImg.src = '';
+        logoPreview.classList.add('hidden');
+    }
+
     if (item) {
         Object.keys(item).forEach(key => {
-            if (form.elements[key]) form.elements[key].value = item[key] || '';
+            if (form.elements[key] && key !== 'logo') form.elements[key].value = item[key] || '';
         });
     }
     document.getElementById('journey-modal').classList.remove('hidden');
@@ -358,8 +370,13 @@ document.getElementById('journey-form').addEventListener('submit', async (e) => 
     e.preventDefault();
     const formData = new FormData(e.target);
     const id = formData.get('id');
-    const data = Object.fromEntries(formData.entries());
-    delete data.id;
+    formData.delete('id');
+
+    // Remove empty logo file input if no file was selected
+    const logoFile = formData.get('logo');
+    if (!logoFile || logoFile.size === 0) {
+        formData.delete('logo');
+    }
 
     const url = id ? `${API_URL}/journey/${id}` : `${API_URL}/journey`;
     const method = id ? 'PUT' : 'POST';
@@ -368,10 +385,9 @@ document.getElementById('journey-form').addEventListener('submit', async (e) => 
         const res = await fetch(url, {
             method,
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify(data)
+            body: formData
         });
         if (res.ok) {
             alert('Journey item saved!');
