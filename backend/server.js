@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const { createClient } = require('@supabase/supabase-js');
+const { Pool } = require('pg');
 const cloudinary = require('cloudinary').v2;
 const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
@@ -15,8 +15,16 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Supabase Setup
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+// Neon Postgres Setup
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false },
+});
+
+// Test DB connection on startup
+pool.query('SELECT NOW()')
+    .then(() => console.log('Connected to Neon Postgres'))
+    .catch(err => console.error('Database connection error:', err.message));
 
 // Cloudinary Setup
 cloudinary.config({
@@ -55,6 +63,32 @@ const authenticateToken = (req, res, next) => {
     });
 };
 
+// --- SQL Helper Functions ---
+
+// Build a dynamic UPDATE query from an object
+function buildUpdateQuery(table, data, whereCol, whereVal) {
+    const keys = Object.keys(data);
+    const values = Object.values(data);
+    const setClause = keys.map((key, i) => `"${key}" = $${i + 1}`).join(', ');
+    values.push(whereVal);
+    return {
+        text: `UPDATE "${table}" SET ${setClause} WHERE "${whereCol}" = $${values.length} RETURNING *`,
+        values,
+    };
+}
+
+// Build a dynamic INSERT query from an object
+function buildInsertQuery(table, data) {
+    const keys = Object.keys(data);
+    const values = Object.values(data);
+    const cols = keys.map(k => `"${k}"`).join(', ');
+    const placeholders = keys.map((_, i) => `$${i + 1}`).join(', ');
+    return {
+        text: `INSERT INTO "${table}" (${cols}) VALUES (${placeholders}) RETURNING *`,
+        values,
+    };
+}
+
 // Routes
 
 // Login
@@ -70,27 +104,39 @@ app.post('/api/login', (req, res) => {
 // GET all data
 app.get('/api/portfolio', async (req, res) => {
     try {
-        const { data: profile } = await supabase.from('profile').select('*').single();
-        const { data: skills } = await supabase.from('skills').select('*');
-        const { data: services } = await supabase.from('services').select('*');
-        const { data: works } = await supabase.from('works').select('*');
-        const { data: journey } = await supabase.from('journey').select('*').order('order_index', { ascending: true });
-        const { data: socials } = await supabase.from('socials').select('*');
+        const [profileRes, skillsRes, servicesRes, worksRes, journeyRes, socialsRes] = await Promise.all([
+            pool.query('SELECT * FROM profile LIMIT 1'),
+            pool.query('SELECT * FROM skills'),
+            pool.query('SELECT * FROM services'),
+            pool.query('SELECT * FROM works'),
+            pool.query('SELECT * FROM journey ORDER BY order_index ASC'),
+            pool.query('SELECT * FROM socials'),
+        ]);
 
-        res.json({ profile, skills, services, works, journey, socials });
+        res.json({
+            profile: profileRes.rows[0] || null,
+            skills: skillsRes.rows,
+            services: servicesRes.rows,
+            works: worksRes.rows,
+            journey: journeyRes.rows,
+            socials: socialsRes.rows,
+        });
     } catch (error) {
+        console.error('Portfolio Fetch Error:', error.message);
         res.status(500).json({ error: error.message });
     }
 });
 
 // Update Profile
 app.put('/api/profile', authenticateToken, async (req, res) => {
-    const { data, error } = await supabase.from('profile').update(req.body).eq('id', 1).select();
-    if (error) {
-        console.error('Supabase Profile Update Error:', error);
-        return res.status(500).json(error);
+    try {
+        const query = buildUpdateQuery('profile', req.body, 'id', 1);
+        const { rows } = await pool.query(query);
+        res.json(rows);
+    } catch (error) {
+        console.error('Profile Update Error:', error.message);
+        res.status(500).json({ message: error.message });
     }
-    res.json(data);
 });
 
 // CRUD for Works (Projects, Designs, Events)
@@ -108,14 +154,15 @@ app.post('/api/works', authenticateToken, upload.single('image'), async (req, re
         workData.is_live_url_private = workData.is_live_url_private === 'true';
         workData.is_source_url_private = workData.is_source_url_private === 'true';
 
+        // Stringify JSONB fields for pg
+        if (workData.tech_stack) workData.tech_stack = JSON.stringify(workData.tech_stack);
+        if (workData.highlights) workData.highlights = JSON.stringify(workData.highlights);
+
         delete workData.id;
 
-        const { data, error } = await supabase.from('works').insert([workData]).select();
-        if (error) {
-            console.error('Supabase Work Insert Error:', error);
-            return res.status(500).json(error);
-        }
-        res.json(data);
+        const query = buildInsertQuery('works', workData);
+        const { rows } = await pool.query(query);
+        res.json(rows);
     } catch (parseError) {
         console.error('Work Data Parsing Error:', parseError);
         res.status(400).json({ message: 'Invalid work data format', error: parseError.message });
@@ -135,14 +182,15 @@ app.put('/api/works/:id', authenticateToken, upload.single('image'), async (req,
         workData.is_live_url_private = workData.is_live_url_private === 'true';
         workData.is_source_url_private = workData.is_source_url_private === 'true';
 
+        // Stringify JSONB fields for pg
+        if (workData.tech_stack) workData.tech_stack = JSON.stringify(workData.tech_stack);
+        if (workData.highlights) workData.highlights = JSON.stringify(workData.highlights);
+
         delete workData.id;
 
-        const { data, error } = await supabase.from('works').update(workData).eq('id', req.params.id).select();
-        if (error) {
-            console.error('Supabase Work Update Error:', error);
-            return res.status(500).json(error);
-        }
-        res.json(data);
+        const query = buildUpdateQuery('works', workData, 'id', req.params.id);
+        const { rows } = await pool.query(query);
+        res.json(rows);
     } catch (parseError) {
         console.error('Work Data Parsing Error:', parseError);
         res.status(400).json({ message: 'Invalid work data format', error: parseError.message });
@@ -150,12 +198,13 @@ app.put('/api/works/:id', authenticateToken, upload.single('image'), async (req,
 });
 
 app.delete('/api/works/:id', authenticateToken, async (req, res) => {
-    const { data, error } = await supabase.from('works').delete().eq('id', req.params.id).select();
-    if (error) {
-        console.error('Supabase Work Delete Error:', error);
-        return res.status(500).json(error);
+    try {
+        const { rows } = await pool.query('DELETE FROM works WHERE id = $1 RETURNING *', [req.params.id]);
+        res.json(rows);
+    } catch (error) {
+        console.error('Work Delete Error:', error.message);
+        res.status(500).json({ message: error.message });
     }
-    res.json(data);
 });
 
 // Upload Resume/Hero Image
@@ -166,49 +215,57 @@ app.post('/api/upload', authenticateToken, upload.single('file'), (req, res) => 
 
 // CRUD for Journey
 app.post('/api/journey', authenticateToken, async (req, res) => {
-    const { data, error } = await supabase.from('journey').insert([req.body]).select();
-    if (error) {
-        console.error('Supabase Journey Insert Error:', error);
-        return res.status(500).json(error);
+    try {
+        const query = buildInsertQuery('journey', req.body);
+        const { rows } = await pool.query(query);
+        res.json(rows);
+    } catch (error) {
+        console.error('Journey Insert Error:', error.message);
+        res.status(500).json({ message: error.message });
     }
-    res.json(data);
 });
 
 app.put('/api/journey/:id', authenticateToken, async (req, res) => {
-    const { data, error } = await supabase.from('journey').update(req.body).eq('id', req.params.id).select();
-    if (error) {
-        console.error('Supabase Journey Update Error:', error);
-        return res.status(500).json(error);
+    try {
+        const query = buildUpdateQuery('journey', req.body, 'id', req.params.id);
+        const { rows } = await pool.query(query);
+        res.json(rows);
+    } catch (error) {
+        console.error('Journey Update Error:', error.message);
+        res.status(500).json({ message: error.message });
     }
-    res.json(data);
 });
 
 app.delete('/api/journey/:id', authenticateToken, async (req, res) => {
-    const { data, error } = await supabase.from('journey').delete().eq('id', req.params.id).select();
-    if (error) {
-        console.error('Supabase Journey Delete Error:', error);
-        return res.status(500).json(error);
+    try {
+        const { rows } = await pool.query('DELETE FROM journey WHERE id = $1 RETURNING *', [req.params.id]);
+        res.json(rows);
+    } catch (error) {
+        console.error('Journey Delete Error:', error.message);
+        res.status(500).json({ message: error.message });
     }
-    res.json(data);
 });
 
 // CRUD for Skills
 app.post('/api/skills', authenticateToken, async (req, res) => {
-    const { data, error } = await supabase.from('skills').insert([req.body]).select();
-    if (error) {
-        console.error('Supabase Skill Insert Error:', error);
-        return res.status(500).json(error);
+    try {
+        const query = buildInsertQuery('skills', req.body);
+        const { rows } = await pool.query(query);
+        res.json(rows);
+    } catch (error) {
+        console.error('Skill Insert Error:', error.message);
+        res.status(500).json({ message: error.message });
     }
-    res.json(data);
 });
 
 app.delete('/api/skills/:id', authenticateToken, async (req, res) => {
-    const { data, error } = await supabase.from('skills').delete().eq('id', req.params.id).select();
-    if (error) {
-        console.error('Supabase Skill Delete Error:', error);
-        return res.status(500).json(error);
+    try {
+        const { rows } = await pool.query('DELETE FROM skills WHERE id = $1 RETURNING *', [req.params.id]);
+        res.json(rows);
+    } catch (error) {
+        console.error('Skill Delete Error:', error.message);
+        res.status(500).json({ message: error.message });
     }
-    res.json(data);
 });
 
 app.get('/', (req, res) => res.send('Portfolio API running'));
