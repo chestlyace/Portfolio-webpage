@@ -1,6 +1,150 @@
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? 'http://localhost:5000/api' 
     : 'https://portfolio-webpage-gla4.onrender.com/api';
+
+function setMetaContent(selector, content) {
+    const element = document.querySelector(selector);
+    if (element && content) {
+        element.setAttribute('content', content);
+    }
+}
+
+function optimizeCloudinaryImage(url, options = {}) {
+    if (!url || !url.includes('/image/upload/')) {
+        return url;
+    }
+
+    const transforms = [
+        'f_auto',
+        'q_auto:good',
+    ];
+
+    if (options.width) transforms.push(`w_${options.width}`);
+    if (options.height) transforms.push(`h_${options.height}`);
+    if (options.crop) transforms.push(`c_${options.crop}`);
+
+    return url.replace('/image/upload/', `/image/upload/${transforms.join(',')}/`);
+}
+
+function updateSeo(profile, socials) {
+    if (!profile) return;
+
+    const name = profile.display_name || 'Chestly Ace';
+    const roleParts = [profile.title_1, profile.title_2, profile.title_3].filter(Boolean);
+    const roleText = roleParts.length
+        ? roleParts.join(', ').replace(/,([^,]*)$/, ' &$1')
+        : 'Software Developer, Graphic Designer & Photographer';
+    const tagline = profile.tagline || 'Software developer, graphic designer, and photographer.';
+    const aboutText = [profile.about_text_1, profile.about_text_2].filter(Boolean).join(' ');
+    const description = `${name} is a ${roleText}. ${tagline} ${aboutText}`.trim().slice(0, 300);
+    const pageTitle = `${name} | ${roleText}`;
+    const imageUrl = optimizeCloudinaryImage(profile.hero_image, { width: 1200, height: 1600, crop: 'limit' })
+        || 'https://chestlyace.online/hero-optimized.webp';
+    const canonicalUrl = 'https://chestlyace.online/';
+
+    document.title = pageTitle;
+    setMetaContent('meta[name="description"]', description);
+    setMetaContent('meta[property="og:title"]', pageTitle);
+    setMetaContent('meta[property="og:description"]', description);
+    setMetaContent('meta[property="og:url"]', canonicalUrl);
+    setMetaContent('meta[property="og:image"]', imageUrl);
+    setMetaContent('meta[property="og:image:alt"]', `Portrait of ${name}`);
+    setMetaContent('meta[name="twitter:title"]', pageTitle);
+    setMetaContent('meta[name="twitter:description"]', description);
+    setMetaContent('meta[name="twitter:image"]', imageUrl);
+
+    const canonicalLink = document.querySelector('link[rel="canonical"]');
+    if (canonicalLink) {
+        canonicalLink.setAttribute('href', canonicalUrl);
+    }
+
+    const socialUrls = Array.isArray(socials)
+        ? socials.map((social) => social.url).filter(Boolean)
+        : [];
+    const faqEntities = Array.from(document.querySelectorAll('#faq details')).map((item) => ({
+        '@type': 'Question',
+        name: item.querySelector('summary')?.textContent?.trim(),
+        acceptedAnswer: {
+            '@type': 'Answer',
+            text: item.querySelector('p')?.textContent?.trim(),
+        },
+    })).filter((item) => item.name && item.acceptedAnswer.text);
+
+    const structuredData = document.getElementById('structured-data');
+    if (structuredData) {
+        structuredData.textContent = JSON.stringify({
+            '@context': 'https://schema.org',
+            '@graph': [
+                {
+                    '@type': 'WebSite',
+                    '@id': `${canonicalUrl}#website`,
+                    url: canonicalUrl,
+                    name: `${name} Portfolio`,
+                    description,
+                },
+                {
+                    '@type': 'Person',
+                    '@id': `${canonicalUrl}#person`,
+                    name,
+                    url: canonicalUrl,
+                    image: imageUrl,
+                    jobTitle: roleParts,
+                    description,
+                    email: profile.email ? `mailto:${profile.email}` : undefined,
+                    telephone: profile.phone || undefined,
+                    sameAs: socialUrls.length ? socialUrls : [canonicalUrl],
+                    knowsAbout: [
+                        'Web development',
+                        'Frontend development',
+                        'Backend development',
+                        'Graphic design',
+                        'Brand identity design',
+                        'Photography',
+                    ],
+                },
+                {
+                    '@type': 'ItemList',
+                    '@id': `${canonicalUrl}#services`,
+                    name: 'Creative and technical services by Chestly Ace',
+                    itemListElement: [
+                        {
+                            '@type': 'Service',
+                            position: 1,
+                            name: 'Software Development',
+                            url: `${canonicalUrl}software-development.html`,
+                        },
+                        {
+                            '@type': 'Service',
+                            position: 2,
+                            name: 'Graphic Design',
+                            url: `${canonicalUrl}graphic-design.html`,
+                        },
+                        {
+                            '@type': 'Service',
+                            position: 3,
+                            name: 'Photography',
+                            url: `${canonicalUrl}photography.html`,
+                        },
+                    ],
+                },
+                ...(faqEntities.length ? [{
+                    '@type': 'FAQPage',
+                    '@id': `${canonicalUrl}#faq`,
+                    mainEntity: faqEntities,
+                }] : []),
+            ],
+        });
+    }
+}
+
+function getServiceLink(serviceTitle) {
+    const normalizedTitle = (serviceTitle || '').toLowerCase();
+    if (normalizedTitle.includes('software')) return 'software-development.html';
+    if (normalizedTitle.includes('design')) return 'graphic-design.html';
+    if (normalizedTitle.includes('photo')) return 'photography.html';
+    return '#contact';
+}
+
 async function fetchPortfolioData() {
     try {
         const response = await fetch(`${API_URL}/portfolio`);
@@ -11,6 +155,7 @@ async function fetchPortfolioData() {
         renderWorks(data.works);
         renderJourney(data.journey);
         renderSocials(data.socials);
+        updateSeo(data.profile, data.socials);
     } catch (error) {
         console.error('Error fetching portfolio data:', error);
     }
@@ -23,13 +168,23 @@ function renderProfile(profile) {
     document.querySelector('.hero-title-2').textContent = profile.title_2;
     document.querySelector('.hero-title-3').textContent = `& ${profile.title_3}`;
     document.querySelector('.hero-tagline').textContent = profile.tagline;
-    document.querySelector('.hero-image').src = profile.hero_image;
+    document.querySelector('.hero-image').src = optimizeCloudinaryImage(profile.hero_image, {
+        width: 1200,
+        height: 1600,
+        crop: 'limit',
+    }) || 'hero-optimized.webp';
     document.querySelector('.about-quote').textContent = `"${profile.about_quote}"`;
     document.querySelector('.about-text-1').innerHTML = `<span class="float-left text-7xl font-display leading-none mr-4 mt-2 text-black dark:text-white">${profile.about_text_1.charAt(0)}</span>${profile.about_text_1.slice(1)}`;
     document.querySelector('.about-text-2').textContent = profile.about_text_2;
     document.querySelector('.resume-link').href = profile.resume_url;
     document.querySelector('.contact-email').textContent = profile.email;
     document.querySelector('.contact-phone').textContent = profile.phone;
+    document.querySelectorAll('a[href^="mailto:"]').forEach((link) => {
+        link.href = `mailto:${profile.email}`;
+    });
+    document.querySelectorAll('a[href^="tel:"]').forEach((link) => {
+        link.href = `tel:${profile.phone.replace(/\s+/g, '')}`;
+    });
 }
 
 function renderSkills(skills) {
@@ -45,7 +200,7 @@ function renderSkills(skills) {
         const skillHtml = `
             <div class="flex flex-col items-center group">
                 <div class="w-16 h-16 flex items-center justify-center rounded-xl bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 shadow-sm group-hover:border-primary/50 group-hover:shadow-glow transition-all duration-300">
-                    ${skill.icon.startsWith('http') ? `<img src="${skill.icon}" alt="${skill.name}" class="w-8 h-8 group-hover:scale-110 transition-transform" />` : `<i class="${skill.icon} text-3xl"></i>`}
+                    ${skill.icon.startsWith('http') ? `<img src="${skill.icon}" alt="${skill.name} logo" loading="lazy" decoding="async" class="w-8 h-8 group-hover:scale-110 transition-transform" />` : `<i class="${skill.icon} text-3xl" aria-hidden="true"></i>`}
                 </div>
                 <span class="mt-2 text-[10px] uppercase font-bold text-slate-400 group-hover:text-primary transition-colors">${skill.name}</span>
             </div>
@@ -66,6 +221,7 @@ function renderServices(services) {
                 <span class="text-black dark:text-white">→</span> ${item}
             </li>
         `).join('');
+        const serviceLink = getServiceLink(service.title);
 
         servicesContainer.innerHTML += `
             <div class="group relative bg-gray-50 dark:bg-[#1a1a1a] border border-gray-200 dark:border-gray-800 p-10 rounded-3xl overflow-hidden hover:border-black dark:hover:border-white transition-all duration-300">
@@ -81,6 +237,11 @@ function renderServices(services) {
                     <ul class="space-y-2 text-sm font-semibold text-gray-500 dark:text-gray-400">
                         ${itemsList}
                     </ul>
+                    <a class="mt-8 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white hover:text-primary transition-colors"
+                        href="${serviceLink}">
+                        Learn More
+                        <span class="material-icons-outlined text-base">arrow_forward</span>
+                    </a>
                 </div>
             </div>
         `;
@@ -97,6 +258,12 @@ function renderWorks(works) {
     eventsContainer.innerHTML = '';
 
     works.forEach(work => {
+        const optimizedWorkImage = optimizeCloudinaryImage(work.image_url, {
+            width: work.type === 'design' ? 900 : 1200,
+            height: work.type === 'design' ? 900 : 900,
+            crop: 'limit',
+        }) || work.image_url;
+
         if (work.type === 'project') {
             const techHtml = work.tech_stack.map(tech => `
                 <span class="px-3 py-1 text-xs font-medium bg-gray-100 dark:bg-white/5 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-white/10 rounded-full">${tech}</span>
@@ -104,16 +271,16 @@ function renderWorks(works) {
 
             const liveBtn = work.is_live_url_private
                 ? `<button disabled class="flex items-center justify-center gap-2 px-4 py-3 bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-gray-500 rounded-xl font-semibold text-sm cursor-not-allowed">Private <span class="material-icons text-sm">lock</span></button>`
-                : `<a class="flex items-center justify-center gap-2 px-4 py-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity" href="${work.live_url}">Live Link <span class="material-icons text-sm">arrow_outward</span></a>`;
+                : `<a class="flex items-center justify-center gap-2 px-4 py-3 bg-black dark:bg-white text-white dark:text-black rounded-xl font-semibold text-sm hover:opacity-90 transition-opacity" href="${work.live_url}" target="_blank" rel="noopener noreferrer">Live Link <span class="material-icons text-sm">arrow_outward</span></a>`;
 
             const sourceBtn = work.is_source_url_private
                 ? `<button disabled class="flex items-center justify-center gap-2 px-4 py-3 bg-gray-200 dark:bg-white/10 text-gray-400 dark:text-gray-500 rounded-xl font-semibold text-sm cursor-not-allowed">Private <span class="material-icons text-sm">lock</span></button>`
-                : `<a class="flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl font-semibold text-sm hover:bg-gray-200 dark:hover:bg-white/10 transition-colors" href="${work.source_url}">GitHub <span class="material-icons text-sm">code</span></a>`;
+                : `<a class="flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl font-semibold text-sm hover:bg-gray-200 dark:hover:bg-white/10 transition-colors" href="${work.source_url}" target="_blank" rel="noopener noreferrer">GitHub <span class="material-icons text-sm">code</span></a>`;
 
             projectsContainer.innerHTML += `
                 <article class="card-hover group relative bg-white dark:bg-card-dark border border-gray-200 dark:border-glass-border rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-gray-300/20 dark:hover:shadow-white/5 transition-all duration-300 flex flex-col h-full">
                     <div class="relative h-64 w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
-                        <img alt="${work.title}" class="thumbnail w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" src="${work.image_url}" />
+                        <img alt="${work.title} project preview" loading="lazy" decoding="async" class="thumbnail w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" src="${optimizedWorkImage}" />
                         <div class="absolute top-4 right-4 bg-black/70 dark:bg-white/90 text-white dark:text-black text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm uppercase tracking-wider">${work.category_label}</div>
                     </div>
                     <div class="p-6 md:p-8 flex flex-col flex-grow">
@@ -141,7 +308,7 @@ function renderWorks(works) {
 
             designContainer.innerHTML += `
                 <div class="group relative overflow-hidden rounded-2xl cursor-pointer">
-                    <img src="${work.image_url}" alt="${work.title}" class="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110" />
+                    <img src="${optimizedWorkImage}" alt="${work.title} design preview" loading="lazy" decoding="async" class="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110" />
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 text-center">
                         <span class="text-white font-display text-xl tracking-wider border-b-2 border-white pb-1">${work.title}</span>
                         ${designMeta}
@@ -156,7 +323,7 @@ function renderWorks(works) {
             eventsContainer.innerHTML += `
                 <article class="card-hover group relative bg-white dark:bg-card-dark border border-gray-200 dark:border-glass-border rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-gray-300/20 dark:hover:shadow-white/5 transition-all duration-300 flex flex-col h-full">
                     <div class="relative h-64 w-full overflow-hidden bg-gray-100 dark:bg-gray-800">
-                        <img alt="${work.title}" class="thumbnail w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" src="${work.image_url}" />
+                        <img alt="${work.title} event gallery cover" loading="lazy" decoding="async" class="thumbnail w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500" src="${optimizedWorkImage}" />
                         <div class="absolute top-4 right-4 bg-black/70 dark:bg-white/90 text-white dark:text-black text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm uppercase tracking-wider">${work.category_label}</div>
                     </div>
                     <div class="p-6 md:p-8 flex flex-col flex-grow">
@@ -168,7 +335,7 @@ function renderWorks(works) {
                         </div>
                         <div class="flex flex-wrap gap-2 mb-8 mt-auto pt-4">${highlightsHtml}</div>
                         <div class="w-full">
-                            <a class="flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl font-semibold text-sm hover:bg-gray-200 dark:hover:bg-white/10 transition-colors" href="${work.source_url || '#'}">Photo Album <span class="material-icons text-sm">collections</span></a>
+                            <a class="flex items-center justify-center gap-2 px-4 py-3 bg-gray-100 dark:bg-white/5 text-gray-900 dark:text-white border border-gray-200 dark:border-white/10 rounded-xl font-semibold text-sm hover:bg-gray-200 dark:hover:bg-white/10 transition-colors" href="${work.source_url || '#'}" target="_blank" rel="noopener noreferrer">Photo Album <span class="material-icons text-sm">collections</span></a>
                         </div>
                     </div>
                 </article>
@@ -185,6 +352,11 @@ function renderJourney(journey) {
 
     journey.forEach((item, index) => {
         const isEven = index % 2 === 1;
+        const optimizedLogoUrl = optimizeCloudinaryImage(item.logo_url, {
+            width: 120,
+            height: 120,
+            crop: 'limit',
+        }) || item.logo_url;
         const itemHtml = `
             <div class="relative mb-12 md:mb-20">
                 <div class="flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center w-full">
@@ -197,7 +369,7 @@ function renderJourney(journey) {
                                     <span>${item.dates}</span>
                                 </div>
                                 <div class="w-10 h-10 rounded-full bg-gray-100 dark:bg-white/5 flex items-center justify-center overflow-hidden border border-gray-200 dark:border-white/10">
-                                    ${item.logo_url ? `<img src="${item.logo_url}" alt="${item.company}">` : '<span class="text-xs font-bold text-gray-400">LOGO</span>'}
+                                    ${optimizedLogoUrl ? `<img src="${optimizedLogoUrl}" alt="${item.company} logo" loading="lazy" decoding="async">` : '<span class="text-xs font-bold text-gray-400">LOGO</span>'}
                                 </div>
                             </div>
                             <h3 class="text-lg font-bold text-gray-900 dark:text-white">${item.role}</h3>
@@ -222,13 +394,14 @@ function renderSocials(socials) {
     footerSocials.innerHTML = '';
 
     socials.forEach(social => {
-        socialIconsContainer.innerHTML += `<a class="hover:text-primary transition-colors" href="${social.url}"><i class="${social.icon}"></i></a>`;
+        const socialName = social.platform || social.name || 'Social profile';
+        socialIconsContainer.innerHTML += `<a class="hover:text-primary transition-colors" href="${social.url}" target="_blank" rel="noopener noreferrer" aria-label="${socialName}"><i class="${social.icon}" aria-hidden="true"></i></a>`;
         contactSocialsGrid.innerHTML += `
-            <a class="aspect-square flex flex-col items-center justify-center rounded-xl glass-panel bg-white/40 dark:bg-white/5 border border-white/40 dark:border-white/10 hover:bg-background-dark hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300" href="${social.url}">
-                <i class="${social.icon} text-2xl mb-1"></i>
+            <a class="aspect-square flex flex-col items-center justify-center rounded-xl glass-panel bg-white/40 dark:bg-white/5 border border-white/40 dark:border-white/10 hover:bg-background-dark hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-300" href="${social.url}" target="_blank" rel="noopener noreferrer" aria-label="${socialName}">
+                <i class="${social.icon} text-2xl mb-1" aria-hidden="true"></i>
             </a>
         `;
-        footerSocials.innerHTML += `<a class="text-gray-400 hover:text-white transition-colors" href="${social.url}"><i class="${social.icon}"></i></a>`;
+        footerSocials.innerHTML += `<a class="text-gray-400 hover:text-white transition-colors" href="${social.url}" target="_blank" rel="noopener noreferrer" aria-label="${socialName}"><i class="${social.icon}" aria-hidden="true"></i></a>`;
     });
 }
 
