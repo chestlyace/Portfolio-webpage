@@ -1,6 +1,8 @@
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
     ? 'http://localhost:5000/api' 
     : 'https://portfolio-webpage-gla4.onrender.com/api';
+let designWorks = [];
+let activeDesignIndex = 0;
 
 function setMetaContent(selector, content) {
     const element = document.querySelector(selector);
@@ -30,14 +32,15 @@ function updateSeo(profile, socials) {
     if (!profile) return;
 
     const name = profile.display_name || 'Chestly Ace';
+    const alternateNames = ['Amahndong Chestly', 'Chestly Amahndong'];
     const roleParts = [profile.title_1, profile.title_2, profile.title_3].filter(Boolean);
     const roleText = roleParts.length
         ? roleParts.join(', ').replace(/,([^,]*)$/, ' &$1')
         : 'Software Developer, Graphic Designer & Photographer';
     const tagline = profile.tagline || 'Software developer, graphic designer, and photographer.';
     const aboutText = [profile.about_text_1, profile.about_text_2].filter(Boolean).join(' ');
-    const description = `${name} is a ${roleText}. ${tagline} ${aboutText}`.trim().slice(0, 300);
-    const pageTitle = `${name} | ${roleText}`;
+    const description = `${name}, also known as Amahndong Chestly, is a ${roleText}. ${tagline} ${aboutText}`.trim().slice(0, 300);
+    const pageTitle = `${name} (Amahndong Chestly) | ${roleText}`;
     const imageUrl = optimizeCloudinaryImage(profile.hero_image, { width: 1200, height: 1600, crop: 'limit' })
         || 'https://chestlyace.online/hero-optimized.webp';
     const canonicalUrl = 'https://chestlyace.online/';
@@ -86,6 +89,7 @@ function updateSeo(profile, socials) {
                     '@type': 'Person',
                     '@id': `${canonicalUrl}#person`,
                     name,
+                    alternateName: alternateNames,
                     url: canonicalUrl,
                     image: imageUrl,
                     jobTitle: roleParts,
@@ -145,6 +149,117 @@ function getServiceLink(serviceTitle) {
     return '#contact';
 }
 
+function getDesignMetaText(work) {
+    return [work.design_tool, work.client_name].filter(Boolean).join(' • ') || 'Design gallery item';
+}
+
+function updateLightboxContent(index) {
+    if (!designWorks.length) return;
+
+    activeDesignIndex = (index + designWorks.length) % designWorks.length;
+    const activeWork = designWorks[activeDesignIndex];
+    const optimizedImage = optimizeCloudinaryImage(activeWork.image_url, {
+        width: 1600,
+        height: 2000,
+        crop: 'limit',
+    }) || activeWork.image_url;
+
+    document.getElementById('lightbox-image').src = optimizedImage;
+    document.getElementById('lightbox-image').alt = `${activeWork.title} design preview`;
+    document.getElementById('lightbox-title').textContent = activeWork.title;
+    document.getElementById('lightbox-meta').textContent = getDesignMetaText(activeWork);
+    document.getElementById('lightbox-counter').textContent = `${activeDesignIndex + 1} / ${designWorks.length}`;
+}
+
+function openDesignLightbox(index) {
+    if (!designWorks.length) return;
+
+    const lightbox = document.getElementById('design-lightbox');
+    lightbox.classList.remove('hidden');
+    lightbox.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('lightbox-open');
+    updateLightboxContent(index);
+}
+
+function closeDesignLightbox() {
+    const lightbox = document.getElementById('design-lightbox');
+    lightbox.classList.add('hidden');
+    lightbox.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('lightbox-open');
+}
+
+function showNextDesign(step) {
+    if (!designWorks.length) return;
+    updateLightboxContent(activeDesignIndex + step);
+}
+
+function setupDesignLightbox() {
+    const lightbox = document.getElementById('design-lightbox');
+    const closeBtn = document.getElementById('lightbox-close');
+    const backdropCloseBtn = document.getElementById('lightbox-backdrop-close');
+    const prevBtn = document.getElementById('lightbox-prev');
+    const nextBtn = document.getElementById('lightbox-next');
+    const prevMobileBtn = document.getElementById('lightbox-prev-mobile');
+    const nextMobileBtn = document.getElementById('lightbox-next-mobile');
+    const stage = document.getElementById('lightbox-stage');
+
+    if (!lightbox || lightbox.dataset.ready === 'true') return;
+
+    closeBtn.addEventListener('click', closeDesignLightbox);
+    backdropCloseBtn.addEventListener('click', closeDesignLightbox);
+    prevBtn.addEventListener('click', () => showNextDesign(-1));
+    nextBtn.addEventListener('click', () => showNextDesign(1));
+    prevMobileBtn.addEventListener('click', () => showNextDesign(-1));
+    nextMobileBtn.addEventListener('click', () => showNextDesign(1));
+
+    document.addEventListener('keydown', (event) => {
+        if (lightbox.classList.contains('hidden')) return;
+
+        if (event.key === 'Escape') closeDesignLightbox();
+        if (event.key === 'ArrowLeft') showNextDesign(-1);
+        if (event.key === 'ArrowRight') showNextDesign(1);
+    });
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchActive = false;
+
+    stage.addEventListener('touchstart', (event) => {
+        if (event.touches.length !== 1) return;
+        touchActive = true;
+        touchStartX = event.touches[0].clientX;
+        touchStartY = event.touches[0].clientY;
+    }, { passive: true });
+
+    stage.addEventListener('touchend', (event) => {
+        if (!touchActive || event.changedTouches.length !== 1) return;
+
+        const deltaX = event.changedTouches[0].clientX - touchStartX;
+        const deltaY = event.changedTouches[0].clientY - touchStartY;
+        const horizontalDistance = Math.abs(deltaX);
+        const verticalDistance = Math.abs(deltaY);
+        const swipeThreshold = 48;
+
+        touchActive = false;
+
+        if (horizontalDistance < swipeThreshold || horizontalDistance <= verticalDistance) {
+            return;
+        }
+
+        if (deltaX < 0) {
+            showNextDesign(1);
+        } else {
+            showNextDesign(-1);
+        }
+    }, { passive: true });
+
+    stage.addEventListener('touchcancel', () => {
+        touchActive = false;
+    }, { passive: true });
+
+    lightbox.dataset.ready = 'true';
+}
+
 async function fetchPortfolioData() {
     try {
         const response = await fetch(`${API_URL}/portfolio`);
@@ -156,6 +271,7 @@ async function fetchPortfolioData() {
         renderJourney(data.journey);
         renderSocials(data.socials);
         updateSeo(data.profile, data.socials);
+        setupDesignLightbox();
     } catch (error) {
         console.error('Error fetching portfolio data:', error);
     }
@@ -250,8 +366,9 @@ function renderServices(services) {
 
 function renderWorks(works) {
     const projectsContainer = document.getElementById('projects-section');
-    const designContainer = document.getElementById('design-section').querySelector('.grid');
+    const designContainer = document.getElementById('design-section').querySelector('.masonry-gallery');
     const eventsContainer = document.getElementById('events-section');
+    designWorks = works.filter((work) => work.type === 'design');
 
     projectsContainer.innerHTML = '';
     designContainer.innerHTML = '';
@@ -299,6 +416,7 @@ function renderWorks(works) {
                 </article>
             `;
         } else if (work.type === 'design') {
+            const designIndex = designWorks.findIndex((item) => item.id === work.id);
             const designMeta = (work.design_tool || work.client_name) ? `
                 <div class="mt-2 flex flex-wrap gap-2 justify-center">
                     ${work.design_tool ? `<span class="text-[10px] uppercase font-bold text-white/60 bg-white/10 px-2 py-0.5 rounded-full">${work.design_tool}</span>` : ''}
@@ -307,13 +425,17 @@ function renderWorks(works) {
             ` : '';
 
             designContainer.innerHTML += `
-                <div class="group relative overflow-hidden rounded-2xl cursor-pointer">
-                    <img src="${optimizedWorkImage}" alt="${work.title} design preview" loading="lazy" decoding="async" class="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110" />
+                <article class="masonry-item group relative overflow-hidden rounded-2xl cursor-pointer bg-gray-100 dark:bg-white/5"
+                    role="button"
+                    tabindex="0"
+                    aria-label="Open ${work.title} preview"
+                    data-design-index="${designIndex}">
+                    <img src="${optimizedWorkImage}" alt="${work.title} design preview" loading="lazy" decoding="async" class="block w-full h-auto transition-transform duration-500 group-hover:scale-[1.03]" />
                     <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center p-4 text-center">
                         <span class="text-white font-display text-xl tracking-wider border-b-2 border-white pb-1">${work.title}</span>
                         ${designMeta}
                     </div>
-                </div>
+                </article>
             `;
         } else if (work.type === 'event') {
             const highlightsHtml = work.highlights.map(h => `
@@ -341,6 +463,16 @@ function renderWorks(works) {
                 </article>
             `;
         }
+    });
+
+    designContainer.querySelectorAll('[data-design-index]').forEach((item) => {
+        item.addEventListener('click', () => openDesignLightbox(Number(item.dataset.designIndex)));
+        item.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                openDesignLightbox(Number(item.dataset.designIndex));
+            }
+        });
     });
 }
 
