@@ -33,10 +33,12 @@ const SOURCES = [
 ];
 
 /**
- * Referenced by Neon data rows (profile.resume_url, profile.hero_image), not by
- * any file in the repo. Moving them 404s the live resume button and hero image
- * until the database rows are updated. Asserted here so the constraint is
- * machine-checked rather than tribal knowledge.
+ * Referenced by Neon data rows (profile.resume_url, profile.hero_image). resume.pdf
+ * is also the href in index.html, but js/app.js overwrites it at runtime with the
+ * row value, so the row is the authority; the hero image is referenced by nothing
+ * else at all. Moving either 404s the live resume button and hero image until the
+ * database rows are updated. Asserted here so the constraint is machine-checked
+ * rather than tribal knowledge.
  */
 const PINNED_BY_DATA = [
   'resume.pdf',

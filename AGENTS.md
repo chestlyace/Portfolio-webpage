@@ -17,21 +17,36 @@ panel (`admin/`) writes to the same DB; the public site reads it at runtime.
 - The document root was historically a hand-copied snapshot of the repo root,
   which is how `backend/.env` was served publicly. It is now an explicit
   allowlist: `./scripts/deploy.sh` (dry run) / `--apply` to publish.
-- `README.md` and `.agent/workflows/deploy-netlify.md` describe MongoDB and
-  Netlify. Both are obsolete — the stack is Neon Postgres on an EC2 host.
+- `README.md` is accurate — use it for the layout table and the deploy commands.
+- `.agent/workflows/deploy-netlify.md` is obsolete: its frontmatter says "Deploy
+  backend to Netlify with MongoDB" and it provisions a MongoDB Atlas cluster.
+  The stack is Neon Postgres on an EC2 host.
 
 ## Never move these
 
 - **The four HTML pages.** `sitemap.xml` publishes them at the domain root and
   every cross-page link is root-absolute (`/graphic-design.html`, `/#work`).
-- **`favicon.ico`, `favicon-32x32.png`, `apple-touch-icon.png`, `robots.txt`,
-  `sitemap.xml`** — referenced root-absolute by the pages.
+- **`favicon.ico`, `favicon-32x32.png`, `apple-touch-icon.png`, `sitemap.xml`** —
+  referenced root-absolute by the pages.
+- **`robots.txt`** — referenced by nothing in the repo. It stays because crawlers
+  request `/robots.txt` by convention, and its `Disallow: /admin/` line is the only
+  thing keeping the password-gated admin panel out of search indexes. Deleting it
+  would un-block indexing of `/admin/`.
 - **`hero-optimized.webp`** — root-absolute `og:image` and the `js/app.js` fallback.
-- **`resume.pdf` and `684d5ff7-8d68-46ce-a5eb-5b0dabd64850.png`** — referenced by
-  Neon rows `profile.resume_url` and `profile.hero_image`, not by any repo file.
-  `node scripts/check-assets.mjs` asserts both, precisely because nothing else would.
+- **`resume.pdf`** — Neon row `profile.resume_url`, which `js/app.js` writes over
+  the `href="resume.pdf"` fallback in `index.html` at runtime. The row is the
+  authority; moving the file 404s the resume button.
+- **`684d5ff7-8d68-46ce-a5eb-5b0dabd64850.png`** — Neon row `profile.hero_image`
+  and referenced by nothing else at all, so `node scripts/check-assets.mjs` asserts
+  it precisely because nothing else would.
+- **`logoNGcodeX.png`, `yibs.png`, `digimark.jpeg`, `ets_nhahealthtech_logo.jpeg`** —
+  look unreferenced, but `db/neon_setup.sql` seeds `journey.logo_url` with those
+  bare filenames. See the Database section for the full reason. The absence of
+  references is not licence to move them.
 
-Adding a new page or asset means adding it to `PUBLISH` in `scripts/deploy.sh`.
+A new **root-level** page or asset means adding it to `PUBLISH` in `scripts/deploy.sh`.
+The allowlisted directories (`js`, `admin`, `assets`) are copied whole, so new files
+inside them need no entry.
 
 ## Commands
 
@@ -60,7 +75,7 @@ live database — never test on a LAN IP, preview domain, or tunnel.
 ## Env vars
 
 `dotenv` loads from cwd, so the env file is **`backend/.env`** (gitignored; no `.env.example` exists):
-`DATABASE_URL`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_SECRET`→`CLOUDINARY_API_SECRET`,
+`DATABASE_URL`, `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`,
 `JWT_SECRET`, `ADMIN_PASSWORD`, `PORT`.
 
 ## Database

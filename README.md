@@ -16,11 +16,12 @@ Postgres database, and Cloudinary for uploads.
 | `scripts/check-assets.mjs` | Fails if any HTML `src`/`href` does not resolve. |
 | `scripts/deploy.sh` | Allowlist deploy to the document root. |
 
-Two files sit at the repo root because **Neon data rows** reference them, not
-because any file in the repo does:
+Two files sit at the repo root because **Neon data rows** reference them:
 
-- `resume.pdf` — `profile.resume_url`
-- `684d5ff7-8d68-46ce-a5eb-5b0dabd64850.png` — `profile.hero_image`
+- `resume.pdf` — `profile.resume_url`. Also the `href="resume.pdf"` fallback in
+  `index.html`, which `js/app.js` overwrites at runtime with the same value.
+- `684d5ff7-8d68-46ce-a5eb-5b0dabd64850.png` — `profile.hero_image`. Nothing in
+  the repo references it.
 
 Moving either 404s the live site until those rows are updated.
 
