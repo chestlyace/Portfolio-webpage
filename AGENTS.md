@@ -6,45 +6,56 @@ Static Tailwind-via-CDN portfolio (`index.html` + 3 subpages) with a separate Ex
 (`backend/server.js`) backed by **Neon Postgres** + **Cloudinary**. A password-gated admin
 panel (`admin/`) writes to the same DB; the public site reads it at runtime.
 
-## The README and .agent/ are obsolete — ignore them
+## Deployment reality (not guessable from the repo)
 
-`README.md` and `.agent/workflows/deploy-netlify.md` describe **MongoDB, Netlify functions,
-`npm run seed`, `config/`, `models/`, `scripts/`, `netlify/`, `data/content.json`, and
-`/api/content` endpoints**. None of that exists. The stack moved Supabase → Neon Postgres and
-the backend to Render. Trust the code, not the docs.
+- nginx on an EC2 host serves the document root `/var/www/chestlyace` and proxies
+  `/api/` to a Node process on `127.0.0.1:5000`.
+- **The API does not run from this repo.** It runs from a separate clone on the
+  host, started as a bare `node server.js` with no systemd unit and no pm2, so it
+  will not survive a reboot. Backend changes need their own deploy step and a
+  manual restart.
+- The document root was historically a hand-copied snapshot of the repo root,
+  which is how `backend/.env` was served publicly. It is now an explicit
+  allowlist: `./scripts/deploy.sh` (dry run) / `--apply` to publish.
+- `README.md` and `.agent/workflows/deploy-netlify.md` describe MongoDB and
+  Netlify. Both are obsolete — the stack is Neon Postgres on an EC2 host.
+
+## Never move these
+
+- **The four HTML pages.** `sitemap.xml` publishes them at the domain root and
+  every cross-page link is root-absolute (`/graphic-design.html`, `/#work`).
+- **`favicon.ico`, `favicon-32x32.png`, `apple-touch-icon.png`, `robots.txt`,
+  `sitemap.xml`** — referenced root-absolute by the pages.
+- **`hero-optimized.webp`** — root-absolute `og:image` and the `js/app.js` fallback.
+- **`resume.pdf` and `684d5ff7-8d68-46ce-a5eb-5b0dabd64850.png`** — referenced by
+  Neon rows `profile.resume_url` and `profile.hero_image`, not by any repo file.
+  `node scripts/check-assets.mjs` asserts both, precisely because nothing else would.
+
+Adding a new page or asset means adding it to `PUBLISH` in `scripts/deploy.sh`.
 
 ## Commands
 
-Two processes are required; there is no combined dev command.
-
 ```bash
-# Terminal 1 — static site only (no API)
-npm run dev            # root: `serve .` → http://localhost:3000
-
-# Terminal 2 — API
-cd backend && npm install && npm start   # Express → http://localhost:5000
+npm run dev                          # static site -> http://localhost:3000
+cd backend && npm start              # API -> http://localhost:5000 (no watch)
+node scripts/check-assets.mjs        # must pass before deploying
+./scripts/deploy.sh                  # dry run
+./scripts/deploy.sh --apply          # publish
 ```
 
-- `npm start` in `backend/` is plain `node server.js` — **no nodemon, no watch**. Restart manually after edits.
-- **No tests, lint, formatter, or typecheck** exist in either package (`npm test` exits 1 by design). No CI, no `render.yaml`, no `netlify.toml`.
-- Verify changes with:
-  ```bash
-  curl http://localhost:5000/health          # {"ok":true}
-  curl http://localhost:5000/api/portfolio  # full payload: profile/skills/services/works/journey/socials
-  ```
-- Ports: `serve` = 3000, Live Server = 5501 (`.vscode/settings.json`), API = 5000.
+No tests, lint, formatter, or typecheck. `npm test` exits 1 by design. There are
+no tests because the site has no build step; asset integrity is checked by
+`scripts/check-assets.mjs` and deployment by HTTP status checks.
 
-## API URL is hardcoded twice — no env/config mechanism
+Ports: `serve` 3000, Live Server 5501, API 5000.
 
-Both `js/app.js:1-3` and `admin/admin.js:1-3` contain the same literal ternary:
+## API URL
 
-```js
-localhost|127.0.0.1 ? 'http://localhost:5000/api' : 'https://portfolio-webpage-gla4.onrender.com/api'
-```
-
-- Pointing the site at a different backend means editing **both** files.
-- Any non-localhost hostname (LAN IP, preview domain, tunnel) silently hits **production Render and the production DB**. Do not test on such a hostname.
-- Editing the backend means the Render deploy is unaffected — this repo is not wired to auto-deploy.
+`js/app.js` and `admin/admin.js` each define `API_URL` as a hostname ternary:
+`localhost`/`127.0.0.1` → `http://localhost:5000/api`, everything else → `/api`.
+There is no env or config mechanism, so changing the backend host means editing
+**both** files. Any non-localhost hostname therefore hits the live site and the
+live database — never test on a LAN IP, preview domain, or tunnel.
 
 ## Env vars
 
@@ -54,10 +65,15 @@ localhost|127.0.0.1 ? 'http://localhost:5000/api' : 'https://portfolio-webpage-g
 
 ## Database
 
-- `neon_setup.sql` is the schema **and** seed source of truth (181 lines, `DROP TABLE IF EXISTS` on all 6 tables + 10 `INSERT`s). Re-running it **destroys data**.
-- `supabase_setup.sql`, `supabase_update.sql`, `initial_data.sql` are Supabase-era leftovers. `supabase_update.sql`'s `ALTER TABLE` changes are already folded into `neon_setup.sql`.
+- `db/neon_setup.sql` is the schema **and** seed source of truth (181 lines, `DROP TABLE IF EXISTS` on all 6 tables + 10 `INSERT`s). Re-running it **destroys data**.
+- The Supabase-era files (`supabase_setup.sql`, `supabase_update.sql`, `initial_data.sql`) were deleted; their `ALTER TABLE` changes are already folded into `db/neon_setup.sql`.
 - Tables: `profile` (single row, `id = 1` hardcoded in `PUT /api/profile`), `skills`, `services`, `works`, `journey` (ordered by `order_index`), `socials`.
 - JSONB columns: `services.items`, `works.tech_stack`, `works.highlights`. The backend parses incoming FormData JSON strings then re-stringifies them for `pg`.
+
+`logoNGcodeX.png`, `yibs.png`, `digimark.jpeg`, and `ets_nhahealthtech_logo.jpeg`
+have no HTML reference and are absent from the live database, but `db/neon_setup.sql`
+seeds `journey.logo_url` with those bare filenames. Keep them so a fresh seed does
+not 404.
 
 ### Write endpoints are asymmetric — know what the admin can't edit
 
@@ -150,5 +166,9 @@ Default branch is `main`; commits are Conventional Commits (`feat:`, `fix:`, `ch
 `feature/nextjs-migration` currently has **no commits ahead of `main`** — it is an empty branch,
 there is no Next.js code in the tree.
 
-`.gitignore` contains only `node_modules` and `.env`, so multi-MB images (`btc.png`, `profile.jpg`,
-`JAN.2025.png`, …) are tracked. Expect large diffs; don't "clean up" assets unless asked.
+`.gitignore` contains `node_modules`, `.env`, and `.superpowers/`. The unreferenced
+multi-MB images that used to sit in the repo root are gone; bulk imagery now lives in
+`assets/`, so the root holds only the pinned assets listed above plus the four
+seed-fixture logos. Keep it that way: add new binaries under `assets/`, and put a file
+at the root only when a root-absolute HTML reference or a Neon row requires it — in
+which case it must also be added to `PUBLISH` in `scripts/deploy.sh`.
