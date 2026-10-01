@@ -29,9 +29,9 @@ panel (`admin/`) writes to the same DB; the public site reads it at runtime.
 - **`favicon.ico`, `favicon-32x32.png`, `apple-touch-icon.png`, `sitemap.xml`** —
   referenced root-absolute by the pages.
 - **`robots.txt`** — referenced by nothing in the repo. It stays because crawlers
-  request `/robots.txt` by convention, and its `Disallow: /admin/` line is the only
-  thing keeping the password-gated admin panel out of search indexes. Deleting it
-  would un-block indexing of `/admin/`.
+  request `/robots.txt` by convention, and its `Disallow: /admin/` reinforces the
+  `noindex, nofollow` meta at `admin/index.html:8`. Deleting it would drop one of the
+  two signals keeping `/admin/` out of search indexes.
 - **`hero-optimized.webp`** — root-absolute `og:image` and the `js/app.js` fallback.
 - **`resume.pdf`** — Neon row `profile.resume_url`, which `js/app.js` writes over
   the `href="resume.pdf"` fallback in `index.html` at runtime. The row is the
