@@ -10,7 +10,7 @@
  * Exit 0 = all references resolve. Exit 1 = at least one is missing.
  *
  * Covered: src/href attributes and og:image/og:url meta tags across the five
- * HTML sources, plus the two files referenced by Neon data rows.
+ * HTML sources, plus the two files referenced by database rows.
  *
  * Not covered: URLs returned by the API at runtime (Cloudinary), and the
  * bare-string image fallbacks inside js/app.js.
@@ -33,7 +33,7 @@ const SOURCES = [
 ];
 
 /**
- * Referenced by Neon data rows (profile.resume_url, profile.hero_image). resume.pdf
+ * Referenced by database rows (profile.resume_url, profile.hero_image). resume.pdf
  * is also the href in index.html, but js/app.js overwrites it at runtime with the
  * row value, so the row is the authority; the hero image is referenced by nothing
  * else at all. Moving either 404s the live resume button and hero image until the
@@ -103,7 +103,7 @@ for (const sourceRel of SOURCES) {
 for (const pinned of PINNED_BY_DATA) {
   // Resolve against REPO_ROOT: existsSync() on a bare relative path would test
   // against process.cwd(), so this would fail no matter where the script is run.
-  check('(Neon data row)', pinned, join(REPO_ROOT, pinned));
+  check('(database row)', pinned, join(REPO_ROOT, pinned));
 }
 
 if (problems.length) {

@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
-// Neon Postgres Setup
+// Postgres Setup
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false },
@@ -23,7 +23,7 @@ const pool = new Pool({
 
 // Test DB connection on startup
 pool.query('SELECT NOW()')
-    .then(() => console.log('Connected to Neon Postgres'))
+    .then(() => console.log('Connected to Postgres'))
     .catch(err => console.error('Database connection error:', err.message));
 
 // Cloudinary Setup

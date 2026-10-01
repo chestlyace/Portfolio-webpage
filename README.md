@@ -16,7 +16,7 @@ Postgres database, and Cloudinary for uploads.
 | `scripts/check-assets.mjs` | Fails if any HTML `src`/`href` does not resolve. |
 | `scripts/deploy.sh` | Allowlist deploy to the document root. |
 
-Two files sit at the repo root because **Neon data rows** reference them:
+Two files sit at the repo root because **database rows** reference them:
 
 - `resume.pdf` — `profile.resume_url`. Also the `href="resume.pdf"` fallback in
   `index.html`, which `js/app.js` overwrites at runtime with the same value.
@@ -44,7 +44,7 @@ manually. There is no test, lint, or typecheck step.
 live in `backend/`):
 
 ```
-DATABASE_URL=            # Neon Postgres connection string
+DATABASE_URL=            # local PostgreSQL connection string
 JWT_SECRET=
 ADMIN_PASSWORD=
 CLOUDINARY_CLOUD_NAME=

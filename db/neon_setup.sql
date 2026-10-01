@@ -1,5 +1,6 @@
--- Neon Postgres Setup SQL
--- Run this in your Neon SQL Editor (Dashboard > SQL Editor)
+-- PostgreSQL Setup SQL
+-- Run this against the local Postgres instance:
+--   psql "$DATABASE_URL" -f db/neon_setup.sql
 
 -- Drop existing tables if they exist (careful with this in production)
 DROP TABLE IF EXISTS socials;

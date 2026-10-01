@@ -3,7 +3,7 @@
 ## What this is
 
 Static Tailwind-via-CDN portfolio (`index.html` + 3 subpages) with a separate Express API
-(`backend/server.js`) backed by **Neon Postgres** + **Cloudinary**. A password-gated admin
+(`backend/server.js`) backed by **PostgreSQL** + **Cloudinary**. A password-gated admin
 panel (`admin/`) writes to the same DB; the public site reads it at runtime.
 
 ## Deployment reality (not guessable from the repo)
@@ -20,7 +20,12 @@ panel (`admin/`) writes to the same DB; the public site reads it at runtime.
 - `README.md` is accurate — use it for the layout table and the deploy commands.
 - `.agent/workflows/deploy-netlify.md` is obsolete: its frontmatter says "Deploy
   backend to Netlify with MongoDB" and it provisions a MongoDB Atlas cluster.
-  The stack is Neon Postgres on an EC2 host.
+- **The database is local to that same host.** `DATABASE_URL` resolves to
+  `127.0.0.1:5432`, database `portfolio_db`, user `portfolio_user` — a plain
+  PostgreSQL instance on the EC2 box, not a managed one. There is no managed
+  database and no copy of its credentials outside this host, so `DATABASE_URL`
+  lives in the gitignored `backend/.env` and database work means SSH access to
+  the EC2 host.
 
 ## Never move these
 
@@ -33,10 +38,10 @@ panel (`admin/`) writes to the same DB; the public site reads it at runtime.
   `noindex, nofollow` meta at `admin/index.html:8`. Deleting it would drop one of the
   two signals keeping `/admin/` out of search indexes.
 - **`hero-optimized.webp`** — root-absolute `og:image` and the `js/app.js` fallback.
-- **`resume.pdf`** — Neon row `profile.resume_url`, which `js/app.js` writes over
-  the `href="resume.pdf"` fallback in `index.html` at runtime. The row is the
+- **`resume.pdf`** — database row `profile.resume_url`, which `js/app.js` writes
+  over the `href="resume.pdf"` fallback in `index.html` at runtime. The row is the
   authority; moving the file 404s the resume button.
-- **`684d5ff7-8d68-46ce-a5eb-5b0dabd64850.png`** — Neon row `profile.hero_image`
+- **`684d5ff7-8d68-46ce-a5eb-5b0dabd64850.png`** — database row `profile.hero_image`
   and referenced by nothing else at all, so `node scripts/check-assets.mjs` asserts
   it precisely because nothing else would.
 - **`logoNGcodeX.png`, `yibs.png`, `digimark.jpeg`, `ets_nhahealthtech_logo.jpeg`** —
@@ -100,7 +105,7 @@ not 404.
 | profile | PUT only (whole-row) |
 | services, socials | **no write endpoints at all — SQL only** |
 
-Editing services/socials/skill labels requires running SQL against Neon directly.
+Editing services/socials/skill labels requires running SQL against the local Postgres directly.
 
 ## Auth model
 
@@ -185,5 +190,5 @@ there is no Next.js code in the tree.
 multi-MB images that used to sit in the repo root are gone; bulk imagery now lives in
 `assets/`, so the root holds only the pinned assets listed above plus the four
 seed-fixture logos. Keep it that way: add new binaries under `assets/`, and put a file
-at the root only when a root-absolute HTML reference or a Neon row requires it — in
+at the root only when a root-absolute HTML reference or a database row requires it — in
 which case it must also be added to `PUBLISH` in `scripts/deploy.sh`.
