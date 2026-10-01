@@ -41,6 +41,13 @@ PUBLISH=(
   # Pinned by Neon data rows (profile.resume_url / profile.hero_image).
   resume.pdf
   684d5ff7-8d68-46ce-a5eb-5b0dabd64850.png
+  # Pinned by Neon seed rows: db/neon_setup.sql seeds journey.logo_url with these
+  # bare filenames (in order_index order), so a fresh seed needs them resolvable
+  # at the docroot root. Publicly served today, so keep them public.
+  ets_nhahealthtech_logo.jpeg
+  digimark.jpeg
+  yibs.png
+  logoNGcodeX.png
   # Directories are copied whole.
   js
   admin
