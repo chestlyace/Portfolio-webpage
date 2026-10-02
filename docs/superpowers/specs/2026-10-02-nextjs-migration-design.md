@@ -149,7 +149,7 @@ components/
   site/      Navbar Footer FloatingActions ThemeToggle
   sections/  Hero About Skills Services Work Journey Contact Faq
   work/      WorkTabs ProjectCard DesignMasonry DesignLightbox EventCard
-  ui/        MaterialIcon SocialIcon SectionBoundary
+  ui/        SectionBoundary
 lib/
   types.ts        PortfolioData, Profile, Skill, Service, Work, JourneyItem, Social
   api.ts          API_URL resolution + the single fetch
@@ -282,6 +282,11 @@ Hydration safety follows from that structure and must not be broken:
   (`dark`), React discards the server markup, and the theme-init script's DOM change
   is thrown away — reintroducing exactly the FOUC that script exists to prevent. The
   theme-init script owns `<html class="dark">`; React owns nothing about it.
+- There is deliberately **no `MaterialIcon` or `SocialIcon` component.** Material
+  Icons and FontAwesome are ligature/icon fonts rendered as raw
+  `<span class="material-icons-outlined">` and `<i class="fab fa-whatsapp">`
+  elements. Wrapping them in a component would invite swapping in a React icon
+  library, which changes what renders.
 
 ### Retiring the old files
 
