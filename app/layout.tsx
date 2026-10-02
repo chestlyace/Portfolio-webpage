@@ -76,9 +76,12 @@ export default function RootLayout({
         <link crossOrigin="" href="https://fonts.gstatic.com" rel="preconnect" />
         <link href="https://cdnjs.cloudflare.com" rel="preconnect" />
         <link href="https://cdn.jsdelivr.net" rel="preconnect" />
-        {/* React passes link attributes through verbatim, so the preload
-            attributes must stay lowercase to match the source markup;
-            @types/react only declares the camelCase spellings. */}
+        {/* The preload attributes are spread with lowercase keys to satisfy
+            @types/react, which only declares the camelCase spellings, and to
+            keep the emitted DOM attribute lowercase. React normalises
+            camelCase to lowercase anyway, so `imageSrcSet` would emit
+            `imagesrcset` too — either spelling works; this form keeps the
+            types and the output correct at once. */}
         <link
           rel="preload"
           as="image"

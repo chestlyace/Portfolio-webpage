@@ -183,8 +183,8 @@ on a subpage.
 ## Git
 
 Default branch is `main`; commits are Conventional Commits (`feat:`, `fix:`, `chore:`, `style:`).
-`feature/nextjs-migration` currently has **no commits ahead of `main`** — it is an empty branch,
-there is no Next.js code in the tree.
+`feature/nextjs-migration` now carries the Next.js migration and is **ahead of `main`** (12 commits
+when this line was rewritten; `git rev-list --count main..feature/nextjs-migration` gives the current count).
 
 `.gitignore` contains `node_modules`, `.env`, and `.superpowers/`. The unreferenced
 multi-MB images that used to sit in the repo root are gone; bulk imagery now lives in
