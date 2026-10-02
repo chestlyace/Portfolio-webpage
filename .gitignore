@@ -1,3 +1,6 @@
 node_modules
 .env
 .superpowers/
+.next/
+out/
+next-env.d.ts
