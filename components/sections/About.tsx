@@ -1,6 +1,7 @@
 'use client';
 
 import { usePortfolio } from '@/lib/PortfolioProvider';
+import Skills from './Skills';
 
 export default function About() {
   const { data } = usePortfolio();
@@ -62,7 +63,7 @@ export default function About() {
                   <span className="material-icons-outlined text-primary mr-3">code</span>
                   Skills / Tech Stack
                 </h3>
-                {/* GAP: three skill-grid blocks, index.html:428-457 — Task 6 inserts <Skills /> here */}
+                <Skills />
                 <div className="mt-8 flex flex-wrap gap-3">
                   <span className="px-4 py-2 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-200 text-xs font-semibold border border-yellow-200 dark:border-yellow-700/50">
                     Teamwork
