@@ -214,16 +214,23 @@ The 14 selectors transcribed verbatim: `bg-swirl` (+ its `.dark` variant),
 `masonry-gallery`, `masonry-item`, `sr-only`, `sticker`, `text-outline`,
 `timeline-line`.
 
-### The six classes that must stay no-ops
+### The seven classes that must stay no-ops
 
 `bg-grid-pattern` (4 uses), `light-glass-panel` (1), `card-hover` (2),
-`glass-border` (2), `surface-dark` (3), `shadow-glow` (1).
+`glass-border` (2), `surface-dark` (3), `shadow-glow` (1), `ml--10` (1).
 
 **Nothing defines these.** They are inert today. They are copied verbatim into JSX
 and **must never be given a definition.** Defining them — the obvious "cleanup" a
 migration invites — changes the appearance of at least four elements and is exactly
 the kind of unrequested change this project forbids. `bg-swirl-pattern` is the
 opposite case: it is real, from the config, and must keep working.
+
+`ml--10` deserves its own note. It appears once, on the work-section header
+(`index.html:493`), and is a **misspelling** — the intended class was `-ml-10`. It is
+not a valid Tailwind utility, so it generates nothing and applies nothing. It must be
+transcribed exactly as `ml--10`. "Repairing" it to `-ml-10` shifts the work header
+left by 2.5rem, which is precisely the sort of invisible-until-you-look change this
+project forbids.
 
 ### Data layer
 
@@ -481,7 +488,7 @@ without a full build.
 - The backend, the database, Cloudinary configuration, and the stale `backend/.env`.
 - SEO improvements, SSR, image optimization, caching, prefetching.
 - Any visual or UX change, however small.
-- "Fixing" the six no-op classes — they are preserved as no-ops on purpose.
+- "Fixing" the seven no-op classes — they are preserved as no-ops on purpose.
 - nginx, systemd, pm2, TLS.
 - A real test framework. `npm test` still exits 1 by design.
 
@@ -490,7 +497,7 @@ without a full build.
 | Risk | Mitigation |
 |---|---|
 | White flash on dark-mode reload | Theme-init script in `<head>`, never `useEffect`; theme never read from `localStorage` during render; checked at checkpoint 2 |
-| A utility class silently dropped in a template-literal → JSX rewrite | Class-by-class transcription; six no-op classes called out explicitly |
+| A utility class silently dropped in a template-literal → JSX rewrite | Class-by-class transcription; seven no-op classes called out explicitly |
 | Custom CSS losing the cascade tie | `@tailwind` first, custom block second, no `@layer` |
 | `useState` rewriting button classes wholesale | Five moving classes specified in § section switching |
 | A section throw blanking the page | Per-section `SectionBoundary` falls back to that section's placeholder |
