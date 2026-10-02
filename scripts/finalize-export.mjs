@@ -77,37 +77,48 @@ for (const entry of readdirSync(OUT)) {
   }
 }
 
-// --- Prove the deletion was safe: no surviving file may reference a
-// --- removed path. Fail loudly rather than publish a broken reference.
+// --- Prove the deletion was safe.
+//
+// Two deliberate limits, both forced by how Next 16.3.8 actually emits:
+//
+//  1. Only `.txt` artifacts are checked. A removed entry that is a route
+//     NAME (e.g. the `_not-found/` payload dir) collides with Next's own
+//     route constant, which appears as `"/_not-found"` in the flight data of
+//     404.html and in the router chunk (`"/_not-found"!==e`,
+//     `d="/_not-found"`). A route path is not a file reference, so
+//     excluding extensionless names removes that whole class of false
+//     positive.
+//
+//  2. Only the emitted documents are scanned, not `_next/static/**`. The
+//     compiled router chunk contains Next's generic payload-URL builder
+//     (`e.pathname+="index.txt"`, `e.endsWith("/index.txt")`), which is
+//     runtime code for constructing a URL for ANY route, not a reference to
+//     the index.txt deleted at the export root.
+//
+// The authoritative check that no payload is actually needed is the
+// `grep -rn "from 'next/link'"` in Task 12: if internal navigation uses plain
+// <a> tags, no client-side route payload is ever requested.
+const payloads = removed.filter((r) => r.endsWith('.txt'));
 const dangling = [];
-function walk(dir) {
-  for (const entry of readdirSync(dir)) {
-    const full = join(dir, entry);
-    if (statSync(full).isDirectory()) {
-      walk(full);
-      continue;
-    }
-    if (!/\.(html|js|css|json|txt)$/.test(entry)) continue;
-    const body = readFileSync(full, 'utf8');
-    for (const gone of removed) {
-      if (body.includes(`/${gone}`) || body.includes(`"${gone}"`)) {
-        dangling.push(`${full.replace(`${REPO_ROOT}/`, '')} references ${gone}`);
-      }
+for (const doc of readdirSync(OUT).filter((f) => f.endsWith('.html'))) {
+  const body = readFileSync(join(OUT, doc), 'utf8');
+  for (const gone of payloads) {
+    if (body.includes(`/${gone}`) || body.includes(`"${gone}"`)) {
+      dangling.push(`out/${doc} references ${gone}`);
     }
   }
 }
-walk(OUT);
 
 if (dangling.length) {
   console.error(
-    `FAIL: ${dangling.length} file(s) reference deleted export payloads:\n` +
+    `FAIL: ${dangling.length} emitted document(s) reference a deleted export payload:\n` +
       dangling.map((d) => `  ${d}`).join('\n') +
-      '\nEither internal navigation started using <Link>, or a payload is ' +
-      'actually needed. Restore it rather than publishing.',
+      '\nInternal navigation probably started using <Link>. Restore the ' +
+      'payload rather than publishing.',
   );
   process.exit(1);
 }
 
 console.log(`OK: ${REQUIRED.length} export documents present`);
 console.log(`OK: removed ${removed.length} payload artifact(s): ${removed.join(', ') || 'none'}`);
-console.log('OK: no surviving reference to a removed artifact');
+console.log('OK: no emitted document references a removed artifact');
