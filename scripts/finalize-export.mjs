@@ -22,6 +22,7 @@ import { fileURLToPath } from 'node:url';
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(REPO_ROOT, 'out');
+const PUBLIC = join(REPO_ROOT, 'public');
 
 const REQUIRED = [
   'index.html',
@@ -51,14 +52,21 @@ if (missing.length) {
 // --- Delete the payload litter. ---
 const removed = [];
 
+// Files in public/ are deliberate static assets served at the site root. A
+// `.txt` there (robots.txt) is not RSC payload litter. Deleting it would
+// drop the `Disallow: /admin/` signal that, together with the noindex meta
+// on admin/index.html, keeps the admin panel out of search indexes.
+const isPublicAsset = (name) => existsSync(join(PUBLIC, name));
+
 function isPayloadFile(name) {
-  return name.endsWith('.txt');
+  return name.endsWith('.txt') && !isPublicAsset(name);
 }
 
 function isPayloadDir(name) {
   if (name === '_next' || name === '404.html' || name === '_not-found.html') {
     return false;
   }
+  if (isPublicAsset(name)) return false;
   // Payload dirs are named after their route and contain only __next.*.txt
   // files. Route directories never do, because routes emit .html files.
   const full = join(OUT, name);
@@ -74,6 +82,22 @@ for (const entry of readdirSync(OUT)) {
   if (isPayloadDir(entry) || isPayloadFile(entry)) {
     rmSync(full, { recursive: true, force: true });
     removed.push(entry);
+  }
+}
+
+// Every deliberate public/ asset must survive the sweep. Deleting is the
+// only irreversible step here, so it needs a guard rail rather than trust.
+if (existsSync(PUBLIC)) {
+  const lost = readdirSync(PUBLIC).filter(
+    (name) => !existsSync(join(OUT, name)),
+  );
+  if (lost.length) {
+    console.error(
+      `FAIL: the payload deletion removed ${lost.length} public/ asset(s):\n` +
+        lost.map((n) => `  public/${n} -> out/${n}`).join('\n') +
+        '\nExempt public/ entries from the payload predicates and re-check.',
+    );
+    process.exit(1);
   }
 }
 
