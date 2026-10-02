@@ -126,17 +126,24 @@ Field names — note `journey` uses `role`/`company`/`dates`, **not**
 
 ## Review workflow
 
-Two servers, two tabs, same live data:
+Two servers, two tabs, same live data. `package.json`'s `dev` script already
+hardcodes port 3001, so pass no flag:
 
 ```bash
 # once, before Task 1
 git checkout feature/nextjs-migration
-git reset --hard main          # the branch is 17 commits behind main
-git worktree add ../portfolio-baseline main
+git reset --hard main          # the branch is 19 commits behind main
+git branch baseline main
+git worktree add ../portfolio-baseline baseline
 cd ../portfolio-baseline && npm install && npm run dev -- --port 3000
 # in the main worktree
-npm run dev -- --port 3001
+npm install && npm run dev
 ```
+
+The baseline worktree uses a dedicated `baseline` branch rather than `main`, because
+a branch checked out in another worktree cannot be merged into later — which would
+block the final merge step. Both worktrees sit on the same commit, so the served
+content is identical.
 
 Baseline is `http://localhost:3000`, new site is `http://localhost:3001`.
 
@@ -1158,9 +1165,11 @@ git commit -m "feat: migrate hero"
 
 **Interfaces:**
 - Consumes: `usePortfolio()`.
-- Produces: default-exported `About` client component. Renders its own
-  `.skills-languages` / `.skills-frameworks` / `.skills-tools` children as empty
-  grids — Task 6 replaces their contents, not this component's shell.
+- Produces: default-exported `About` client component. It renders the "My Arsenal"
+  heading and then, in the position `index.html:434` occupies, an empty placeholder
+  div. **Task 6 creates `Skills.tsx` and replaces that placeholder with `<Skills />`**,
+  so `Skills.tsx` owns the three grids while `About.tsx` keeps their DOM nesting —
+  in the source they sit inside `<section id="about">`.
 
 - [ ] **Step 1: Transcribe `index.html:386-433`**
 
@@ -1224,6 +1233,8 @@ git commit -m "feat: migrate about section with drop cap"
 
 **Files:**
 - Create: `components/sections/Skills.tsx`
+- Modify: `components/sections/About.tsx` — replace the empty placeholder div with
+  `<Skills />`
 - Read: `index.html:434-473`, `js/app.js:306-328`
 
 **Interfaces:**
@@ -1254,7 +1265,7 @@ the same counts and same order as `:3000`. Icons render as glyphs, not as tofu b
 
 **Commit:**
 ```bash
-git add components/sections/Skills.tsx
+git add components/sections/Skills.tsx components/sections/About.tsx
 git commit -m "feat: migrate skills grids"
 ```
 
@@ -1306,9 +1317,14 @@ git commit -m "feat: migrate services"
 - Read: `index.html:492-523`, `index.html:874-899`
 
 **Interfaces:**
-- Consumes: `SectionBoundary`; the three sub-section components from Tasks 9-11.
-- Produces: default-exported `Work` client component owning the tab state, and
-  `WorkTabs` rendering the three buttons.
+- Consumes: `SectionBoundary` from Task 1.
+- Produces: default-exported `Work` client component owning the tab state and the
+  three section containers, plus `WorkTabs` rendering the three buttons.
+
+  **The containers ship with the literal `index.html` placeholder markup as their
+  children, not with the components from Tasks 9-11** — those do not exist yet. Each of
+  Tasks 9, 10, and 11 replaces the children of its own container. The placeholder is
+  exactly the pre-fetch DOM the design already requires, so nothing is wasted.
 
 - [ ] **Step 1: Transcribe the header from `index.html:492-523`**
 
@@ -1366,7 +1382,7 @@ Keeping `.section-content` on all three matters even though `useState` no longer
 `querySelectorAll('.section-content')` — the class is part of today's DOM and its
 absence would show up in any DOM comparison.
 
-- [ ] **Step 4: Wrap each sub-section in a `SectionBoundary`**
+- [ ] **Step 4: Wrap each container's placeholder in a `SectionBoundary`**
 
 Each fallback is that section's placeholder markup. One broken section must not blank
 the other two — that is the failure mode `js/app.js:275-277` provides today.
@@ -1441,20 +1457,34 @@ git commit -m "feat: migrate projects grid"
 - Read: `index.html:529-535`, `js/app.js:418-439`, `js/app.js:152-154`
 
 **Interfaces:**
-- Consumes: `Work[]` filtered to `type === 'design'`.
+- Consumes: `usePortfolio()`, `Work[]`.
 - Produces: `lib/designLightbox.tsx` exporting `DesignLightboxProvider({ children })`
   and `useDesignLightbox()` returning
   `{ items: Work[]; activeIndex: number | null; open(index: number): void; close(): void; next(step: 1 | -1): void }`.
   This task creates the provider and its state; **Task 12 renders the visual shell**
-  that consumes it. The split exists so this task has no forward dependency.
+  that consumes it, and **Task 18 mounts both at page level**. The split exists so this
+  task has no forward dependency.
   Also produces: default-exported `DesignMasonry`.
 
 - [ ] **Step 1: Create the lightbox state container in `lib/designLightbox.tsx`**
 
+The provider takes **no `items` prop** — it derives the design works from
+`usePortfolio()` itself. A prop would force the provider to be mounted inside `Work`'s
+subtree, leaving the page-level lightbox shell from Task 12 unable to reach it.
+Deriving internally also keeps the tile indices and the shell's indices provably the
+same ordering.
+
 ```tsx
 'use client';
 
-import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
+import { usePortfolio } from './PortfolioProvider';
 import type { Work } from './types';
 
 interface DesignLightboxState {
@@ -1469,28 +1499,36 @@ const DesignLightboxContext = createContext<DesignLightboxState | null>(null);
 
 export function useDesignLightbox(): DesignLightboxState {
   const ctx = useContext(DesignLightboxContext);
-  if (!ctx) throw new Error('useDesignLightbox must be used inside DesignLightboxProvider');
+  if (!ctx) {
+    throw new Error('useDesignLightbox must be used inside DesignLightboxProvider');
+  }
   return ctx;
 }
 
 export function DesignLightboxProvider({
-  items,
   children,
 }: {
-  items: Work[];
   children: React.ReactNode;
 }) {
+  const { data } = usePortfolio();
+  const items = useMemo(
+    () => (data?.works ?? []).filter((w) => w.type === 'design'),
+    [data],
+  );
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   const open = useCallback((index: number) => setActiveIndex(index), []);
   const close = useCallback(() => setActiveIndex(null), []);
-  const next = useCallback((step: 1 | -1) => {
-    setActiveIndex((current) => {
-      if (current === null) return current;
-      // Wraps at both ends. Preserve the direction js/app.js:191-194 uses.
-      return (current + step + items.length) % items.length;
-    });
-  }, [items.length]);
+  const next = useCallback(
+    (step: 1 | -1) => {
+      setActiveIndex((current) => {
+        if (current === null) return current;
+        // Wraps at both ends. Preserve the direction js/app.js:191-194 uses.
+        return (current + step + items.length) % items.length;
+      });
+    },
+    [items.length],
+  );
 
   const value = useMemo(
     () => ({ items, activeIndex, open, close, next }),
@@ -1526,19 +1564,21 @@ It builds the caption shown in the lightbox. Copy it verbatim.
 - [ ] **Step 5: Wire each tile to `open(index)`**
 
 ```tsx
-const { open } = useDesignLightbox();
+const { items, open } = useDesignLightbox();
 ```
 
 Each tile's click handler calls `open(index)` with the tile's index **within the
 design-only array**, which is the same ordering `js/app.js:371` builds
-(`works.filter((work) => work.type === 'design')`). Mount the tiles inside
-`DesignLightboxProvider` with `items={designWorks}` in `components/sections/Work.tsx`.
+(`works.filter((work) => work.type === 'design')`). That array is `items` from the
+provider — do not re-filter locally, or the tile indices and the shell's indices can
+drift apart. `DesignLightboxProvider` itself is mounted at page level in Task 18;
+nothing is mounted here.
 
 **Verify:** the DESIGN GALLERY tab shows an 18-tile masonry with the same column counts
 at every breakpoint and the same tile order as `:3000`. Tiles do not reflow
 unexpectedly when images load. Clicking a tile opens nothing yet — Task 12 renders
-the lightbox — but confirm no console error and that `activeIndex` is set (React
-DevTools → state).
+the lightbox and Task 18 mounts the provider — but confirm no console error and that
+`activeIndex` is set (React DevTools → state).
 
 **Commit:**
 ```bash
@@ -1599,6 +1639,10 @@ git commit -m "feat: migrate events grid"
   already lives in the provider, so this component holds no state of its own except
   the `<img>` render guard.
 
+  **This task creates no mounting.** Task 18 places `<DesignLightbox />` inside
+  `DesignLightboxProvider` at page level, alongside every other component. Until then
+  the shell is defined but unrendered, which is the same state it is in after Task 10.
+
 - [ ] **Step 1: Transcribe the lightbox shell from `index.html:714-767`**
 
 `#design-lightbox`, `#lightbox-stage`, the close button, the prev/next controls, and
@@ -1657,7 +1701,7 @@ the page behind cannot scroll while it is open. Match `:3000` on all of it.
 
 **Commit:**
 ```bash
-git add components/work/DesignLightbox.tsx components/sections/Work.tsx
+git add components/work/DesignLightbox.tsx
 git commit -m "feat: migrate design lightbox with keyboard and swipe"
 ```
 
@@ -1729,8 +1773,9 @@ git commit -m "feat: migrate journey timeline"
 
 **Interfaces:**
 - Consumes: `usePortfolio()`.
-- Produces: default-exported `Contact`, which renders the left column and mounts
-  `ContactForm` (Task 15) in the right.
+- Produces: default-exported `Contact`, which renders **only the left column**
+  (`index.html:564-618`). **Task 15 creates `ContactForm` and adds the mount to this
+  component** — the form does not exist yet at this task.
 
 - [ ] **Step 1: Transcribe `index.html:564-618`**
 
@@ -1776,6 +1821,8 @@ git commit -m "feat: migrate contact section left column"
 
 **Files:**
 - Create: `components/sections/ContactForm.tsx`
+- Modify: `components/sections/Contact.tsx` — mount `<ContactForm />` in the right
+  column, at the position `index.html:619` occupies
 - Read: `index.html:619-662`, `index.html:900-915`
 
 **Interfaces:**
@@ -1828,7 +1875,7 @@ appearance with `:3000`.
 
 **Commit:**
 ```bash
-git add components/sections/ContactForm.tsx
+git add components/sections/ContactForm.tsx components/sections/Contact.tsx
 git commit -m "feat: migrate contact form with WhatsApp submit"
 ```
 
@@ -2019,26 +2066,35 @@ and must be preserved.
 
 ```tsx
 import { PortfolioProvider } from '@/lib/PortfolioProvider';
+import { DesignLightboxProvider } from '@/lib/designLightbox';
 // …
 export default function Page() {
   return (
     <PortfolioProvider>
-      <Navbar />
-      <main className="relative z-10">…Hero…</main>
-      <About />
-      <Skills />
-      <Services />
-      <Work />
-      <Journey />
-      <Contact />
-      <Faq />
-      <DesignLightbox />
-      <Footer />
-      <FloatingActions />
+      <DesignLightboxProvider>
+        <Navbar />
+        <main className="relative z-10">…Hero…</main>
+        <About />
+        <Skills />
+        <Services />
+        <Work />
+        <Journey />
+        <Contact />
+        <Faq />
+        <DesignLightbox />
+        <Footer />
+        <FloatingActions />
+      </DesignLightboxProvider>
     </PortfolioProvider>
   );
 }
 ```
+
+`<DesignLightbox />` **must** be inside `DesignLightboxProvider` — it calls
+`useDesignLightbox()`, which throws outside it. `<About />` renders `<Skills />`
+itself, so do not list `Skills` separately here; the snippet shows it only to make the
+nesting obvious. Two providers in this order, not one: `PortfolioProvider` supplies the
+works, and `DesignLightboxProvider` reads them.
 
 - [ ] **Step 5: Migrate the three subpages**
 
