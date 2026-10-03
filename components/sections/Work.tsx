@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import WorkTabs, { type Tab } from '@/components/work/WorkTabs';
 import ProjectCard from '@/components/work/ProjectCard';
+import DesignMasonry from '@/components/work/DesignMasonry';
 import { SectionBoundary } from '@/components/ui/SectionBoundary';
 import { usePortfolio } from '@/lib/PortfolioProvider';
 
@@ -57,7 +58,9 @@ export default function Work() {
         className={`w-full section-content${tab === 'design' ? '' : ' hidden'}`}
       >
         <div className="masonry-gallery">
-          {/* Designs will be injected here */}
+          <SectionBoundary fallback={<>{/* Designs will be injected here */}</>}>
+            <DesignMasonry />
+          </SectionBoundary>
         </div>
       </div>
       <div
