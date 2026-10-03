@@ -80,7 +80,10 @@ export default function ProjectCard({ work }: { work: Work }) {
           loading="lazy"
           decoding="async"
           className="thumbnail w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-          src={optimizedWorkImage}
+          // js/app.js:400 interpolates this into an innerHTML template, so a
+          // null image_url serialises as `src="null"`; a bare `src={x}` would
+          // drop the attribute instead. The template keeps the source's bytes.
+          src={`${optimizedWorkImage}`}
         />
         <div className="absolute top-4 right-4 bg-black/70 dark:bg-white/90 text-white dark:text-black text-xs font-bold px-3 py-1 rounded-full backdrop-blur-sm uppercase tracking-wider">
           {`${work.category_label}`}

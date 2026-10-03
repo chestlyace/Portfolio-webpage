@@ -52,7 +52,10 @@ export default function DesignMasonry() {
             }}
           >
             <img
-              src={optimizedWorkImage}
+              // js/app.js:433 interpolates this into an innerHTML template, so
+              // a null image_url serialises as `src="null"`; a bare `src={x}`
+              // would drop the attribute instead. Keep the source's bytes.
+              src={`${optimizedWorkImage}`}
               alt={`${work.title} design preview`}
               loading="lazy"
               decoding="async"
