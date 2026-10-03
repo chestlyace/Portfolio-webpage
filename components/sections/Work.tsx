@@ -4,6 +4,7 @@ import { useState } from 'react';
 import WorkTabs, { type Tab } from '@/components/work/WorkTabs';
 import ProjectCard from '@/components/work/ProjectCard';
 import DesignMasonry from '@/components/work/DesignMasonry';
+import EventCard from '@/components/work/EventCard';
 import { SectionBoundary } from '@/components/ui/SectionBoundary';
 import { usePortfolio } from '@/lib/PortfolioProvider';
 
@@ -21,6 +22,13 @@ export default function Work() {
   // `type === 'project'` into this container, so API order is render order
   // (ids 29,30,31,32,33,34,1) and nothing is sorted.
   const projects = (data?.works ?? []).filter((w) => w.type === 'project');
+
+  // js/app.js:377 again: API order is render order, nothing is sorted, and
+  // the `work.type === 'event'` branch (js/app.js:440) writes only events
+  // into this container. There are zero event works in production, so this
+  // renders an empty grid — the same observable behaviour as the legacy
+  // site's `<!-- Events will be injected here -->`, which produces no DOM.
+  const events = (data?.works ?? []).filter((w) => w.type === 'event');
 
   return (
     <section
@@ -69,7 +77,11 @@ export default function Work() {
           tab === 'events' ? '' : ' hidden'
         }`}
       >
-        {/* Events will be injected here */}
+        <SectionBoundary fallback={<>{/* Events will be injected here */}</>}>
+          {events.map((work) => (
+            <EventCard key={work.id} work={work} />
+          ))}
+        </SectionBoundary>
       </div>
     </section>
   );
