@@ -2,6 +2,9 @@
 
 import { useState } from 'react';
 import WorkTabs, { type Tab } from '@/components/work/WorkTabs';
+import ProjectCard from '@/components/work/ProjectCard';
+import { SectionBoundary } from '@/components/ui/SectionBoundary';
+import { usePortfolio } from '@/lib/PortfolioProvider';
 
 // index.html:492-539. showSection (index.html:875-896) is replaced by one
 // useState: the active tab hides the two sibling containers with Tailwind's
@@ -11,6 +14,12 @@ import WorkTabs, { type Tab } from '@/components/work/WorkTabs';
 // and because it is part of today's DOM.
 export default function Work() {
   const [tab, setTab] = useState<Tab>('projects');
+  const { data } = usePortfolio();
+
+  // js/app.js:377 walks the array in API order and js/app.js:384 writes only
+  // `type === 'project'` into this container, so API order is render order
+  // (ids 29,30,31,32,33,34,1) and nothing is sorted.
+  const projects = (data?.works ?? []).filter((w) => w.type === 'project');
 
   return (
     <section
@@ -37,7 +46,11 @@ export default function Work() {
           tab === 'projects' ? '' : ' hidden'
         }`}
       >
-        {/* Projects will be injected here */}
+        <SectionBoundary fallback={<>{/* Projects will be injected here */}</>}>
+          {projects.map((work) => (
+            <ProjectCard key={work.id} work={work} />
+          ))}
+        </SectionBoundary>
       </div>
       <div
         id="design-section"
