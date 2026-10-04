@@ -34,9 +34,10 @@ import { optimizeCloudinaryImage } from '@/lib/cloudinary';
 // four seed rows) has no `/image/upload/` and is returned unchanged, and a
 // Cloudinary URL is optimised, so both are already truthy.
 //
-// The transform is 600x600 per the brief; js/app.js:487-490 asks for
-// 120x120,c_limit. Both resolve to the same rendered box (the `<img>` sits in
-// a fixed `w-10 h-10` circle), so this changes bytes, not layout.
+// The transform is js/app.js:487-490's own `120x120,c_limit`. A missing
+// `crop` is not cosmetic: Cloudinary then applies `c_scale`, which stretches a
+// non-square source to fill both dimensions (two of the nine seeded logos are
+// not square), so both the URL and the rendered aspect ratio depend on it.
 export default function Journey() {
   const { data } = usePortfolio();
 
@@ -56,14 +57,20 @@ export default function Journey() {
 
       <div className="relative max-w-5xl mx-auto">
         <div className="timeline-line bg-gray-200 dark:bg-white/10"></div>
+        {/* js/app.js:479-517 removes only the `.relative.mb-12` item wrappers and
+            appends the rest to the same parent, so this HTML comment is still in
+            the legacy DOM today. React has no comment node to emit; it produces no
+            element either way, and it sits outside every styled box, so the
+            rendered result is identical. */}
         {/* Journey items will be injected here */}
         {/* js/app.js:485 walks the array in API order and there is no sort on
             `order_index` anywhere — array order is render order. */}
         {(data?.journey ?? []).map((item, index) => {
           const isEven = index % 2 === 1;
           const optimizedLogoUrl = optimizeCloudinaryImage(item.logo_url ?? '', {
-            width: 600,
-            height: 600,
+            width: 120,
+            height: 120,
+            crop: 'limit',
           });
 
           return (
