@@ -2,6 +2,7 @@
 
 import { usePortfolio } from '@/lib/PortfolioProvider';
 import { optimizeCloudinaryImage } from '@/lib/cloudinary';
+import type { Social } from '@/lib/types';
 
 export default function Hero() {
   const { data } = usePortfolio();
@@ -61,6 +62,36 @@ export default function Hero() {
             </div>
             <div className="flex gap-3 text-xl">
               {/* Socials will be injected here */}
+              {/* js/app.js:530 — `renderSocials` writes into this container as
+                  its first of three targets (the others are
+                  `#contact .grid.grid-cols-4.gap-4` and
+                  `footer .flex.space-x-4`, migrated in Tasks 14 and 17). Note
+                  this is the *hero* row, not the navbar, despite the AGENTS.md
+                  shorthand. The anchor class differs per target: this one is
+                  `hover:text-primary transition-colors`, and the `<i>` carries
+                  the ligature name with no size utility. */}
+              {(data?.socials ?? []).map((social) => {
+                // js/app.js:529 — `social.name` is a leftover: the socials table
+                // has no `name` column (db/neon_setup.sql:80-85), so the term can
+                // only ever be undefined. Kept for parity with the source.
+                const socialName =
+                  social.platform ||
+                  (social as Social & { name?: string }).name ||
+                  'Social profile';
+
+                return (
+                  <a
+                    key={social.id}
+                    className="hover:text-primary transition-colors"
+                    href={`${social.url}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`${socialName}`}
+                  >
+                    <i className={social.icon} aria-hidden="true"></i>
+                  </a>
+                );
+              })}
             </div>
           </div>
         </div>
