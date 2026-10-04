@@ -2,6 +2,7 @@
 
 import { usePortfolio } from '@/lib/PortfolioProvider';
 import type { Social } from '@/lib/types';
+import ContactForm from '@/components/sections/ContactForm';
 
 // index.html:564-618 — section shell, heading, contact rows, social grid and
 // WhatsApp card; js/app.js:296-303 — the `.contact-email` / `.contact-phone`
@@ -149,7 +150,9 @@ export default function Contact() {
         </div>
 
         {/* index.html:618-660 — contact form; Task 15 mounts ContactForm here. */}
-        <div className="lg:col-span-7"></div>
+        <div className="lg:col-span-7">
+          <ContactForm />
+        </div>
       </div>
     </section>
   );
