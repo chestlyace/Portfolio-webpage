@@ -15,12 +15,16 @@ import { optimizeCloudinaryImage } from '@/lib/cloudinary';
 // updateLightboxContent (js/app.js:156-172) is derived here from
 // items[activeIndex] instead — no getElementById anywhere.
 export default function DesignLightbox() {
-  const { items, activeIndex, close, next } = useDesignLightbox();
+  const { items, activeIndex, isOpen, close, next } = useDesignLightbox();
 
-  // js/app.js:158 — a non-null activeDesignIndex *is* "open". Everything the
-  // source did imperatively on open/close (remove 'hidden', set
-  // // aria-hidden, js/app.js:174-189) is a pure function of this value.
-  const isOpen = activeIndex !== null;
+  // js/app.js:175-181 / :186-188 — the shell's `hidden` class and aria-hidden
+  // are the source's open/close half, which closeDesignLightbox never couples
+  // to the caption: `activeDesignIndex` survives a close, so #lightbox-title,
+  // #lightbox-meta, #lightbox-counter and the #lightbox-image src/alt keep the
+  // last item's values while the shell is hidden. Hence visibility comes from
+  // `isOpen` and content from `activeIndex`, two separate values.
+  // `activeIndex === null` is the pre-first-open state, which is the one that
+  // has to match index.html:733's empty caption and src-less <img>.
   const work = activeIndex === null ? null : items[activeIndex];
 
   // The source's class attribute is the base list with `hidden` in position;
@@ -46,27 +50,27 @@ export default function DesignLightbox() {
     : '';
 
   // js/app.js:180 / 188 — body.lightbox-open ({ overflow: hidden } in
-  // app/globals.css:122). Keyed on activeIndex so open/close/navigate all
-  // converge on the right state; the cleanup also covers unmount, so leaving
-  // the page never strands the page at overflow: hidden.
+  // app/globals.css:122). Keyed on isOpen so open and close both land on the
+  // right state; the cleanup also covers unmount, so leaving the page never
+  // strands the page at overflow: hidden.
   useEffect(() => {
-    if (activeIndex !== null) {
+    if (isOpen) {
       document.body.classList.add('lightbox-open');
     } else {
       document.body.classList.remove('lightbox-open');
     }
     return () => document.body.classList.remove('lightbox-open');
-  }, [activeIndex]);
+  }, [isOpen]);
 
   // js/app.js:215-221 — the document-level keydown listener. The source
   // guards with `if (lightbox.classList.contains('hidden')) return;` so keys
-  // are inert while the shell is hidden; the equivalent guard here is
-  // `activeIndex === null`, checked against the same render's state (the
-  // listener is re-registered whenever activeIndex changes, so the closure
-  // never holds a stale index).
+  // are inert while the shell is hidden; the equivalent guard here is `!isOpen`,
+  // checked against the same render's state (the listener is re-registered
+  // whenever isOpen changes, so the closure never reads a stale flag). It reads
+  // isOpen rather than activeIndex because a closed shell still has an index.
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      if (activeIndex === null) return;
+      if (!isOpen) return;
 
       if (event.key === 'Escape') close();
       if (event.key === 'ArrowLeft') next(-1);
@@ -75,13 +79,28 @@ export default function DesignLightbox() {
 
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
-  }, [activeIndex, close, next]);
+  }, [isOpen, close, next]);
 
   // js/app.js:223-258 — swipe on the stage. The stage element exists for the
   // component's whole lifetime (it is only hidden, never unmounted), so this
   // attaches once per `next` identity — `next` changes when items.length
   // changes, which is exactly when a stale closure would wrap wrongly.
   const stageRef = useRef<HTMLDivElement>(null);
+
+  // js/app.js:206 + :260 — setupDesignLightbox returns early if the shell is
+  // already data-ready, then stamps data-ready="true" on it once the listeners
+  // are attached. Nothing here reads the marker (React's effects attach and
+  // detach themselves, so the idempotency guard has no job), but it is part of
+  // the source's live DOM after setup runs, so it is reproduced verbatim rather
+  // than left as a difference. Set in an effect, so the server-rendered HTML
+  // matches the source's pre-setup HTML exactly.
+  const shellRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const shell = shellRef.current;
+    if (!shell) return;
+    shell.dataset.ready = 'true';
+  }, []);
 
   useEffect(() => {
     const stage = stageRef.current;
@@ -149,6 +168,7 @@ export default function DesignLightbox() {
   return (
     <div
       id="design-lightbox"
+      ref={shellRef}
       className={shellClass}
       aria-hidden={isOpen ? 'false' : 'true'}
     >
@@ -189,19 +209,20 @@ export default function DesignLightbox() {
                 ref={stageRef}
                 className="flex min-h-0 w-full touch-pan-y items-center justify-center overflow-hidden rounded-3xl bg-white/5 p-2 sm:p-4"
               >
-                {/* js/app.js:167-168 sets src/alt imperatively. The source
-                    ships <img src="" alt=""> and fills it on open; React warns
-                    on an empty src, so the img renders only once a work is
-                    active — which is also the only moment the shell is
-                    visible, so there is no visual difference. */}
-                {work ? (
-                  <img
-                    id="lightbox-image"
-                    src={optimizedImage}
-                    alt={`${work.title} design preview`}
-                    className="max-h-[72vh] w-auto max-w-full rounded-2xl object-contain sm:max-h-[76vh]"
-                  />
-                ) : null}
+                {/* index.html:733 ships <img id="lightbox-image" src="" alt=""
+                    class="..."> and js/app.js:167-168 fills src/alt on open.
+                    The element belongs to the shell for the shell's whole
+                    lifetime, so it is always rendered: react-dom/server 19.3
+                    drops an empty-string `src` outright (verified — no JSX
+                    spelling of src="" reaches the markup), so while closed the
+                    attribute is absent rather than empty. `img.src` reads ''
+                    either way, and no other attribute, class or id differs. */}
+                <img
+                  id="lightbox-image"
+                  src={work ? optimizedImage : undefined}
+                  alt={work ? `${work.title} design preview` : ''}
+                  className="max-h-[72vh] w-auto max-w-full rounded-2xl object-contain sm:max-h-[76vh]"
+                />
               </div>
               <div className="mt-4 flex w-full flex-col gap-3 px-1 text-white sm:mt-5 sm:flex-row sm:items-end sm:justify-between">
                 <div className="min-w-0">

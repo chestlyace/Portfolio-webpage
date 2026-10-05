@@ -21,6 +21,7 @@ import type { Work } from './types';
 interface DesignLightboxState {
   items: Work[];
   activeIndex: number | null;
+  isOpen: boolean;
   open: (index: number) => void;
   close: () => void;
   next: (step: 1 | -1) => void;
@@ -56,19 +57,33 @@ export function DesignLightboxProvider({
     [data],
   );
 
-  // js/app.js:158 — `activeDesignIndex`, null while the lightbox is closed.
+  // js/app.js:158 — `activeDesignIndex`, null until the first open. It is NOT
+  // reset by closeDesignLightbox (js/app.js:184-189 only adds `hidden`, sets
+  // aria-hidden and drops body.lightbox-open), so the caption and the image
+  // src/alt written by updateLightboxContent stay in the DOM after a close —
+  // verified against the pre-migration site, whose #lightbox-title still reads
+  // the last item's title after Escape. open/closed therefore cannot be derived
+  // from the index; `isOpen` below is the separate flag.
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
+  // js/app.js:175-179 / :186-188 — the `hidden` / aria-hidden / body class
+  // half of open and close, which is the shell's (Task 12). Tracked apart from
+  // activeIndex for the reason above: closing must not erase the content.
+  const [isOpen, setIsOpen] = useState(false);
 
   // js/app.js:174-182 openDesignLightbox(index). The source's
   // `if (!designWorks.length) return;` guard is unreachable here: open() is
   // only reachable from a rendered tile, which only exists when
   // items.length > 0 (the shell early-returns while hidden).
-  const open = useCallback((index: number) => setActiveIndex(index), []);
+  const open = useCallback((index: number) => {
+    setActiveIndex(index);
+    setIsOpen(true);
+  }, []);
 
-  // js/app.js:184-189 closeDesignLightbox(). Only the index lives here; the
-  // `hidden` class / `aria-hidden` / `body.lightbox-open` half is the shell's
-  // (Task 12).
-  const close = useCallback(() => setActiveIndex(null), []);
+  // js/app.js:184-189 closeDesignLightbox(). Only the visibility half lives
+  // here; the index is deliberately left alone, because the source's close does
+  // not touch activeDesignIndex either.
+  const close = useCallback(() => setIsOpen(false), []);
 
   const next = useCallback(
     (step: 1 | -1) => {
@@ -88,8 +103,8 @@ export function DesignLightboxProvider({
   );
 
   const value = useMemo(
-    () => ({ items, activeIndex, open, close, next }),
-    [items, activeIndex, open, close, next],
+    () => ({ items, activeIndex, isOpen, open, close, next }),
+    [items, activeIndex, isOpen, open, close, next],
   );
 
   return (
