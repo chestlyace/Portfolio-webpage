@@ -1,5 +1,6 @@
 {/* software-development.html:1-4, 5-71, 73 — <head> block and the <body>
-    open tag, transcribed verbatim. The source exports no metadata and
+    open tag (line 1's <!doctype html> is emitted by Next), transcribed
+    verbatim. The source exports no metadata and
     imports no stylesheet of its own; line 70's Tailwind CDN script is the
     only styling hook it has, so this layout emits nothing else. */}
 export default function RootLayout({
