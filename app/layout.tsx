@@ -115,7 +115,10 @@ export default function RootLayout({
             __html: `try{if(localStorage.theme==="dark"||(!("theme" in localStorage)&&window.matchMedia("(prefers-color-scheme: dark)").matches)){document.documentElement.classList.add("dark")}else{document.documentElement.classList.remove("dark")}}catch(e){}`,
           }}
         />
-        {/* Placeholder until Task 18 writes the live updateSeo() payload. */}
+        {/* applySeo() (components/site/SeoUpdater.tsx) rewrites this
+            element's textContent in the browser once the portfolio fetch
+            resolves; the {} below is the pre-fetch state a crawler sees
+            before hydration. */}
         <script
           id="structured-data"
           type="application/ld+json"
