@@ -60,11 +60,11 @@ const SOURCES = [
  * Referenced by database rows (profile.resume_url, profile.hero_image).
  * resume.pdf is also the href in the exported index.html, but the client
  * overwrites it at runtime with the row value, so the row is the authority;
- * the hero image is referenced by nothing else at all. Neither file sits at
- * the repo root anymore -- they live in public/, which the build copies into
- * out/ -- so they are asserted here, in public/, where the check stays
- * meaningful even before a build exists. Moving either 404s the live resume
- * button and hero image until the database rows are updated.
+ * the hero image is referenced by nothing else at all. Both are asserted in
+ * public/, because public/ is the build input the artifact is copied from --
+ * a file missing from public/ can never reach out/, so that is the place where
+ * absence is the actionable failure. Moving either 404s the live resume button
+ * and hero image until the database rows are updated.
  */
 const PINNED_BY_DATA = [
   'resume.pdf',
@@ -83,7 +83,20 @@ const OPAQUE = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
 // Absolute URLs on our own domain are really docroot-relative; strip the origin
 // so moving an OG image (or dropping a published page) is caught instead of
 // silently skipped. Reused for <loc>, which is always an absolute URL.
-const OWN_ORIGIN = /^https?:\/\/(?:www\.)?chestlyace\.online/;
+const OWN_ORIGIN = /^https?:\/\/(?:www\.)?chestlyace\.online/i;
+
+/**
+ * Reduce a reference to a document-root path, or return null when it is not
+ * ours to check. The leading-slash collapse matters: origin-stripping
+ * `https://chestlyace.online//page.html` leaves `//page.html`, which looks
+ * protocol-relative to OPAQUE and would be skipped in silence -- so a broken
+ * entry in the sitemap or a malformed href would cost one checked reference
+ * and no warning at all.
+ */
+function toDocPath(original) {
+  const ref = original.replace(OWN_ORIGIN, '').replace(/^\/+/, '/');
+  return OPAQUE.test(ref) ? null : ref;
+}
 
 const problems = [];
 // Per-bucket counts so the summary can say what was actually checked instead
@@ -92,6 +105,10 @@ const counts = { html: 0, sitemap: 0, pinned: 0 };
 
 function check(sourceRel, ref, absTarget, bucket) {
   counts[bucket]++;
+  if (!absTarget) {
+    problems.push(`  ${sourceRel}\n    ref:     ${ref}\n    problem: resolves outside the published tree`);
+    return;
+  }
   if (!existsSync(absTarget)) {
     problems.push(`  ${sourceRel}\n    ref:     ${ref}\n    missing: ${relative(REPO_ROOT, absTarget)}`);
   }
@@ -102,9 +119,20 @@ function check(sourceRel, ref, absTarget, bucket) {
  * out/ no matter which page contains it. A relative reference resolves against
  * the directory of the file containing it -- which is what keeps
  * admin/index.html pointing at admin/admin.js rather than at out/admin.js.
+ *
+ * `..` is rejected rather than followed. Without this, `href="../backend/
+ * server.js"` resolves to a real file in the repo, existsSync says yes, and the
+ * checker passes a reference whose served URL (/backend/server.js) is not in the
+ * published set at all -- the precise class of 404 this script exists to catch.
+ * A reference may point anywhere inside the published tree, and nowhere else.
  */
 function resolveRef(fromDir, ref) {
-  return ref.startsWith('/') ? join(DOCROOT, ref) : resolve(fromDir, ref);
+  const base = ref.startsWith('/') ? DOCROOT : fromDir;
+  const target = resolve(base, `.${ref.startsWith('/') ? '' : '/'}${ref}`);
+  // Path.relative yields a leading '..' segment for an escape and never for a
+  // path that stays inside, so this is the containment test.
+  const escapes = relative(base, target).startsWith('..');
+  return escapes ? null : target;
 }
 
 // --- Refuse to run against a missing or empty build. ---
@@ -138,10 +166,10 @@ for (const { file, dir } of SOURCES) {
     const original = match[1].trim();
     if (!original) continue;
 
-    let ref = original.replace(OWN_ORIGIN, '');
-    if (OPAQUE.test(ref)) continue;
+    const doc = toDocPath(original);
+    if (doc === null) continue;
 
-    ref = ref.split('#')[0].split('?')[0];
+    const ref = doc.split('#')[0].split('?')[0];
     if (!ref || ref === '/') continue;
 
     check(sourceRel, original, resolveRef(fromDir, ref), 'html');
@@ -151,10 +179,10 @@ for (const { file, dir } of SOURCES) {
     const original = match[1].trim();
     if (!original) continue;
 
-    const ref = original.replace(OWN_ORIGIN, '');
-    if (OPAQUE.test(ref)) continue;
+    const doc = toDocPath(original);
+    if (doc === null) continue;
 
-    const path = ref.split('#')[0].split('?')[0];
+    const path = doc.split('#')[0].split('?')[0];
     if (!path || path === '/') continue;
 
     check(sourceRel, original, resolveRef(fromDir, path), 'html');
@@ -175,20 +203,27 @@ if (!existsSync(SITEMAP)) {
     // Same origin-stripping as the meta tags: after it, a sitemap URL is just
     // a document-root-relative path. Anything still holding a scheme points at
     // someone else's origin and is not ours to check.
-    const ref = original.replace(OWN_ORIGIN, '');
-    if (OPAQUE.test(ref)) continue;
+    const doc = toDocPath(original);
+    if (doc === null) continue;
 
-    const path = ref.split('#')[0].split('?')[0];
+    const path = doc.split('#')[0].split('?')[0];
     // `/` is the exported index page. A trailing slash would need a directory
     // index, which Next's export does not emit, so map it to index.html and
     // let the existence test below report the truth either way.
     const target = !path || path === '/'
-      ? 'index.html'
+      ? '/index.html'
       : path.endsWith('/')
-        ? `${path.slice(1)}index.html`
-        : path.replace(/^\//, '');
+        ? `${path}index.html`
+        : path;
 
-    check(SITEMAP_REL, original, join(DOCROOT, target), 'sitemap');
+    check(SITEMAP_REL, original, resolveRef(DOCROOT, target), 'sitemap');
+  }
+
+  // An empty or wholly-foreign urlset would report "OK: 0" and exit 0, which is
+  // the same vacuous pass the missing-build guard exists to prevent. The sitemap
+  // publishing four pages is a known fact about this site, so require it.
+  if (counts.sitemap === 0) {
+    problems.push(`  ${SITEMAP_REL}\n    problem: no <loc> on our own origin was checked`);
   }
 }
 

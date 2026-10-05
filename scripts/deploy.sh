@@ -16,6 +16,10 @@
 # appears in the repo -- including a .env. Only the paths below are ever
 # published, so anything else in the repo is private by construction.
 #
+# Two exceptions to that guarantee, both deliberate and both covered by the
+# guards rather than by the allowlist: `public/` is copied wholesale into out/
+# by the build, and `out/` itself is one unit. See the note on PUBLISH below.
+#
 # Overridable: DEPLOY_REMOTE, DEPLOY_ROOT, DEPLOY_KEY
 set -euo pipefail
 
@@ -30,14 +34,23 @@ if [ ! -f "$KEY" ]; then
   exit 1
 fi
 
+# Scratch file for Guard 3's matches. Created up front because the guard runs
+# under `set -e`, and a redirect cannot create it later.
+SECRET_HITS="$(mktemp)"
+
 # --- The allowlist. Adding a new published path means adding a line here. ---
 # out/ is the build output and is validated as a unit rather than entry by
 # entry: every file in it came from public/ or from a page render, and
 # scripts/check-assets.mjs proves the references inside it resolve. admin/ is
 # the one hand-maintained directory that still ships as-is -- it has no build
-# step and is served directly. Nothing else in the repo is publishable, so a
-# stray file (a .env, a database dump, an old html page) can never reach the
-# document root by accident.
+# step and is served directly. Nothing else in the repo is publishable.
+#
+# The unit of trust is now the directory, not the entry: `next build` copies all
+# of public/ into out/ verbatim, dotfiles included, so a secret committed under
+# public/ would be published by this script. Guards 2 and 3 below are what keep
+# that from happening -- Guard 2 rejects unsafe path names and Guard 3 greps the
+# staged tree -- so `public/` is covered by inspection rather than by
+# construction. Keep new secrets out of public/.
 PUBLISH=(
   out
   admin
@@ -52,6 +65,11 @@ for p in "${PUBLISH[@]}"; do
 done
 
 # --- Guard 2: refuse to publish anything that could carry a secret. ---
+# Two passes. The first is the allowlist names themselves. The second is the
+# file NAMES inside the published trees, which matters because the unit of trust
+# is now the directory: `next build` copies all of public/ into out/ verbatim,
+# so `public/backup.sql` would otherwise be published with no allowlist entry
+# anywhere near it.
 for p in "${PUBLISH[@]}"; do
   case "$p" in
     backend|data|*.env|*.sql|*.log|*.bak*)
@@ -61,15 +79,29 @@ for p in "${PUBLISH[@]}"; do
   esac
 done
 
+UNSAFE_NAMES=$(find "$REPO_ROOT/out" "$REPO_ROOT/admin" \
+  \( -name '*.env' -o -name '.env*' -o -name '*.sql' -o -name '*.log' -o -name '*.bak*' \
+     -o -name '*.pem' -o -name 'id_rsa*' -o -name '*.key' \) -print 2>/dev/null)
+if [ -n "$UNSAFE_NAMES" ]; then
+  echo "ERROR: files with unsafe names inside the published set:" >&2
+  printf '  %s\n' "$UNSAFE_NAMES" >&2
+  exit 1
+fi
+
 # --- Guard 3: scan publishable content for credential-shaped assignments. ---
 # out/ is generated, so this guard is really checking that no build input
 # leaked a credential into a page or into the copied assets: -r walks the whole
 # tree (built HTML, chunks, and everything copied up from public/). It still
 # earns its place, because a server component or a public/ file can carry a
 # value through into the export.
-if grep -rlE '(DATABASE_URL|JWT_SECRET|ADMIN_PASSWORD|CLOUDINARY_API_SECRET)[[:space:]]*=' \
-     "$REPO_ROOT/out" "$REPO_ROOT/admin" 2>/dev/null | grep -q .; then
-  echo "ERROR: credential-shaped content found in publishable paths" >&2
+#
+# -h so symlinks are not followed out of the tree, and the result is captured
+# before testing: under `set -o pipefail` an inline `grep -q .` is decided by
+# whichever grep exits first, so a SIGPIPE from the first grep can mask a hit.
+if grep -rlEh '(DATABASE_URL|JWT_SECRET|ADMIN_PASSWORD|CLOUDINARY_API_SECRET)[[:space:]]*=' \
+     "$REPO_ROOT/out" "$REPO_ROOT/admin" 2>/dev/null > "$SECRET_HITS"; then
+  echo "ERROR: credential-shaped content found in publishable paths:" >&2
+  sed 's/^/  /' "$SECRET_HITS" >&2
   exit 1
 fi
 
@@ -81,7 +113,7 @@ fi
 
 # --- Stage only the allowlist, so --delete mirrors exactly this set. ---
 STAGE="$(mktemp -d)"
-trap 'rm -rf "$STAGE"' EXIT
+trap 'rm -rf "$STAGE" "$SECRET_HITS"' EXIT
 for p in "${PUBLISH[@]}"; do
   if [ "$p" = "out" ]; then
     # Copy out/'s CONTENTS to the staged root: the document root IS out/.
