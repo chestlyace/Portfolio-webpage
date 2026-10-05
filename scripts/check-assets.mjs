@@ -8,13 +8,14 @@
  *
  *   node scripts/check-assets.mjs
  *
- * Exit 0 = all references resolve. Exit 1 = at least one is missing, or the
- * build output this script reads is missing entirely.
+ * Exit 0 = all references resolve. Exit 1 = at least one reference does not
+ * resolve, a reference points outside the published tree, or an input this script
+ * needs is missing (no build output, no sitemap, no checked <loc>).
  *
- * Covered: src/href attributes and og:image/og:url meta tags across the five
- * published HTML files (the four pages Next exports into out/, plus the
- * hand-written admin/index.html), every <loc> in public/sitemap.xml, and the
- * two files referenced by database rows.
+ * Covered: quoted src/href attributes and og:image/og:url meta tags across the
+ * five published HTML files (the four pages Next exports into out/, plus the
+ * hand-written admin/index.html), every <loc> in public/sitemap.xml, and the two
+ * files referenced by database rows.
  *
  * Not covered: URLs returned by the API at runtime (Cloudinary), and
  * admin/admin.js, which builds URLs from template literals and runtime API
@@ -30,8 +31,8 @@ const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 // The document root is out/ -- the build output -- not the repo root.
 // `npm run build` writes a complete site into out/ and deploy.sh publishes
 // that directory's contents, so a `/...` reference in a page means a file in
-// out/. Testing it against the repo root would check build inputs that are
-// never served while missing the artifact that is.
+// out/. Testing it against the repo root would check files that are never
+// served while missing the artifact that is.
 const DOCROOT = join(REPO_ROOT, 'out');
 // public/ is the other half of the published set: the build copies it into
 // out/ verbatim, so a file must live here to reach the document root at all.
@@ -45,9 +46,11 @@ const SITEMAP = join(PUBLIC_DIR, 'sitemap.xml');
 //
 // Each source names its own directory instead of sharing one base, because
 // the published set no longer has a single root: the four exported pages ship
-// from out/ (their hand-written twins in the repo root are build inputs, not
-// artifacts), while admin/index.html is still hand-written and published from
-// admin/, so its relative refs (`admin.js?v=...`) must resolve against admin/.
+// from out/ (the hand-written .html files in the repo root are what they were
+// transcribed from -- the app router never reads them, and they are retired at
+// the end of the migration), while admin/index.html is still hand-written and
+// published from admin/, so its relative refs (`admin.js?v=...`) resolve against
+// admin/.
 const SOURCES = [
   { file: 'index.html', dir: 'out' },
   { file: 'graphic-design.html', dir: 'out' },
@@ -83,56 +86,105 @@ const OPAQUE = /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i;
 // Absolute URLs on our own domain are really docroot-relative; strip the origin
 // so moving an OG image (or dropping a published page) is caught instead of
 // silently skipped. Reused for <loc>, which is always an absolute URL.
-const OWN_ORIGIN = /^https?:\/\/(?:www\.)?chestlyace\.online/i;
+// The host is bounded by a lookahead for `/`, `?`, `#` or end-of-string, so
+// chestlyace.online.evil.com is not mistaken for our own domain.
+const OWN_ORIGIN = /^https?:\/\/(?:www\.)?chestlyace\.online(?=[/?#]|$)/i;
+// A userinfo component (`https://user:pw@host/`) still puts the real origin in
+// front, so strip anything up to and including the last '@' before matching.
+const USERINFO = /^https?:\/\/[^/?#]*@/i;
 
 /**
  * Reduce a reference to a document-root path, or return null when it is not
- * ours to check. The leading-slash collapse matters: origin-stripping
- * `https://chestlyace.online//page.html` leaves `//page.html`, which looks
- * protocol-relative to OPAQUE and would be skipped in silence -- so a broken
- * entry in the sitemap or a malformed href would cost one checked reference
- * and no warning at all.
+ * ours to check.
+ *
+ * Two details are deliberate. Origin-stripping is applied to the userinfo-stripped
+ * form, so `https://x@chestlyace.online/page.html` is recognised as ours rather
+ * than silently skipped. And leading slashes are collapsed, because origin-stripping
+ * `https://chestlyace.online//page.html` leaves `//page.html`, which reads as
+ * protocol-relative and would be skipped in silence -- costing one checked
+ * reference and no warning at all. A genuine protocol-relative URL points at
+ * another host, so it stays opaque.
  */
 function toDocPath(original) {
-  const ref = original.replace(OWN_ORIGIN, '').replace(/^\/+/, '/');
-  return OPAQUE.test(ref) ? null : ref;
+  const stripped = original.replace(USERINFO, (m) => m.replace(/[^/]*$/, ''));
+
+  if (OWN_ORIGIN.test(stripped)) {
+    // Our own origin, so the remainder is a docroot path -- and only now may
+    // leading slashes be collapsed. See below for why that matters.
+    return stripped.replace(OWN_ORIGIN, '').replace(/^\/{2,}/, '/');
+  }
+
+  // No slash-collapsing here. A `//host/...` URL that is not ours is genuinely
+  // protocol-relative: it names another origin, so OPAQUE skips it. Collapsing
+  // its slashes would turn a reference to someone else's CDN into a check for
+  // out/cdn.example.com/lib.css, which fails on every legitimate external
+  // stylesheet and would block a correct deploy.
+  return OPAQUE.test(stripped) ? null : stripped;
 }
 
 const problems = [];
 // Per-bucket counts so the summary can say what was actually checked instead
 // of one lump total that hides which rule fired.
 const counts = { html: 0, sitemap: 0, pinned: 0 };
+// Findings about the checker's inputs rather than about a reference: kept apart
+// so the "N of M checked" line stays a truthful ratio.
+let extraProblems = 0;
+
+function addInputProblem(sourceRel, detail) {
+  extraProblems++;
+  problems.push(`  ${sourceRel}\n    problem: ${detail}`);
+}
 
 function check(sourceRel, ref, absTarget, bucket) {
-  counts[bucket]++;
   if (!absTarget) {
+    // Not counted as a checked reference: it was never tested against a file,
+    // so counting it would let "N of M" imply coverage it does not have.
+    extraProblems++;
     problems.push(`  ${sourceRel}\n    ref:     ${ref}\n    problem: resolves outside the published tree`);
     return;
   }
+  counts[bucket]++;
   if (!existsSync(absTarget)) {
     problems.push(`  ${sourceRel}\n    ref:     ${ref}\n    missing: ${relative(REPO_ROOT, absTarget)}`);
   }
 }
 
 /**
- * A `/...` reference is a document-root reference, and the document root is
- * out/ no matter which page contains it. A relative reference resolves against
- * the directory of the file containing it -- which is what keeps
- * admin/index.html pointing at admin/admin.js rather than at out/admin.js.
+ * Resolve a reference the way a browser resolves a URL, not the way a shell
+ * resolves a path.
  *
- * `..` is rejected rather than followed. Without this, `href="../backend/
- * server.js"` resolves to a real file in the repo, existsSync says yes, and the
- * checker passes a reference whose served URL (/backend/server.js) is not in the
- * published set at all -- the precise class of 404 this script exists to catch.
- * A reference may point anywhere inside the published tree, and nowhere else.
+ * The distinction matters, because the two disagree. `/../out/index.html` is a
+ * URL that nginx serves as `/out/index.html` -- which is not in the published
+ * set and 404s -- while path normalisation would fold it back to out/index.html
+ * and pass. So containment is decided on URL segments first, and only a URL that
+ * stays inside the document root is ever mapped to a file.
+ *
+ * `urlDir` is the directory of the containing page *as a URL* (`/` for the pages
+ * in out/, `/admin/` for admin/index.html), which is what makes `../index.html`
+ * inside admin/ resolve to `/index.html` -- a file that really is published --
+ * while `../backend/server.js` resolves outside the root and is rejected.
  */
-function resolveRef(fromDir, ref) {
-  const base = ref.startsWith('/') ? DOCROOT : fromDir;
-  const target = resolve(base, `.${ref.startsWith('/') ? '' : '/'}${ref}`);
-  // Path.relative yields a leading '..' segment for an escape and never for a
-  // path that stays inside, so this is the containment test.
-  const escapes = relative(base, target).startsWith('..');
-  return escapes ? null : target;
+function resolveRef(urlDir, ref) {
+  const segments = ref.startsWith('/') ? [] : urlDir.split('/').filter(Boolean);
+
+  for (const segment of ref.split('/')) {
+    if (segment === '' || segment === '.') continue;
+    if (segment === '..') {
+      // Popping past the document root is an escape, not a path that happens to
+      // normalise back into it.
+      if (!segments.length) return null;
+      segments.pop();
+      continue;
+    }
+    segments.push(segment);
+  }
+
+  // URL space to file space. Only admin/ has its own directory at the docroot;
+  // every other published path is a file inside out/.
+  const path = segments.join('/');
+  return path === 'admin' || path.startsWith('admin/')
+    ? join(REPO_ROOT, 'admin', path.slice('admin/'.length))
+    : join(DOCROOT, path);
 }
 
 // --- Refuse to run against a missing or empty build. ---
@@ -155,12 +207,15 @@ for (const { file, dir } of SOURCES) {
     // The exported pages come and go with the build; a missing one is a stale
     // or partial build, not a broken reference, so report it as such instead
     // of throwing a stack trace out of readFileSync.
-    problems.push(`  ${sourceRel}\n    missing: the source file itself (stale or partial build?)`);
+    addInputProblem(sourceRel, 'the source file itself is missing (stale or partial build?)');
     continue;
   }
 
   const html = readFileSync(abs, 'utf8');
-  const fromDir = dirname(abs);
+  // The containing page's directory *as a URL*, which is not the same as its
+  // directory on disk: admin/index.html lives in admin/ on disk but is served
+  // from /admin/, so `../index.html` there means the docroot's index.html.
+  const urlDir = dir === 'admin' ? '/admin/' : '/';
 
   for (const match of html.matchAll(ATTR)) {
     const original = match[1].trim();
@@ -172,7 +227,7 @@ for (const { file, dir } of SOURCES) {
     const ref = doc.split('#')[0].split('?')[0];
     if (!ref || ref === '/') continue;
 
-    check(sourceRel, original, resolveRef(fromDir, ref), 'html');
+    check(sourceRel, original, resolveRef(urlDir, ref), 'html');
   }
 
   for (const match of html.matchAll(OG)) {
@@ -185,7 +240,7 @@ for (const { file, dir } of SOURCES) {
     const path = doc.split('#')[0].split('?')[0];
     if (!path || path === '/') continue;
 
-    check(sourceRel, original, resolveRef(fromDir, path), 'html');
+    check(sourceRel, original, resolveRef(urlDir, path), 'html');
   }
 }
 
@@ -194,7 +249,7 @@ for (const { file, dir } of SOURCES) {
 // no exported file is exactly the 404 this script exists to prevent, and no
 // other check catches it: nothing in out/ links to its own sitemap entries.
 if (!existsSync(SITEMAP)) {
-  problems.push(`  ${SITEMAP_REL}\n    missing: the sitemap itself`);
+  addInputProblem(SITEMAP_REL, 'the sitemap itself is missing');
 } else {
   for (const match of readFileSync(SITEMAP, 'utf8').matchAll(LOC)) {
     const original = match[1].trim();
@@ -216,14 +271,14 @@ if (!existsSync(SITEMAP)) {
         ? `${path}index.html`
         : path;
 
-    check(SITEMAP_REL, original, resolveRef(DOCROOT, target), 'sitemap');
+    check(SITEMAP_REL, original, resolveRef("/", target), 'sitemap');
   }
 
   // An empty or wholly-foreign urlset would report "OK: 0" and exit 0, which is
   // the same vacuous pass the missing-build guard exists to prevent. The sitemap
   // publishing four pages is a known fact about this site, so require it.
   if (counts.sitemap === 0) {
-    problems.push(`  ${SITEMAP_REL}\n    problem: no <loc> on our own origin was checked`);
+    addInputProblem(SITEMAP_REL, 'no <loc> on our own origin was checked');
   }
 }
 
@@ -236,7 +291,15 @@ for (const pinned of PINNED_BY_DATA) {
 const total = counts.html + counts.sitemap + counts.pinned;
 
 if (problems.length) {
-  console.error(`FAIL: ${problems.length} unresolved reference(s) of ${total} checked\n`);
+  // The count of problems is not the count of checked references: the
+  // outside-the-tree and no-own-loc entries are findings about the checker
+  // inputs, not unchecked references, so they are reported separately rather
+  // than inflating "N of M" with something that was never in M.
+  const references = problems.length - extraProblems;
+  console.error(
+    `FAIL: ${references} unresolved reference(s) of ${total} checked` +
+      (extraProblems ? `, plus ${extraProblems} input problem(s)\n` : '\n'),
+  );
   console.error(problems.join('\n\n'));
   process.exit(1);
 }
