@@ -2,12 +2,18 @@
 #
 # Publish the site to the nginx document root.
 #
+#   npm run build                 # REQUIRED FIRST: this publishes out/
 #   ./scripts/deploy.sh           # dry run: print what would change, change nothing
 #   ./scripts/deploy.sh --apply   # publish for real
 #
+# The published set comes from a build, not from the repo root: `npm run build`
+# writes the complete static site into out/, and this script copies out/'s
+# contents to the document root. Deploying without rebuilding publishes a
+# STALE site -- whatever the last build produced -- so always build first.
+#
 # This uses an ALLOWLIST, not an excludelist, on purpose. The document root is
 # served to the entire internet, and an excludelist fails the moment a new file
-# appears in the repo root -- including a .env. Only the paths below are ever
+# appears in the repo -- including a .env. Only the paths below are ever
 # published, so anything else in the repo is private by construction.
 #
 # Overridable: DEPLOY_REMOTE, DEPLOY_ROOT, DEPLOY_KEY
@@ -24,34 +30,17 @@ if [ ! -f "$KEY" ]; then
   exit 1
 fi
 
-# --- The allowlist. Adding a new page or asset means adding a line here. ---
+# --- The allowlist. Adding a new published path means adding a line here. ---
+# out/ is the build output and is validated as a unit rather than entry by
+# entry: every file in it came from public/ or from a page render, and
+# scripts/check-assets.mjs proves the references inside it resolve. admin/ is
+# the one hand-maintained directory that still ships as-is -- it has no build
+# step and is served directly. Nothing else in the repo is publishable, so a
+# stray file (a .env, a database dump, an old html page) can never reach the
+# document root by accident.
 PUBLISH=(
-  # HTML pages are pinned to the docroot by sitemap.xml and root-absolute links.
-  index.html
-  graphic-design.html
-  photography.html
-  software-development.html
-  # Pinned: referenced root-absolute by all four pages.
-  favicon.ico
-  favicon-32x32.png
-  apple-touch-icon.png
-  robots.txt
-  sitemap.xml
-  hero-optimized.webp
-  # Pinned by Neon data rows (profile.resume_url / profile.hero_image).
-  resume.pdf
-  684d5ff7-8d68-46ce-a5eb-5b0dabd64850.png
-  # Pinned by Neon seed rows: db/neon_setup.sql seeds journey.logo_url with these
-  # bare filenames (in order_index order), so a fresh seed needs them resolvable
-  # at the docroot root. Publicly served today, so keep them public.
-  ets_nhahealthtech_logo.jpeg
-  digimark.jpeg
-  yibs.png
-  logoNGcodeX.png
-  # Directories are copied whole.
-  js
+  out
   admin
-  assets
 )
 
 # --- Guard 1: every allowlisted path must exist, so a typo fails loudly. ---
@@ -73,8 +62,13 @@ for p in "${PUBLISH[@]}"; do
 done
 
 # --- Guard 3: scan publishable content for credential-shaped assignments. ---
+# out/ is generated, so this guard is really checking that no build input
+# leaked a credential into a page or into the copied assets: -r walks the whole
+# tree (built HTML, chunks, and everything copied up from public/). It still
+# earns its place, because a server component or a public/ file can carry a
+# value through into the export.
 if grep -rlE '(DATABASE_URL|JWT_SECRET|ADMIN_PASSWORD|CLOUDINARY_API_SECRET)[[:space:]]*=' \
-     "$REPO_ROOT/js" "$REPO_ROOT/admin" "$REPO_ROOT/index.html" 2>/dev/null | grep -q .; then
+     "$REPO_ROOT/out" "$REPO_ROOT/admin" 2>/dev/null | grep -q .; then
   echo "ERROR: credential-shaped content found in publishable paths" >&2
   exit 1
 fi
@@ -89,7 +83,17 @@ fi
 STAGE="$(mktemp -d)"
 trap 'rm -rf "$STAGE"' EXIT
 for p in "${PUBLISH[@]}"; do
-  cp -a "$REPO_ROOT/$p" "$STAGE/"
+  if [ "$p" = "out" ]; then
+    # Copy out/'s CONTENTS to the staged root: the document root IS out/.
+    # Copying the directory itself would nest the site at
+    # /var/www/chestlyace/out/index.html and 404 every URL on the domain. The
+    # "/." form copies what is inside the directory, dotfiles included.
+    cp -a "$REPO_ROOT/out/." "$STAGE/"
+  else
+    # Everything else keeps the plain directory copy, so admin/ lands at
+    # /admin/ rather than being flattened to the docroot.
+    cp -a "$REPO_ROOT/$p" "$STAGE/"
+  fi
 done
 
 echo "==> ${#PUBLISH[@]} paths staged from $REPO_ROOT"
